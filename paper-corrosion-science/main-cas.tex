@@ -9,9 +9,10 @@
 %% and no float needs promoting to a starred environment.
 \documentclass[a4paper,fleqn]{cas-sc}
 
-%% Corrosion Science numbers its references.  The CAS bundle ships only an
-%% author-year .bst (cas-model2-names), so the numbered style comes from natbib.
-\usepackage[numbers,sort&compress]{natbib}
+%% cas-model2-names is the CAS bundle's name-date style, so natbib runs in
+%% authoryear mode.  Note this makes the references author-year rather than
+%% numbered; Elsevier restyles at production and accepts either at submission.
+\usepackage[authoryear,longnamesfirst]{natbib}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{graphicx}
 \usepackage{booktabs}
@@ -102,14 +103,13 @@ solid-state transport beneath an Fe-rich outer layer formed by
 precipitation---is well established for the 304/316
 grades~\citep{robertson1991mechanism,stellwag1998mechanism,ziemniak2002corrosion,kuang2010oxidation,terachi2008corrosion,kim1999oxide,lister1987release},
 and the point defect model (PDM) of Chao, Lin, and
-Macdonald~\citep{chao1981pdm1,lin1981pdm2,macdonald1992pdm,macdonald2011history},
+Macdonald~\citeyearpar{chao1981pdm1,lin1981pdm2,macdonald1992pdm,macdonald2011history},
 in the tradition of high-field oxidation
 theory~\citep{cabrera1949oxidation}, provides the standard mechanistic
 description: vacancy-mediated transport under a high interfacial field,
 yielding closed-form thickness-versus-time laws tied to interfacial
-reaction kinetics. Li et al.~\citep{li2020scwpdm} extended this
-framework to supercritical water. For AISI~347 specifically, Veile et
-al.~\citep{veile2024} recently provided the first detailed
+reaction kinetics. \citet{li2020scwpdm} extended this
+framework to supercritical water. For AISI~347 specifically, \citet{veile2024} recently provided the first detailed
 characterization of the duplex oxide developed in simulated BWR
 hydrothermal water, resolving Cr-rich barrier and Fe-rich outer layers
 by energy-dispersive X-ray (EDX) depth profiling at three exposure
@@ -220,7 +220,7 @@ Ref.~\citep{li2020scwpdm} to better than $1\times10^{-10}$~nm.
 
 \subsection{Experimental data}\label{sec:data}
 
-Veile et al.~\citep{veile2024} exposed X6CrNiNb18-10 coupons to
+\citet{veile2024} exposed X6CrNiNb18-10 coupons to
 simulated BWR hydrothermal water (240$^\circ$C, 7~MPa, 0.4~ppm dissolved
 O$_2$) for 72, 168, and 480~h and measured element-resolved oxide layer
 thicknesses by focused-ion-beam cross-sections with EDX line scans.
@@ -350,10 +350,9 @@ configuration passes before its results are reported.}
 
 \subsection{The reduced point defect model}\label{sec:model}
 
-The governing kinetics follow the PDM in the formulation Li et
-al.~\citep{li2020scwpdm} developed for supercritical water,
+The governing kinetics follow the PDM in the formulation \citet{li2020scwpdm} developed for supercritical water,
 adapted here to subcritical hydrothermal-water conditions. The oxide
-Veile et al.~\citep{veile2024} characterize on X6CrNiNb18-10 is a
+\citet{veile2024} characterize on X6CrNiNb18-10 is a
 duplex scale (Fig.~\ref{fig:schematic}): a chromium-rich,
 nanocrystalline spinel barrier layer growing into the metal, and
 discrete iron-rich magnetite crystals forming a porous outer layer, with
@@ -495,7 +494,7 @@ rows.
 
 \begin{table}[htbp]
 \centering
-\caption{Layer-thickness data of Veile et al.~\citep{veile2024} (their
+\caption{Layer-thickness data of \citet{veile2024} (their
 Fig.~9) used in this work: mean $\pm$ population standard deviation
 over $n$ EDX line scans. The fits use standard errors
 $\sigma = \mathrm{SD}/\sqrt{n}$. The Ni enrichment zone is not a
@@ -1374,8 +1373,7 @@ to the stabilized grade.
 Converting the identified field exponent with
 $b_3 = -\alpha_3\chi\gamma\varepsilon_f$ requires the growth-reaction
 transfer coefficient, which single-temperature thickness data cannot
-supply. At the reference value $\alpha_3 = 0.12$ fit by Li et
-al.~\citep{li2020scwpdm} for a ferritic steel in supercritical water,
+supply. At the reference value $\alpha_3 = 0.12$ fit by \citet{li2020scwpdm} for a ferritic steel in supercritical water,
 $\varepsilon_f = 1.7\times10^4$~V/cm; over the physically defensible
 range $\alpha_3 \in [0.1, 0.5]$ the derived field spans
 $4.1\times10^3$ to $2.1\times10^4$~V/cm. The implied potential drop
@@ -1658,7 +1656,7 @@ The author declares that they have no known competing financial interests
 or personal relationships that could have appeared to influence the work
 reported in this paper.
 
-\bibliographystyle{unsrtnat}
+\bibliographystyle{cas-model2-names}
 \bibliography{references}
 
 \end{document}

@@ -56,6 +56,28 @@ sensitivity. A discussion and conclusions follow."""
 assert NPJ_ROADMAP in intro, "roadmap sentence moved; update this replacement"
 intro = intro.replace(NPJ_ROADMAP, CAS_ROADMAP, 1)
 
+# --- author-year citations -------------------------------------------------
+# The npj version cites numerically, where "Li et al.~[18]" reads correctly.
+# Under cas-model2-names (name-date) the same markup renders "Li et al. (Li
+# et al., 2020)", so the narrative forms become \citet.  The rest of the
+# \citep calls are parenthetical and read correctly either way.
+def narrative_citations(t):
+    # "Chao, Lin, and Macdonald" is a plain name list, not an "et al." form:
+    # keep the names and make the citation parenthetical-with-year instead.
+    t = t.replace("Macdonald~\\citep{", "Macdonald~\\citeyearpar{")
+    # "et al." is broken across lines in several places, so normalise the
+    # newline first rather than listing every wrapped variant.
+    for name in ("Li", "Veile"):
+        t = t.replace(f"{name} et\nal.~\\citep{{", f"\\citet{{")
+        t = t.replace(f"{name} et al.~\\citep{{", f"\\citet{{")
+    return t
+
+intro       = narrative_citations(intro)
+results     = narrative_citations(results)
+discussion  = narrative_citations(discussion)
+conclusions = narrative_citations(conclusions)
+methods     = narrative_citations(methods)
+
 # --- Methods: retitle for its new position as section 2 -------------------
 methods = methods.replace(
     "\\section{Methods}\\label{sec:methods}",
@@ -91,9 +113,10 @@ PREAMBLE = r"""%% Corrosion Science (Elsevier) -- CAS single-column template (ca
 %% and no float needs promoting to a starred environment.
 \documentclass[a4paper,fleqn]{cas-sc}
 
-%% Corrosion Science numbers its references.  The CAS bundle ships only an
-%% author-year .bst (cas-model2-names), so the numbered style comes from natbib.
-\usepackage[numbers,sort&compress]{natbib}
+%% cas-model2-names is the CAS bundle's name-date style, so natbib runs in
+%% authoryear mode.  Note this makes the references author-year rather than
+%% numbered; Elsevier restyles at production and accepts either at submission.
+\usepackage[authoryear,longnamesfirst]{natbib}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{graphicx}
 \usepackage{booktabs}
@@ -164,7 +187,7 @@ C. High temperature corrosion
 """
 
 TAIL = r"""
-\bibliographystyle{unsrtnat}
+\bibliographystyle{cas-model2-names}
 \bibliography{references}
 
 \end{document}

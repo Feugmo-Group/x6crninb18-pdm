@@ -141,7 +141,15 @@ generator is what keeps it that way.
 
 `paper-corrosion-science/main-cas.tex` is generated from `main-snjnl.tex` by reordering
 sections and reformatting; if you edit the science, edit `main-snjnl.tex` and regenerate
-rather than editing both.
+rather than editing both. The generator also converts the narrative citations
+("Li et al.~\citep{...}") to `\citet`, which the numbered npj style does not need but the
+name-date CAS style does, or they would render "Li et al. (Li et al., 2020)".
+
+Check the two agree afterwards:
+
+```bash
+python scripts/check_versions_agree.py    # numeric tokens in both bodies must match
+```
 
 ---
 
@@ -165,7 +173,7 @@ paper/            npj Materials Degradation version: manuscript, SI, cover lette
                   shared figures/ and references.bib, built PDFs in pdf/
 paper-corrosion-science/
                   Corrosion Science version: main-cas.tex (generated), highlights,
-                  cover letter, SI wrapper, Elsevier CAS single-column class files
+                  cover letter, SI wrapper, Elsevier CAS single-column class + cas-model2-names.bst
 docs/             pdm_eqns.md (full derivation), IMPL_REPORT.md (validation record),
                   REPRODUCE.md (artefact -> command map, generated)
 docs/internal/    planning and drafting notes, kept for provenance
@@ -193,7 +201,8 @@ typo is documented in the manuscript; the true times are 72/168/480 h.
 Apache-2.0 (`LICENSE`). The publisher class and style files are **not** covered by it —
 they are distributed by their own authors under the LaTeX Project Public License 1.3c:
 `paper/sn-jnl.cls` and `paper/sn-nature.bst` (Springer Nature), and
-`paper-corrosion-science/cas-sc.cls` and `cas-common.sty` (Elsevier CAS bundle).
+`paper-corrosion-science/cas-sc.cls`, `cas-common.sty` and `cas-model2-names.bst`
+(Elsevier CAS bundle).
 
 ---
 
