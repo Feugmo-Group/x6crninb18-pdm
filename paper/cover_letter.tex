@@ -1,0 +1,88 @@
+\documentclass[11pt]{letter}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+
+\signature{Conrard Giresse Tetsassi Feugmo}
+\address{Department of Chemistry and \\ Department of Physics \& Astronomy \\
+University of Waterloo \\ Waterloo, ON, Canada \\
+\texttt{giresse.feugmo@gmail.com}}
+
+\begin{document}
+\setlength{\parskip}{0.4ex}
+
+\begin{letter}{The Editors \\ \textit{npj Materials Degradation} \\ Nature Portfolio}
+
+\opening{Dear Editors,}
+
+We are pleased to submit our manuscript, \textbf{``Sparse data limit
+what a corrosion model can predict,''} for consideration as an Article
+in \textit{npj Materials Degradation}.
+
+Mechanistic corrosion models are routinely fitted with four to six
+parameters to a handful of measurements and then extrapolated across
+service lifetimes. Whether those parameters are determined by the data is
+almost never tested, and our central result is that, for a
+representative case, several of them are not---with consequences large
+enough to change a lifetime assessment. We establish this for the duplex
+oxide grown on Nb-stabilized AISI~347 (X6CrNiNb18-10) in simulated
+boiling-water-reactor hydrothermal water (240\,$^\circ$C, 7\,MPa,
+0.4\,ppm dissolved O$_2$), using a differentiable, physics-informed
+inversion of the point defect model (PDM). We believe it is well suited
+to \textit{npj Materials Degradation}:
+
+\begin{itemize}
+\item \textbf{The first identifiability characterization of a PDM fit.}
+Profile likelihood, a 1000-member bootstrap, a prior-leverage test and a
+residual-leverage decomposition are built into the inversion rather than
+added afterward. They show that of the five parameters of the accepted
+model, three exposure times leave one undetermined and pin a second only
+to within an order of magnitude, and that 95\% of the fit statistic is
+carried by three chromium points---80\% by a single measurement. These tools are mature in
+adjacent fields but, to our knowledge, have not been brought to the PDM;
+the diagnosis transfers to any sparsely sampled degradation model.
+
+\item \textbf{Consequences large enough to matter.} The identified
+kinetics fit the calibration data as well as an empirical power law but
+extrapolate very differently: at ten years the power law predicts a
+3.5-to-6.3-fold thicker barrier layer than the mechanistic 535\,nm
+(bootstrap 95\% interval 447--704\,nm), a prediction varying
+1.19-to-1.56-fold across the scanned operating envelope and
+activation-energy range. A designed exposure beyond roughly 3000\,hours
+would discriminate the two---an actionable recommendation for lifetime
+assessment, and the reason the re-analysis is worth doing on data already
+in the literature.
+
+\item \textbf{A diagnosed and remedied failure mode.} We document a
+physics-informed inversion failure specific to sparse experimental
+data---the data loss satisfied while the governing equation is
+not---and remedy it with a forward-solve self-consistency check, a
+cautionary and constructive result for the growing use of
+physics-informed learning in this field.
+
+\item \textbf{A first mechanistic description for this alloy, honestly
+bounded.} Prior characterization of AISI~347 oxide in BWR water stopped
+at empirical per-element power-law fits with no shared physical parameter
+set; we connect the Cr-rich barrier and Fe-rich outer layers through a
+single kinetic description. We are explicit that the model structure is
+not itself Nb-specific, that the neural inversion is validated against an
+exact classical reference rather than required by the problem, and that
+the constant-field closure underlying the derived field strength does not
+survive a self-consistency test. We would rather state these bounds than
+have them inferred.
+\end{itemize}
+
+The manuscript is original, has not been published elsewhere, and is not
+under consideration by any other journal. The author declares no
+competing interests. Supporting code and data are available as described
+in the manuscript, and the work involves no human or animal subjects.
+Thank you for considering our submission.
+
+\closing{Sincerely,}
+
+\end{letter}
+
+\end{document}

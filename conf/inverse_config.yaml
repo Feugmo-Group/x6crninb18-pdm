@@ -1,0 +1,59 @@
+# Inverse HTW_PDM (NSEM): joint field + kinetic-parameter identification.
+# data.synthetic=true generates data from physics.* via the closed form + noise
+# (the recovery test); false fits the real Veile 2024 means.
+
+physics:            # synthetic ground truth AND initialization reference
+  A_bl: 0.7269
+  b3: -0.01249
+  C_bl: 0.0
+  PBR_eff: 1.096
+  C_x: 0.0
+  L0: 1.924
+  L_ol0: 115.6
+
+data:
+  synthetic: false
+  noise_rel: 0.10   # synthetic mode: relative noise on L at Veile-like SDs
+  csv: data/veile2024_fig9_means.csv
+
+inverse:
+  mode: hard        # hard = differentiable RK4 through the kinetics (exact physics,
+                    #        reference mode for the 0-D model)
+                    # soft = joint field+parameter PINN (needed for the spatial
+                    #        Tier-2 model; suffers ODE-slack leakage on 3-point data)
+  learn_Chat: false # C_bl stays 0 unless enabled (see IMPL_REPORT identifiability)
+  init_scale: 2.0   # multiplicative perturbation of the kinetic initialization
+  lambda_data: 100.0
+  lambda_prior: 1.0
+  lambda_phys: 1000.0   # fixed multiplier on the ODE residuals (see inverse_trainer.py)
+
+domain:
+  Nt: 24
+  alpha_t: 1.5
+  mapping_t: log
+  yf: 1.0
+
+model:
+  hidden_dim: 32
+  n_layers: 3
+  backbone: mlp
+  poly_degree: 4
+
+train:
+  seed: 0
+  dtype: float64
+  n_pretrain: 800
+  pretrain_lr: 1.0e-2
+  n_adam: 4000
+  adam_lr: 1.0e-3
+  n_lbfgs: 3
+  lbfgs_max_iter: 400
+  lbfgs_tol_grad: 1.0e-13
+  lbfgs_tol_change: 1.0e-15
+  lambda_ic: 10.0
+  grad_clip: 0
+
+output:
+  dir: outputs/inverse
+  checkpoint: htw_pdm_inv.mdlus
+  log_every: 400

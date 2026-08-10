@@ -1,0 +1,40 @@
+# Generated results. Everything under outputs/ is reproducible from the
+# commands in README.md; nothing here is an input.
+outputs/
+
+# Publisher PDFs of the source papers: kept locally for reference, not
+# redistributable. See README.md for DOIs (10.3390/ma17184500,
+# 10.1016/j.corsci.2019.108280).
+li2020point.pdf
+veile2024investigation.pdf
+*.pdf
+!paper/pdf/*.pdf
+!paper-corrosion-science/pdf/*.pdf
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.blg
+*.synctex.gz
+*.toc
+*.fdb_latexmk
+*.fls
+*.abs
+!paper/main-snjnl.bbl
+!paper-corrosion-science/main-cas.bbl
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.venv/
+venv/
+
+# Pre-edit snapshots
+*.bak
+*.prefix.bak

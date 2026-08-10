@@ -1,0 +1,311 @@
+# Point Defect Model identification for X6CrNiNb18-10 in BWR hydrothermal water
+
+Mechanistic identification of passive-film growth kinetics on Nb-stabilized AISI 347
+(X6CrNiNb18-10) in boiling-water-reactor hydrothermal water — 240 °C, 7 MPa, 0.4 ppm O₂ —
+fitted to published oxide depth profiles at 72, 168 and 480 h.
+
+A reduced Point Defect Model,
+
+```
+dL_bl/dt = A_bl·exp(b₃·L_bl) − C_bl          barrier (Cr-rich inner spinel)
+dL_ol/dt = PBR_eff·dL_bl/dt + C_x            outer (Fe-rich crystals)
+```
+
+is fitted two ways that must agree: a classical Levenberg–Marquardt solve, and a
+differentiable neural-spectral (NSEM) inversion that integrates the kinetics with an
+exact RK4 so the physics cannot be violated. They agree to within 0.55% on every
+parameter at identical χ² = 5.79.
+
+**Headline results.** The identified kinetics predict 535 nm of barrier layer after ten
+years, against 1853 nm from the empirical power law the source data were originally fitted
+with. Three exposure times leave one of the five parameters undetermined and a second only
+weakly determined — quantified by profile likelihood, a 1000-member parametric bootstrap
+and a prior-relaxation test, rather than asserted. A physics-informed inverse failure mode
+(F-1) is documented: soft joint field-and-parameter inversion satisfies the data loss while
+leaving the governing equation unsatisfied, and is caught by re-solving the recovered
+parameters through an exact forward solve.
+
+The manuscript exists in two venue versions, same science and same numbers:
+`paper/` targets *npj Materials Degradation* (Springer Nature `sn-jnl`, Methods at the
+back), and `paper-corrosion-science/` targets *Corrosion Science* (Elsevier `cas-dc`,
+Methods as section 2, plus the Highlights that venue requires). Built PDFs are in
+`paper/pdf/` and `paper-corrosion-science/pdf/`.
+
+---
+
+## Install
+
+```bash
+pip install -e .            # classical fits, mass balance, Wagner/Tier-3 solves
+pip install -e .[nsem,dev]  # + the neural inversions and the test suite
+```
+
+**PhysicsNeMo is a hard dependency of the neural parts and is not installable from PyPI in
+the form this work needs.** Nine modules import `physicsnemo.experimental.models.scen`
+(`DVRMapper`), `physicsnemo.optim` (`TwoPhaseOptimizer`, `build_aggregator`) and
+`physicsnemo.utils`. Install the fork this package was developed against before
+`pip install -e .[nsem]`. Everything under "classical" below runs without it.
+
+Paths are resolved once by `htw_pdm.paths`, which locates the project root by walking up to
+`pyproject.toml`. Set `HTW_PDM_ROOT` to override. Nothing depends on the working directory.
+
+---
+
+## Reproducing the manuscript
+
+Ordering matters in two places, noted inline. Timings are for a workstation CPU.
+
+### Classical — no PhysicsNeMo required
+
+```bash
+python -m htw_pdm.baseline_fit          # ~5 s   model ladder M1-M6, profile likelihood,
+                                        #        long-time predictions (535 nm)
+python -m htw_pdm.mass_balance          # ~1 s   stoichiometric PBR_eff range per phase
+python -m htw_pdm.pbr_closure           # ~10 s  the PBR_eff/mass-balance resolution
+                                        #        -> outputs/paper/pbr_closure.json
+
+python scripts/make_paper_stats.py      # ~1 min power-law refit, AIC/BIC, 1000-member
+                                        #        bootstrap, 10-y band
+                                        #        -> outputs/paper/referee_stats.json
+python scripts/make_referee_analyses.py # ~1 min MUST follow make_paper_stats.py, which
+                                        #        writes the ensemble R4 propagates.
+                                        #        R1 residual/chi2 leverage; R2 prior
+                                        #        relaxation; R3 activation-energy
+                                        #        envelope; R4 error budget
+python scripts/plot_results.py          # ~20 s  figs 3, 4, 6
+python scripts/plot_sensitivity_maps.py # ~30 s  fig 7
+python scripts/make_paper_figs.py       # ~20 s  figs 1, 2 + collects 3,4,6,7
+python scripts/make_paper_tables.py     # ~10 s  tables 1-4
+```
+
+### Spatial extension (Tiers 2–3)
+
+```bash
+python -m htw_pdm.tier2_identifiability   # ~1 min  T2-A synthetic-profile gate
+python -m htw_pdm.tier2_inverse           # ~4 min  T2-E Wagner-PDE nickel inverse
+python -m htw_pdm.tier2_composition       # ~10 s   T2-D zero-parameter composition map
+python -m htw_pdm.tier3_identifiability   # ~5 min  T3-A closure gate (both NO-GO)
+python -m htw_pdm.tier3_forward_envelope  # ~1 min  MUST follow tier2_inverse.py, whose
+                                          #         fit it reads from outputs/
+python scripts/make_paper_figs_tier2.py   # figs 8, 9, 10
+python scripts/make_paper_tables_tier2.py # tables 5-7
+python scripts/make_envelope_table.py     # table 8
+```
+
+### Neural inversions (needs PhysicsNeMo)
+
+```bash
+python -m htw_pdm.trainer                                  # forward NSEM, MLP and KAN
+python -m htw_pdm.inverse_trainer                          # ~2 min hard-mode, real data
+python -m htw_pdm.inverse_trainer data.synthetic=true \
+        data.noise_rel=0.02                                # synthetic recovery test
+python -m htw_pdm.inverse_trainer inverse.mode=soft        # the F-1 failure exhibit
+python -m htw_pdm.uncertainty_ensemble 50                  # ~11 min NSEM bootstrap
+python -m htw_pdm.parametric_trainer                       # joint (T, [O2]) inversion
+python scripts/make_paper_fig_nsem.py                      # NSEM workflow figure
+python scripts/make_paper_fig5.py                          # fig 5 (after make_paper_stats)
+```
+
+### Tests and the paper
+
+```bash
+python -m pytest tests/ -q     # 50 tests, ~30 s
+
+# npj Materials Degradation version
+cd paper && pdflatex main-snjnl && bibtex main-snjnl && pdflatex main-snjnl && pdflatex main-snjnl
+pdflatex supplementary && pdflatex cover_letter
+
+# Corrosion Science version
+cd paper-corrosion-science
+pdflatex main-cas && bibtex main-cas && pdflatex main-cas && pdflatex main-cas
+pdflatex supplementary && pdflatex highlights && pdflatex cover_letter
+```
+npj: main 32 pp, SI 17 pp, cover letter 2 pp. Corrosion Science: main 21 pp (two-column),
+SI 17 pp, highlights 1 pp, cover letter 2 pp. All build with 0 errors and 0 undefined
+references.
+
+Both versions share one bibliography (`paper/references.bib`, symlinked into
+`paper-corrosion-science/`), one figure set (`paper/figures/`, likewise symlinked), and one
+supplementary body (`paper/supplementary-body.tex`, `\input` by a thin per-venue wrapper
+that supplies only the title). That is the same one-source-of-truth rule applied to
+fitted values below: **nothing scientific is duplicated between the two versions**, so a
+correction cannot land in one and go stale in the other. A numeric-token diff of the two
+main files is identical.
+
+`paper-corrosion-science/main-cas.tex` is generated from `main-snjnl.tex` by reordering
+sections and reformatting; if you edit the science, edit `main-snjnl.tex` and regenerate
+rather than editing both.
+
+---
+
+## Layout
+
+```
+src/htw_pdm/      the model, fits, tiers and inversions (importable package)
+  paths.py          every directory, resolved once
+  baseline_ode.py   closed-form solutions of the two-layer ODE system
+  baseline_fit.py   the model ladder M1-M6 and profile likelihood
+  mass_balance.py   stoichiometric PBR_eff from molar volumes
+  pbr_closure.py    the PBR_eff/mass-balance resolution
+  physics.py        the accepted M4 parameter set (read by Tiers 2-4)
+  inverse_trainer.py, trainer.py       NSEM forward and inverse
+  tier2_*.py, tier3_*.py, tier4_*.py   spatial extension and closure gates
+scripts/          figure and table generators for the manuscript
+conf/             Hydra configs for the five neural entry points
+data/             digitized layer thicknesses (means, per-scan)
+tests/            50 tests
+paper/            npj Materials Degradation version: manuscript, SI, cover letter,
+                  shared figures/ and references.bib, built PDFs in pdf/
+paper-corrosion-science/
+                  Corrosion Science version: main-cas.tex (generated), highlights,
+                  cover letter, SI wrapper, Elsevier CAS class files
+docs/             pdm_eqns.md (full derivation), IMPL_REPORT.md (validation record)
+docs/internal/    planning and drafting notes, kept for provenance
+outputs/          generated; git-ignored; nothing here is an input
+```
+
+## Data provenance
+
+The layer-thickness data are digitized from the open-access source paper (DOI
+[10.3390/ma17184500](https://doi.org/10.3390/ma17184500), CC-BY). The model formulation is
+adapted from the supercritical-water point defect model of DOI
+[10.1016/j.corsci.2019.108280](https://doi.org/10.1016/j.corsci.2019.108280). Publisher
+PDFs are deliberately **not** redistributed here; they are git-ignored if present locally.
+
+Both the digitized means/SDs/scan-counts in `data/veile2024_fig9_means.csv` and the
+power-law coefficients quoted throughout the manuscript were independently verified against
+the raw text of the source paper (via `pdftotext -layout`, not the pipeline that produced
+the CSVs) on 2026-07-13: all 9 mean/SD pairs and both power-law fits (Cr k = 6.521,
+n = 0.4964; Fe k = 64.51, n = 0.2209) match exactly. The source paper's "78 h" exposure-time
+typo is documented in the manuscript; the true times are 72/168/480 h.
+
+## Licence
+
+Apache-2.0 (`LICENSE`). The publisher class and style files are **not** covered by it —
+they are distributed by their own authors under the LaTeX Project Public License 1.3c:
+`paper/sn-jnl.cls` and `paper/sn-nature.bst` (Springer Nature), and
+`paper-corrosion-science/cas-dc.cls`, `cas-sc.cls`, `cas-common.sty`,
+`cas-model2-names.bst` (Elsevier).
+
+---
+
+## Two things worth knowing before changing anything
+
+### The layer coupling is one-way
+
+`L_bl_closed` never reads `PBR_eff` (`src/htw_pdm/baseline_ode.py`). Every barrier-layer
+result — the identified kinetics, the field strength, the 535 nm ten-year prediction — is
+therefore immune to anything that happens to `PBR_eff`, `C_x` or `L_ol,0`. This is
+structural, not empirical, and it is why the analyses below could be revised without
+touching a headline number.
+
+### Fitted values must live in exactly one place
+
+A fitted quantity had been copied into several files, and every copy went stale silently.
+This cost a full day and is the single most useful thing in this README:
+
+- The `PBR_eff` prior was hardcoded three times — `baseline_fit.PRIORS`,
+  `inverse_trainer`, and `uncertainty_ensemble.fit_one`. The second is the dangerous one:
+  had it been missed, the neural inversion and the classical fitter would have been
+  minimizing different objectives, and the "they agree to within 0.6%" claim would have
+  been meaningless while still appearing to hold.
+- The M4 parameter set was copied into six places — `physics.Parameters` defaults,
+  `uncertainty_ensemble.P_REF`, and four `conf/*.yaml`.
+- The Tier-2 fit was copied into `tier3_forward_envelope.BASE`, commented "frozen, never
+  re-opened". It was frozen at kinetics that no longer existed anywhere in the tree. It now
+  reads `outputs/tier2_inverse_fit.json` and raises if that file is absent.
+- Output directories were computed three different ways, so moving a file changed where its
+  results landed. They now come from `htw_pdm.paths`.
+
+**The rule:** a derived number is written by the code that derives it and read from that
+output by everything else. Where a default must be inlined (`physics.Parameters`), its
+docstring names the downstream tiers that consume it, so it cannot be changed without
+seeing what it invalidates.
+
+The same lesson applies to test tolerances. `tests/test_tier3.py` asserted a regression
+limit against a hardcoded `5e-8` that was really just the integrator's noise floor at the
+kinetics of the day; it failed the moment `PBR_eff` moved, for reasons unrelated to what it
+was testing. Tolerances now derive from `tier3_wagner.SOLVE_RTOL`/`SOLVE_ATOL`.
+
+---
+
+## Two results that changed under scrutiny
+
+### The PBR_eff prior was removed (2026-08-07)
+
+Earlier revisions placed a Gaussian log-space prior on `PBR_eff` centred on 1.05 and
+described that centre as the stoichiometric value. It is not: the constant-volume closure
+yielding 1.05 requires the barrier layer to draw ~30 at% Cr from an 18.8 at% alloy. The
+prior was removed and `PBR_eff` is now fit freely.
+
+- **Unchanged**: every barrier-layer result (one-way coupling). A_bl, b₃ and L₀ move by
+  <0.05%, χ²_data stays 5.79, L_bl(10 y) stays 535 nm (bootstrap 95% [447, 704] against
+  [445, 705] before). Tier 2 spatial, Tier 4, the operating envelope and the power-law
+  comparison are untouched.
+- **Changed**: PBR_eff 1.051 → 1.096; L_ol,0 118.7 → 115.6 nm; the model ladder (M1 χ²
+  11.49 → 7.15, and M3 now escapes to a degenerate ridge at A_bl = 956 nm/h, b₃ = −4.4e−6,
+  χ² = 4.11 — lowest in the ladder, rejected on physics); and the bootstrap spreads of
+  PBR_eff (0.034 → 0.93) and L_ol,0 (43 → 75).
+
+That last one is the clearest demonstration in the study of what a prior was doing. With
+the prior, PBR_eff's bootstrap spread was 60× narrower than its profile interval, because
+the bootstrap perturbs only the data and every resample collapsed onto the prior. Without
+it, the spread now *matches* the profile interval. The narrow spread was never data; it was
+the prior reported as a measurement. `L0` keeps its prior and still shows that signature —
+it is now the only prior-set parameter.
+
+### The 1.096-vs-2.09 gap, and why there isn't one
+
+Removing the prior left PBR_eff at 1.096 against a chromium mass balance of 2.09, written
+up as an open result. It is not one, for two independent reasons — run
+`python -m htw_pdm.mass_balance` and `python -m htw_pdm.pbr_closure`:
+
+1. **2.09 is not a bound.** It assumes an FeCr₂O₄ barrier. The same balance through the
+   other chromium-rich spinels the photoelectron spectroscopy admits gives 2.05 (FeCr₂O₄),
+   2.50 (NiCr₂O₄), 3.64 (Cr₂O₃) and 0.52 (Fe₂CrO₄) — an admissible range of [0.52, 3.79],
+   which contains 1.096.
+2. **It is not the same quantity.** A mass balance fixes the rate at which the barrier
+   *produces* outer-layer oxide. M4 pins C_x = 0, so its PBR_eff measures net
+   *accumulation*; the two differ by whatever oxide is lost to the coolant. Freeing C_x
+   (variant M6) and imposing 2.05 moves χ² from 5.792 to 5.671 — it *improves* — at
+   C_x = −0.24 nm/h, about 9 µg Fe/(dm²·h) of release. That release rate is the resolution's
+   one falsifiable prediction.
+
+Profiling PBR_eff from 0.5 to 8 in the C_x-free family moves χ² by 0.89 in total, so the
+Δχ² = 1 interval is the whole scanned range. The cause is structural: with L_bl(t) fixed,
+`L_ol(t) = L_ol,0 + PBR_eff·(L_bl − L₀) + C_x·t` has three parameters against exactly three
+outer-layer observations. Three exposure times cannot separate production from loss.
+
+M4 remains the accepted model; M6 exists only to demonstrate the degeneracy and is kept out
+of the ladder table.
+
+A naming trap: `tier2_composition.PBR_BL = 2.05` is the barrier's *classical*
+Pilling–Bedworth ratio (oxide volume per unit metal volume consumed), a different quantity
+from `PBR_eff` that is coincidentally almost equal for this phase pair. `mass_balance.py`
+computes both, plus the metal-recession ratio, so they cannot be conflated silently.
+
+---
+
+## Tier 4 — where the neural solver is actually required
+
+Tiers 1–3 all have exact classical references (closed form, analytic steady solution, Radau
+integration), which is what makes them a validation of the inversion framework rather than a
+use of it. Tier 4 addresses the three places where that stops being true. It is exploratory
+and is **not cited in the manuscript**.
+
+```bash
+python -m htw_pdm.tier4_pnp_solve         # T4-A self-consistent Poisson-Nernst-Planck:
+                                          #   is the PDM's constant-field closure valid?
+python -m htw_pdm.tier4_transient_inverse # T4-B joint moving-boundary inverse, with an
+                                          #   F-1 self-consistency check and a classical
+                                          #   nested-loop control
+python -m htw_pdm.tier4_ni_closure        # T4-C nickel-zone mobility as a learned
+                                          #   function of unknown form
+python -m pytest tests/test_tier4.py -q   # reduction-limit regression tests
+```
+
+Each carries an acceptance check that is a reduction limit onto an already-verified result:
+T4-A must reproduce the Tier-2 analytic steady solution with the space charge switched off;
+T4-B's classical Crank–Nicolson stepper must satisfy the Tier-2 transient residuals to
+machine precision; T4-C's differentiable Wagner solver must reproduce the Tier-3
+scipy/Radau widths.

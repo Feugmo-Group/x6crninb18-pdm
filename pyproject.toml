@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "htw-pdm"
+version = "1.0.0"
+description = "Point Defect Model identification of oxide growth on X6CrNiNb18-10 (AISI 347) in boiling-water-reactor hydrothermal water"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Conrard Giresse Tetsassi Feugmo" }]
+keywords = ["corrosion", "point defect model", "physics-informed", "identifiability",
+            "stainless steel", "hydrothermal water"]
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+
+# The classical fits, the mass balance and the Wagner/Tier-3 solves need only
+# these. The neural (NSEM) inversions additionally need PhysicsNeMo -- see the
+# `nsem` extra below and the note in README.md.
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "matplotlib>=3.7",
+]
+
+[project.optional-dependencies]
+# PhysicsNeMo is not on PyPI in the form this work needs: the NSEM solver uses
+# `physicsnemo.experimental.models.scen` (DVRMapper), `physicsnemo.optim`
+# (TwoPhaseOptimizer, build_aggregator) and `physicsnemo.utils`. Install the
+# fork this package was developed against, then `pip install -e .[nsem]`.
+nsem = [
+    "torch>=2.1",
+    "hydra-core>=1.3",
+    "omegaconf>=2.3",
+]
+dev = [
+    "pytest>=7.4",
+]
+
+[project.urls]
+Repository = "https://github.com/Feugmo-Group/x6crninb18-pdm"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = [
+    "ignore::UserWarning",
+]

@@ -1,0 +1,43 @@
+# Forward transient HTW_PDM (NSEM) - X6CrNiNb18-10 in BWR HTW, 240 C / 7 MPa.
+# Kinetic parameters default to the Phase-B3 deterministic fit (M4); override any
+# of them on the CLI, e.g.  python src/trainer.py physics.A_bl=1.0
+
+physics:
+  A_bl: 0.7269      # nm/h
+  b3: -0.01249      # 1/nm
+  C_bl: 0.0         # nm/h
+  PBR_eff: 1.096
+  C_x: 0.0          # nm/h
+  L0: 1.924         # nm
+  L_ol0: 115.6      # nm
+
+domain:
+  Nt: 24            # GLL time nodes
+  alpha_t: 1.5      # log compression ratio - clusters nodes near tau = 0
+  mapping_t: log
+  yf: 1.0           # nondimensional time horizon (tau = t / 480 h)
+
+model:
+  hidden_dim: 32
+  n_layers: 3
+  backbone: mlp     # mlp | kan
+  poly_degree: 4
+
+train:
+  seed: 0
+  dtype: float64
+  n_pretrain: 800
+  pretrain_lr: 1.0e-2
+  n_adam: 2000
+  adam_lr: 1.0e-3
+  n_lbfgs: 3
+  lbfgs_max_iter: 400
+  lbfgs_tol_grad: 1.0e-13
+  lbfgs_tol_change: 1.0e-15
+  lambda_ic: 10.0
+  grad_clip: 0
+
+output:
+  dir: outputs/forward
+  checkpoint: htw_pdm.mdlus
+  log_every: 200

@@ -1,0 +1,48 @@
+# Parametric HTW_PDM (NSEM) over the (T, [O2]) operating box - Phase E2.
+# Anchored at the M4 fit (physics.* below); conditions.dG0_R is the explicit
+# Arrhenius scan assumption (J/mol) - NOT identifiable from the Veile data.
+
+physics:
+  A_bl: 0.7269      # nm/h (M4)
+  b3: -0.01249      # 1/nm
+  C_bl: 0.0         # nm/h
+  PBR_eff: 1.096
+  C_x: 0.0          # nm/h
+  L0: 1.924         # nm
+  L_ol0: 115.6      # nm
+
+conditions:
+  n: 9              # Sobol conditions incl. the prepended reference (240 C, 0.4 ppm)
+  dG0_R: 50.0e3     # J/mol - Li's representative sensitivity scale; scan {25, 50, 100}e3
+  ecp_channel: true # ideal-Nernst ECP shift of A_bl with [O2]
+  C_bl_ref: 0.0     # nm/h at reference; > 0 enables the dissolution scenario
+
+domain:
+  Nt: 24
+  alpha_t: 1.5
+  mapping_t: log
+  yf: 1.0
+
+model:
+  hidden_dim: 32
+  n_layers: 3
+  backbone: mlp
+  poly_degree: 4
+
+train:
+  seed: 0
+  dtype: float64
+  n_pretrain: 800
+  pretrain_lr: 1.0e-2
+  n_adam: 5000       # joint 27-term BRDR needs a longer schedule than the
+  adam_lr: 1.0e-3    # single-condition forward run (2000/3/400 lands at ~1e-2)
+  n_lbfgs: 5
+  lbfgs_max_iter: 600
+  lbfgs_tol_grad: 1.0e-13
+  lbfgs_tol_change: 1.0e-15
+  lambda_ic: 10.0
+  grad_clip: 0
+
+output:
+  dir: outputs/parametric
+  log_every: 200

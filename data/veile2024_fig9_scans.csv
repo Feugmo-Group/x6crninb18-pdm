@@ -1,0 +1,35 @@
+# Individual EDX-scan layer thicknesses. source:
+#   text          = value quoted in the paper body/figure captions (exact)
+#   figure_readoff = read off the Fig. 9 scatter (approximate; consistent with stated means where possible)
+# The means file is authoritative; use these only for scan-level (Veile-style) least-squares fits.
+t_h,element,L_nm,source
+72,Cr,30,figure_readoff
+72,Cr,34,figure_readoff
+72,Cr,48,figure_readoff
+168,Cr,67,figure_readoff
+168,Cr,95,figure_readoff
+168,Cr,108,figure_readoff
+168,Cr,123,figure_readoff
+480,Cr,127,figure_readoff
+480,Cr,136,figure_readoff
+480,Cr,140,figure_readoff
+72,Fe,30,figure_readoff
+72,Fe,125,figure_readoff
+72,Fe,275,figure_readoff
+168,Fe,90,figure_readoff
+168,Fe,155,figure_readoff
+168,Fe,220,figure_readoff
+168,Fe,385,figure_readoff
+480,Fe,110,figure_readoff
+480,Fe,150,figure_readoff
+480,Fe,480,figure_readoff
+72,Ni,27,figure_readoff
+72,Ni,32,figure_readoff
+72,Ni,35,figure_readoff
+168,Ni,53,text
+168,Ni,55,text
+168,Ni,31,text
+168,Ni,33,text
+480,Ni,39,text
+480,Ni,40,text
+480,Ni,29,text

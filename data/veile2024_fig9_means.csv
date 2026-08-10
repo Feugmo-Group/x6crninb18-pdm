@@ -1,0 +1,16 @@
+# Veile et al. 2024, Materials 17, 4500 - Fig. 9 / text, element layer thickness on X6CrNiNb18-10
+# in simulated BWR HTW (240 C, 7 MPa, 0.4 ppm O2). Means +- population SD over EDX line scans.
+# Times are the actual exposure durations (72/168/480 h; the paper's "78 h" is a typo).
+# element: Cr = primary/inner protective layer (PDM barrier layer)
+#          Fe = secondary/outer crystal layer (PDM outer layer)
+#          Ni = interfacial enrichment zone (not a PDM layer; ~constant)
+t_h,element,mean_nm,sd_nm,n_scans
+72,Cr,37.33,7.71,3
+168,Cr,98.25,21.65,4
+480,Cr,134.3,5.43,3
+72,Fe,143.3,111.5,3
+168,Fe,225.5,142.7,4
+480,Fe,240.3,172.5,3
+72,Ni,31.33,3.4,3
+168,Ni,43.0,11.1,4
+480,Ni,36.0,4.97,3
