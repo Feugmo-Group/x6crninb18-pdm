@@ -207,6 +207,23 @@ doc = "\n".join([
     TAIL,
 ])
 
-out = ROOT / "paper-corrosion-science" / "main-cas.tex"
+DEST = ROOT / "paper-corrosion-science"
+
+# The Corrosion Science folder holds REAL files, not symlinks into paper/, so a
+# reviewer can be handed the directory as-is.  That duplication is only safe if
+# something refreshes it: these three are copied from paper/ on every run, so
+# paper/ stays the single place the science is edited and the copies cannot
+# drift the way a hand-maintained second manuscript would.
+import shutil
+shutil.copy(P / "references.bib", DEST / "references.bib")
+shutil.copy(P / "supplementary-body.tex", DEST / "supplementary-body.tex")
+(DEST / "figures").mkdir(exist_ok=True)
+n_fig = 0
+for fig in sorted((P / "figures").glob("*.png")):
+    shutil.copy(fig, DEST / "figures" / fig.name)
+    n_fig += 1
+print(f"refreshed: references.bib, supplementary-body.tex, {n_fig} figures")
+
+out = DEST / "main-cas.tex"
 out.write_text(doc)
 print("wrote", out, len(doc.split(chr(10))), "lines")

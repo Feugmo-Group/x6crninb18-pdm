@@ -15,7 +15,7 @@ li2020point.pdf
 veile2024investigation.pdf
 *.pdf
 !paper/pdf/*.pdf
-!paper-corrosion-science/pdf/*.pdf
+!paper-corrosion-science/*.pdf
 
 # LaTeX build artifacts
 *.aux

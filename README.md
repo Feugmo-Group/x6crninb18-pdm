@@ -28,8 +28,8 @@ parameters through an exact forward solve.
 The manuscript exists in two venue versions, same science and same numbers:
 `paper/` targets *npj Materials Degradation* (Springer Nature `sn-jnl`, Methods at the
 back), and `paper-corrosion-science/` targets *Corrosion Science* (Elsevier `cas-sc`,
-Methods as section 2, plus the Highlights that venue requires). Built PDFs are in
-`paper/pdf/` and `paper-corrosion-science/pdf/`.
+Methods as section 2, plus the Highlights that venue requires). Built PDFs are in `paper/pdf/`
+and, for Corrosion Science, beside their sources in `paper-corrosion-science/`.
 
 ---
 
@@ -128,13 +128,16 @@ npj: main 32 pp, SI 17 pp, cover letter 2 pp. Corrosion Science: main 24 pp (cas
 SI 17 pp, highlights 1 pp, cover letter 2 pp. All build with 0 errors and 0 undefined
 references.
 
-Both versions share one bibliography (`paper/references.bib`, symlinked into
-`paper-corrosion-science/`), one figure set (`paper/figures/`, likewise symlinked), and one
-supplementary body (`paper/supplementary-body.tex`, `\input` by a thin per-venue wrapper
-that supplies only the title). That is the same one-source-of-truth rule applied to
-fitted values below: **nothing scientific is duplicated between the two versions**, so a
-correction cannot land in one and go stale in the other. A numeric-token diff of the two
-main files is identical.
+`paper-corrosion-science/` is **self-contained**: real files throughout, no symlinks, and
+the built PDFs sit beside their sources, so the directory can be handed to a co-author or
+uploaded to Elsevier as-is.
+
+That means the bibliography, the figures and the supplementary body exist in two places,
+which is only safe because nothing keeps them in sync by hand:
+`scripts/make_corrosion_science_version.py` re-copies all three from `paper/` every time it
+runs, alongside regenerating `main-cas.tex`. **`paper/` remains the single place the science
+is edited.** A numeric-token diff of the two main files is identical, and re-running the
+generator is what keeps it that way.
 
 `paper-corrosion-science/main-cas.tex` is generated from `main-snjnl.tex` by reordering
 sections and reformatting; if you edit the science, edit `main-snjnl.tex` and regenerate
