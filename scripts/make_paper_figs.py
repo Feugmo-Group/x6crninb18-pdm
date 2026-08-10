@@ -36,7 +36,7 @@ from htw_pdm.baseline_ode import (  # noqa: E402
     solve_forward,
 )
 
-from htw_pdm.paths import PAPER_OUT as OUT  # noqa: E402
+from htw_pdm.paths import OUTPUTS, PAPER_OUT as OUT  # noqa: E402
 OUT.mkdir(parents=True, exist_ok=True)
 
 plt.rcParams.update({
@@ -174,16 +174,23 @@ print(f"  demo parity max: bl {err_bl.max():.2e} nm, ol {err_ol.max():.2e} nm")
 import shutil  # noqa: E402
 
 COPIES = {
-    "fig3_fits_vs_data.png": "outputs/plot_fits_vs_data.png",
-    "fig4_profile_likelihood.png": "outputs/plot_profile_likelihood.png",
+    "fig3_fits_vs_data.png": "plot_fits_vs_data.png",
+    "fig4_profile_likelihood.png": "plot_profile_likelihood.png",
     # fig5 is generated directly by make_paper_fig5.py (1000-member bootstrap)
-    "fig6_long_time.png": "outputs/plot_long_time.png",
-    "fig7_sensitivity_maps.png": "outputs/plot_sensitivity_maps.png",
+    "fig6_long_time.png": "plot_long_time.png",
+    "fig7_sensitivity_maps.png": "plot_sensitivity_maps.png",
 }
+# These sources are resolved against OUTPUTS, not against this file's directory.
+# The previous form, Path(__file__).parent / "outputs/...", pointed at
+# scripts/outputs/... -- a path that never exists -- and because the copy was
+# guarded by `if s.exists()` it silently did nothing, leaving figs 3, 4, 6 and 7
+# in outputs/paper/ frozen at whatever run last wrote them.  A missing source is
+# now a hard error: the figure is stale either way, and saying so is the point.
+missing = [src for src in COPIES.values() if not (OUTPUTS / src).exists()]
+if missing:
+    raise SystemExit(
+        "missing plot outputs: " + ", ".join(missing)
+        + "\nrun scripts/plot_results.py and scripts/plot_sensitivity_maps.py first")
 for dst, src in COPIES.items():
-    s = Path(__file__).parent / src
-    if s.exists():
-        shutil.copy(s, OUT / dst)
-        print(f"Copied: {src} -> outputs/paper/{dst}")
-    else:
-        print(f"MISSING: {src} (run its plot script first)")
+    shutil.copy(OUTPUTS / src, OUT / dst)
+    print(f"Copied: outputs/{src} -> outputs/paper/{dst}")

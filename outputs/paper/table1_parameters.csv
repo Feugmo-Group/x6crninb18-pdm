@@ -1,0 +1,8 @@
+param,unit,m4_fit,profile_1sig_lo,profile_1sig_hi,profile_max_dchi2,identifiability,boot_mean,boot_std,boot_p16,boot_p84
+A_bl,nm/h,0.72686,0.6256,0.8445,50.0,identifiable,0.73481,0.1216,0.61651,0.85679
+b3,1/nm,-0.012487,-0.01451,-0.01075,129.6,identifiable,-0.012432,0.002024,-0.014513,-0.01048
+PBR_eff,-,1.0962,0.2446,2.321,19.5,weakly identifiable,1.1693,0.9306,5.1686e-09,2.1893
+L0,nm,1.9237,0.4292,8.201,1.0,unidentifiable (prior-set),1.9225,0.03577,1.8858,1.9578
+L_ol0,nm,115.58,25.79,210.6,58.2,identifiable,110.48,74.73,17.491,194.15
+eps_f,V/cm,1.73e+04,,,,"derived (alpha3 = 0.12, chi = 8/3)",,,,
+chi2/dof,-,5.79/1,,,,power law: 20.10/2,,,,

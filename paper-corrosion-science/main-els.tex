@@ -1,38 +1,40 @@
-%% Corrosion Science (Elsevier) -- CAS double-column template
+%% Corrosion Science (Elsevier) -- elsarticle template
 %% Companion version of the npj Materials Degradation submission
 %% (paper/main-snjnl.tex).  Same science, same numbers; restructured to the
 %% Elsevier order (Methods as section 2 rather than at the back) and
-%% reformatted from sn-jnl to cas-dc.
-\documentclass[a4paper,fleqn]{cas-dc}
+%% reformatted from sn-jnl to elsarticle.
+%%
+%% preprint,12pt is the single-column submission format Elsevier asks for;
+%% the journal typesets two columns itself at production.  Because it is one
+%% column, the figures keep their \textwidth sizing unchanged from the npj
+%% version and no float needs promoting.
+\documentclass[preprint,12pt]{elsarticle}
 
-\usepackage[numbers,sort&compress]{natbib}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{multirow}
 
+%% Long unbreakable tokens (X6CrNiNb18-10) overrun the 12pt single-column
+%% measure; let TeX stretch a little rather than leave an overfull line.
+\emergencystretch=1em
+
 \graphicspath{{figures/}}
+
+\journal{Corrosion Science}
 
 \begin{document}
 
-\let\WriteBookmarks\relax
-\def\floatpagepagefraction{1}
-\def\textpagefraction{.001}
+\begin{frontmatter}
 
-\shorttitle{Identifiability of a point defect model for AISI 347}
-\shortauthors{C. G. Tetsassi Feugmo}
+\title{Identifiability of a point defect model for oxide growth on AISI~347}
 
-\title[mode=title]{Identifiability of a point defect model for oxide growth on AISI~347}
-
-\author[1]{Conrard Giresse Tetsassi Feugmo}[orcid=0000-0002-8992-4335]
-\cormark[1]
+\author[uw]{Conrard Giresse Tetsassi Feugmo}
 \ead{giresse.feugmo@gmail.com}
 
-\address[1]{Department of Chemistry and Department of Physics \& Astronomy,
-            University of Waterloo, 200 University Avenue West,
-            Waterloo, ON N2L 3G1, Canada}
-
-\cortext[1]{Corresponding author.}
+\address[uw]{Department of Chemistry and Department of Physics \& Astronomy,
+             University of Waterloo, 200 University Avenue West,
+             Waterloo, ON N2L 3G1, Canada}
 
 \begin{abstract}
 Mechanistic corrosion models are routinely fitted with four to six
@@ -58,16 +60,17 @@ We further document and remedy a failure mode specific to sparse-data
 inversion.
 \end{abstract}
 
-\begin{keywords}
-Point defect model \sep
-Stainless steel \sep
-High-temperature water \sep
-Parameter identifiability \sep
-Uncertainty quantification \sep
-Physics-informed neural networks
-\end{keywords}
+%% Corrosion Science classifies keywords: A. materials, B. techniques
+%% and methods, C. processes and phenomena.
+\begin{keyword}
+A. Stainless steel \sep
+B. Modelling studies \sep
+C. Oxidation \sep
+C. Passive films \sep
+C. High temperature corrosion
+\end{keyword}
 
-\maketitle
+\end{frontmatter}
 
 \section{Introduction}\label{sec:intro}
 
@@ -321,7 +324,7 @@ tests) checking parity between closed-form, Newton, and neural
 solutions; the suite ships with the code release (see Data and code
 availability).
 
-\begin{figure*}[htbp]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/fig_nsem_workflow.png}
 \caption{NSEM workflow. (a) Shared representation: field values on a
@@ -331,7 +334,7 @@ at every node. (b) The three configurations used in this work, the
 shared two-phase optimization, and the verification step each
 configuration passes before its results are reported.}
 \label{fig:nsem_workflow}
-\end{figure*}
+\end{figure}
 
 
 
@@ -410,7 +413,7 @@ cation charge, and $\gamma = F/RT = 22.6$~V$^{-1}$ at 240$^\circ$C; the
 sensitivity of the derived $\varepsilon_f$ to the assumed $\alpha_3$ is
 addressed in Section~\ref{sec:discussion}.
 
-\begin{figure*}[htbp]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\textwidth]{figures/fig1_model_schematic.png}
 \caption{Duplex-oxide model schematic. (a) Layer structure (metal
@@ -421,7 +424,7 @@ distribution across the duplex oxide under the constant-field
 assumption. Reaction labels and potential-drop symbols follow the SI
 derivation.}
 \label{fig:schematic}
-\end{figure*}
+\end{figure}
 
 \subsection{Differentiable inversion and the model ladder}\label{sec:ladder}
 
@@ -491,6 +494,7 @@ $\sigma = \mathrm{SD}/\sqrt{n}$. The Ni enrichment zone is not a
 growing PDM layer and enters only the analysis of
 Section~\ref{sec:nickel}.}
 \label{tab:data}
+\small
 \begin{tabular}{lcccc}
 \toprule
 Layer & $t$ (h) & mean (nm) & SD (nm) & $n$ \\
@@ -529,6 +533,7 @@ elsewhere, on individual scans in unweighted linear space---so it costs
 no degrees of freedom here and its residual dof is 6. No information
 criterion is computed for that row.}
 \label{tab:ladder}
+\footnotesize
 \begin{tabular}{lccccc}
 \toprule
 Model & Extra params & $n_\text{free}$ & $\chi^2_\text{data}$ & dof & $A_\text{bl}$ (nm/h) \\
@@ -628,6 +633,7 @@ fit. $\sigma$ is the standard error of the layer mean
 (Table~\ref{tab:data}). The chromium layer carries 95\% of $\chi^2$ and
 the 168~h chromium point alone carries 80\%.}
 \label{tab:leverage}
+\small
 \begin{tabular}{lcccrr}
 \toprule
 Layer & $t$ (h) & $\sigma$ (nm) & Model (nm) & Residual ($\sigma$) & \% of $\chi^2$ \\
@@ -645,7 +651,7 @@ Fe (outer) & 72 & 64.37 & 158.9 & $+0.24$ & 1.0 \\
 \end{tabular}
 \end{table}
 
-\begin{figure*}[htbp]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/fig3_fits_vs_data.png}
 \caption{M4 fit and the empirical power law against the measured
@@ -664,7 +670,7 @@ thickness, shown for completeness with its measured mean (dotted); as
 in Veile et al.'s own analysis, this zone is not a growing PDM layer,
 and its dedicated transport fit appears in Section~\ref{sec:nickel}.}
 \label{fig:fits}
-\end{figure*}
+\end{figure}
 
 \subsection{Parameter identifiability and uncertainty quantification}\label{sec:identifiability}
 
@@ -689,7 +695,7 @@ different long-time behaviors remain numerically indistinguishable
 within the exposure window, a point taken up in
 Section~\ref{sec:predictions}.
 
-\begin{table*}[htbp]
+\begin{table}[htbp]
 \centering
 \caption{M4 parameters: fitted value, profile-likelihood 1$\sigma$
 interval, 1000-member bootstrap mean $\pm$ standard deviation, and
@@ -705,6 +711,7 @@ likelihood alone.}
 \label{tab:params}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
+\scriptsize
 \begin{tabular}{lccccl}
 \toprule
 Parameter & Unit & M4 fit & Profile 1$\sigma$ & Bootstrap & Verdict \\
@@ -716,9 +723,9 @@ $L_0$ & nm & 1.9237 & [0.429, 8.20]$^\dagger$ & $1.923 \pm 0.0358$ & not identif
 $L_\text{ol,0}$ & nm & 115.58 & [25.79, 210.6] & $110.5 \pm 74.7$ & identifiable \\
 \bottomrule
 \end{tabular}
-\end{table*}
+\end{table}
 
-\begin{figure*}[htbp]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/fig4_profile_likelihood.png}
 \caption{Profile-likelihood identifiability map: $\Delta\chi^2$ over
@@ -726,7 +733,7 @@ the data residuals versus each M4 parameter (natural-log abscissa),
 with the 1$\sigma$ ($\Delta\chi^2 = 1$) and 2$\sigma$
 ($\Delta\chi^2 = 4$) thresholds marked.}
 \label{fig:profile}
-\end{figure*}
+\end{figure}
 
 For a parameter carrying a prior, the profile alone cannot separate data
 leverage from prior leverage, because both are centred where the prior
@@ -751,6 +758,7 @@ log-space prior widths of Eq.~\eqref{eq:objective} modified as shown
 (``off'' = prior removed). A data-determined parameter does not move when
 its prior is relaxed; a prior-set one drifts or loses its optimum.}
 \label{tab:priortest}
+\small
 \begin{tabular}{lccccc}
 \toprule
 Prior setting & $\sigma_{\ln \text{PBR}}$ & $\sigma_{\ln L_0}$ & $\mathrm{PBR}_\text{eff}$ & $L_0$ (nm) & $\chi^2_\text{data}$ \\
@@ -792,14 +800,14 @@ constraint is weak; and for $L_\text{ol,0}$ the wider bootstrap should
 be preferred, since it is the one that samples the trade-off. All three
 verdicts are consequences of the same shortage of exposure times.
 
-\begin{figure*}[htbp]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/fig5_uncertainty_ensemble.png}
 \caption{Bootstrap ensemble versus profile likelihood: 1000-member
 parametric bootstrap distribution for each M4 parameter, compared
 against the profile-likelihood 1$\sigma$ band.}
 \label{fig:ensemble}
-\end{figure*}
+\end{figure}
 
 \subsection{Validating the neural inversion, and a failure mode specific
 to sparse data}\label{sec:pinn}
@@ -851,12 +859,13 @@ mechanism, and the expectation that dense data would prevent the
 imbalance, are offered as a working explanation consistent with the
 observations rather than as a demonstrated result.
 
-\begin{table*}[htbp]
+\begin{table}[htbp]
 \centering
 \caption{F-1 self-consistency exhibit: trajectory $\chi^2$ versus
 closed-form $\chi^2$ at the recovered parameters (seed-0 runs; see SI
 Section~S4.4 for run-to-run variability).}
 \label{tab:f1}
+\scriptsize
 \begin{tabular}{llccc}
 \toprule
 Inverse mode & Note & $\chi^2$ traj. & $\chi^2$ closed-form & Self-consistent \\
@@ -866,7 +875,7 @@ Soft, $\lambda_\text{phys}=10^3$ & joint field+parameter & 0.21 & 16.64 & no \\
 Soft, $\lambda_\text{data}=10$ & joint field+parameter & 0.67 & 15.57 & no \\
 \bottomrule
 \end{tabular}
-\end{table*}
+\end{table}
 
 The practical fix is the hard-mode construction, available for the
 zero-dimensional kinetics but not, in general, for the spatial
@@ -930,6 +939,7 @@ are 25\% (identifiable) and 50\% (weak). The $L_\text{bl}$ truth value is
 the 480-h kinetic-fit output of Table~\ref{tab:leverage} rounded to
 134.0~nm.}
 \label{tab:t2a}
+\small
 \begin{tabular}{llcccl}
 \toprule
 Shape param. & Physics mapping & Truth & Unit & RSD & Verdict \\
@@ -966,7 +976,7 @@ composition data would carry diffusivity sensitivity, through the
 migration transit times quantified below. This structural argument
 independently corroborates the statistical gate above.
 
-\begin{figure*}[htbp]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/fig8_steady_spatial.png}
 \caption{Steady spatial solve. (a)~Steady-state nondimensional profile
@@ -976,7 +986,7 @@ diffusivity-cancellation result. (b)~Verification ladder: Newton versus
 analytic, and NSEM versus Newton, for both defect species; horizontal
 lines mark the $10^{-10}$ and 0.5\% acceptance bounds.}
 \label{fig:steady}
-\end{figure*}
+\end{figure}
 
 The transient extension, solved on a moving Landau-transformed domain
 tracking the growing layer, quantifies an approximation every
@@ -1011,7 +1021,7 @@ weight percent at 72, 168, and 480~h---straddles the 0.93 weight
 percent detection floor from the identifiability gate: marginally
 detectable at the earliest exposure, undetectable by the latest.
 
-\begin{figure*}[htbp]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/fig10_composition_edx.png}
 \caption{Zero-free-parameter composition-map prediction against Veile
@@ -1023,7 +1033,7 @@ plateau level ($\sim$45~wt\%, dotted), and the 72-h Ni-peak amplitude
 ($23.7\pm7.0$~wt\%, error bar). Full digitized EDX traces are not
 available, so the comparison is feature-based.}
 \label{fig:composition}
-\end{figure*}
+\end{figure}
 
 \subsection{The nickel enrichment zone}\label{sec:nickel}
 
@@ -1089,7 +1099,7 @@ consequence of the constant-volume-coupled growth law saturating
 logarithmically while the power law, fit independently to each layer,
 extrapolates indefinitely.
 
-\begin{figure*}[htbp]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/fig6_long_time.png}
 \caption{Long-time prediction with propagated parametric uncertainty:
@@ -1100,7 +1110,7 @@ the M4 closed form, conditional on the M4 model structure and the
 reported standard errors; the M5 curve is indistinguishable from M4 at
 all feasible exposures. The vertical line marks the ten-year horizon.}
 \label{fig:longtime}
-\end{figure*}
+\end{figure}
 
 The model's own two long-time branches---unbounded logarithmic growth
 (M4) versus eventual saturation (M5)---track within about five percent
@@ -1184,6 +1194,7 @@ energy $\alpha_3\Delta G^0_R$. The first three rows are the
 originally scanned range; the last two extend it to the values reported
 for weight-gain kinetics on austenitic steels in high-temperature water.}
 \label{tab:envelope}
+\small
 \begin{tabular}{cccccc}
 \toprule
 $\Delta G^0_R$ & $\alpha_3\Delta G^0_R$ & \multicolumn{2}{c}{$L_\text{bl}$(480~h)} & \multicolumn{2}{c}{$L_\text{bl}$(10~y)} \\
@@ -1199,7 +1210,7 @@ $\Delta G^0_R$ & $\alpha_3\Delta G^0_R$ & \multicolumn{2}{c}{$L_\text{bl}$(480~h
 \end{tabular}
 \end{table}
 
-\begin{figure*}[htbp]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/fig7_sensitivity_maps.png}
 \caption{Operating-envelope sensitivity maps: predicted $L_\text{bl}$
@@ -1213,7 +1224,7 @@ Veile et al.\ calibration condition. Each row shares a common color
 scale, so the widening spread from left to right is the sensitivity
 increasing with activation energy.}
 \label{fig:sensitivity}
-\end{figure*}
+\end{figure}
 
 
 \section{Discussion}\label{sec:discussion}
@@ -1309,6 +1320,7 @@ recovered at $C_x \approx 0$; every larger value is reached at no cost in
 $\chi^2$, paid for by outer-layer loss and a smaller initial precipitate
 population. $\chi^2 = 5.79$ for the accepted model.}
 \label{tab:pbrclosure}
+\small
 \begin{tabular}{lcccc}
 \toprule
 $\mathrm{PBR}_\text{eff}$ imposed & $\chi^2$ & $\Delta\chi^2$ &
@@ -1391,7 +1403,7 @@ AISI~347; we are not aware of published long-term harvested-component
 oxide thicknesses for this alloy in BWR conditions, and the prediction
 should be read as a testable statement, not a validated one.
 
-\begin{table*}[htbp]
+\begin{table}[htbp]
 \centering
 \caption{The identified kinetics in the context of related systems.
 Literature thickness entries are indicative orders of magnitude for the
@@ -1400,6 +1412,7 @@ the cited analyses.}
 \label{tab:context}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
+\scriptsize
 \begin{tabular}{lllll}
 \toprule
 System & Environment & $T$ ($^\circ$C) & Inner layer & $\varepsilon_f$ (V/cm) \\
@@ -1410,7 +1423,7 @@ HCM12A, 316L & supercritical water~\citep{li2020scwpdm} & 500 & $\mu$m scale & $
 Passive metals & ambient aqueous~\citep{cabrera1949oxidation} & 25 & 1--5~nm & $\sim10^6$ \\
 \bottomrule
 \end{tabular}
-\end{table*}
+\end{table}
 
 \subsection{The nickel zone: an anomalous mobility}
 
@@ -1637,7 +1650,7 @@ The author declares that they have no known competing financial interests
 or personal relationships that could have appeared to influence the work
 reported in this paper.
 
-\bibliographystyle{unsrtnat}
+\bibliographystyle{elsarticle-num}
 \bibliography{references}
 
 \end{document}

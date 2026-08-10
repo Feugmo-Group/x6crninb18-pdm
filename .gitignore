@@ -1,6 +1,12 @@
-# Generated results. Everything under outputs/ is reproducible from the
-# commands in README.md; nothing here is an input.
-outputs/
+# outputs/ IS tracked.  Everything under it is regenerable from the commands in
+# docs/REPRODUCE.md, but it ships anyway so that every number in the manuscript
+# has a committed artefact behind it and a reader can check a claim without
+# re-running a 15-minute bootstrap.  Nothing under outputs/ is an input.
+#
+# Excluded: the pre-PBR-prior-removal ensemble, kept out because it is superseded
+# rather than reproducible.
+outputs/**/*.bak*
+outputs/**/*pbrprior*
 
 # Publisher PDFs of the source papers: kept locally for reference, not
 # redistributable. See README.md for DOIs (10.3390/ma17184500,

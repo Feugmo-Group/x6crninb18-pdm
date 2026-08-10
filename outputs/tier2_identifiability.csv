@@ -1,0 +1,8 @@
+param,truth,replicate_mean,replicate_sd,rel_sd,bias,verdict
+L_bl,134.0,133,3.25,2%,-0.914,IDENTIFIABLE
+w_int,5.0,4.8,0.838,17%,-0.2,IDENTIFIABLE
+w_out,8.0,8.09,1.54,19%,+0.0932,IDENTIFIABLE
+A_Ni,25.0,24.5,1.71,7%,-0.476,IDENTIFIABLE
+w_Ni,35.0,35,2.69,8%,-0.0451,IDENTIFIABLE
+f_Cr_bl,45.0,45.6,1.02,2%,+0.558,IDENTIFIABLE
+g_bl,1.0,0.819,0.466,47%,-0.181,WEAK

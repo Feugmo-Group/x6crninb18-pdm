@@ -1,0 +1,5 @@
+param,fit,sig1_lo,sig1_hi,max_dchi2,verdict
+D_Ni_eff_nm2_h,3.905,4.17,4.17,101.6,identifiable
+r_Ni,0.2954,0.25,0.3,123.6,identifiable
+phi_ol_supply,0.5708,0.579,0.895,3.6,weak
+chi2/dof,25.71/1,,,no-ol-supply chi2: 32.1,

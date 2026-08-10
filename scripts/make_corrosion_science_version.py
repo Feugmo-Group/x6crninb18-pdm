@@ -80,41 +80,43 @@ back = back.replace(
     "or personal relationships that could have appeared to influence the work\n"
     "reported in this paper.")
 
-PREAMBLE = r"""%% Corrosion Science (Elsevier) -- CAS double-column template
+PREAMBLE = r"""%% Corrosion Science (Elsevier) -- elsarticle template
 %% Companion version of the npj Materials Degradation submission
 %% (paper/main-snjnl.tex).  Same science, same numbers; restructured to the
 %% Elsevier order (Methods as section 2 rather than at the back) and
-%% reformatted from sn-jnl to cas-dc.
-\documentclass[a4paper,fleqn]{cas-dc}
+%% reformatted from sn-jnl to elsarticle.
+%%
+%% preprint,12pt is the single-column submission format Elsevier asks for;
+%% the journal typesets two columns itself at production.  Because it is one
+%% column, the figures keep their \textwidth sizing unchanged from the npj
+%% version and no float needs promoting.
+\documentclass[preprint,12pt]{elsarticle}
 
-\usepackage[numbers,sort&compress]{natbib}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{multirow}
 
+%% Long unbreakable tokens (X6CrNiNb18-10) overrun the 12pt single-column
+%% measure; let TeX stretch a little rather than leave an overfull line.
+\emergencystretch=1em
+
 \graphicspath{{figures/}}
+
+\journal{Corrosion Science}
 
 \begin{document}
 
-\let\WriteBookmarks\relax
-\def\floatpagepagefraction{1}
-\def\textpagefraction{.001}
+\begin{frontmatter}
 
-\shorttitle{Identifiability of a point defect model for AISI 347}
-\shortauthors{C. G. Tetsassi Feugmo}
+\title{Identifiability of a point defect model for oxide growth on AISI~347}
 
-\title[mode=title]{Identifiability of a point defect model for oxide growth on AISI~347}
-
-\author[1]{Conrard Giresse Tetsassi Feugmo}[orcid=0000-0002-8992-4335]
-\cormark[1]
+\author[uw]{Conrard Giresse Tetsassi Feugmo}
 \ead{giresse.feugmo@gmail.com}
 
-\address[1]{Department of Chemistry and Department of Physics \& Astronomy,
-            University of Waterloo, 200 University Avenue West,
-            Waterloo, ON N2L 3G1, Canada}
-
-\cortext[1]{Corresponding author.}
+\address[uw]{Department of Chemistry and Department of Physics \& Astronomy,
+             University of Waterloo, 200 University Avenue West,
+             Waterloo, ON N2L 3G1, Canada}
 
 \begin{abstract}
 Mechanistic corrosion models are routinely fitted with four to six
@@ -140,40 +142,37 @@ We further document and remedy a failure mode specific to sparse-data
 inversion.
 \end{abstract}
 
-\begin{keywords}
-Point defect model \sep
-Stainless steel \sep
-High-temperature water \sep
-Parameter identifiability \sep
-Uncertainty quantification \sep
-Physics-informed neural networks
-\end{keywords}
+%% Corrosion Science classifies keywords: A. materials, B. techniques
+%% and methods, C. processes and phenomena.
+\begin{keyword}
+A. Stainless steel \sep
+B. Modelling studies \sep
+C. Oxidation \sep
+C. Passive films \sep
+C. High temperature corrosion
+\end{keyword}
 
-\maketitle
+\end{frontmatter}
 """
 
 TAIL = r"""
-\bibliographystyle{unsrtnat}
+\bibliographystyle{elsarticle-num}
 \bibliography{references}
 
 \end{document}
 """
 
-# --- two-column adaptation -------------------------------------------------
-# cas-dc is two-column, where \textwidth spans BOTH columns.  Every figure in
-# this paper is a multi-panel plot sized to \textwidth and would be unreadable
-# shrunk to \columnwidth, so they become full-width floats instead.  Same for
-# the wide tables flagged as overfull.
-def widen_floats(t):
-    for env in ("figure",):
-        t = t.replace("\\begin{%s}[htbp]" % env, "\\begin{%s*}[htbp]" % env)
-        t = t.replace("\\end{%s}" % env, "\\end{%s*}" % env)
-    return t
+# --- table sizing ----------------------------------------------------------
+# elsarticle preprint is one column at 12pt, a narrower measure than the npj
+# version's, so the wider tables overrun it.  Shrink every tabular one step
+# (captions stay at body size), and the four widest two steps.  Sizes are
+# applied here rather than in main-snjnl.tex because they are a property of
+# this class, not of the science.
+NARROW_TABLES = ("tab:ladder",)
+# These three still overrun at \\footnotesize; \\scriptsize clears them.
+TINY_TABLES = ("tab:params", "tab:f1", "tab:context")
 
-# Three tables are wider than one column; promote just those by label.
-WIDE_TABLES = ("tab:params", "tab:f1", "tab:context")
-
-def widen_tables(t):
+def size_tables(t):
     out=[]; buf=None
     for line in t.split("\n"):
         if re.match(r"\s*\\begin\{table\}", line):
@@ -182,23 +181,18 @@ def widen_tables(t):
             buf.append(line)
             if re.match(r"\s*\\end\{table\}", line):
                 blk="\n".join(buf)
-                if any(("\\label{%s}" % w) in blk for w in WIDE_TABLES):
-                    blk=(blk.replace("\\begin{table}", "\\begin{table*}")
-                            .replace("\\end{table}", "\\end{table*}"))
+                has = lambda names: any(("\\label{%s}" % w) in blk for w in names)
+                size = ("\\scriptsize" if has(TINY_TABLES)
+                        else "\\footnotesize" if has(NARROW_TABLES) else "\\small")
+                blk = blk.replace("\\begin{tabular}", size + "\n\\begin{tabular}", 1)
                 out.append(blk); buf=None
             continue
         out.append(line)
     return "\n".join(out)
 
-results = widen_tables(results)
-discussion = widen_tables(discussion)
-methods = widen_tables(methods)
-
-results = widen_floats(results)
-discussion = widen_floats(discussion)
-methods = widen_floats(methods)
-conclusions = widen_floats(conclusions)
-intro = widen_floats(intro)
+results = size_tables(results)
+discussion = size_tables(discussion)
+methods = size_tables(methods)
 
 doc = "\n".join([
     PREAMBLE,
@@ -211,6 +205,6 @@ doc = "\n".join([
     TAIL,
 ])
 
-out = ROOT / "paper-corrosion-science" / "main-cas.tex"
+out = ROOT / "paper-corrosion-science" / "main-els.tex"
 out.write_text(doc)
 print("wrote", out, len(doc.split(chr(10))), "lines")
