@@ -27,7 +27,7 @@ parameters through an exact forward solve.
 
 The manuscript exists in two venue versions, same science and same numbers:
 `paper/` targets *npj Materials Degradation* (Springer Nature `sn-jnl`, Methods at the
-back), and `paper-corrosion-science/` targets *Corrosion Science* (Elsevier `elsarticle`,
+back), and `paper-corrosion-science/` targets *Corrosion Science* (Elsevier `cas-sc`,
 Methods as section 2, plus the Highlights that venue requires). Built PDFs are in
 `paper/pdf/` and `paper-corrosion-science/pdf/`.
 
@@ -121,10 +121,10 @@ pdflatex supplementary && pdflatex cover_letter
 
 # Corrosion Science version
 cd paper-corrosion-science
-pdflatex main-els && bibtex main-els && pdflatex main-els && pdflatex main-els
+pdflatex main-cas && bibtex main-cas && pdflatex main-cas && pdflatex main-cas
 pdflatex supplementary && pdflatex highlights && pdflatex cover_letter
 ```
-npj: main 32 pp, SI 17 pp, cover letter 2 pp. Corrosion Science: main 41 pp (preprint, single column),
+npj: main 32 pp, SI 17 pp, cover letter 2 pp. Corrosion Science: main 24 pp (cas-sc, single column),
 SI 17 pp, highlights 1 pp, cover letter 2 pp. All build with 0 errors and 0 undefined
 references.
 
@@ -136,7 +136,7 @@ fitted values below: **nothing scientific is duplicated between the two versions
 correction cannot land in one and go stale in the other. A numeric-token diff of the two
 main files is identical.
 
-`paper-corrosion-science/main-els.tex` is generated from `main-snjnl.tex` by reordering
+`paper-corrosion-science/main-cas.tex` is generated from `main-snjnl.tex` by reordering
 sections and reformatting; if you edit the science, edit `main-snjnl.tex` and regenerate
 rather than editing both.
 
@@ -161,8 +161,8 @@ tests/            50 tests
 paper/            npj Materials Degradation version: manuscript, SI, cover letter,
                   shared figures/ and references.bib, built PDFs in pdf/
 paper-corrosion-science/
-                  Corrosion Science version: main-els.tex (generated), highlights,
-                  cover letter, SI wrapper, elsarticle class + elsarticle-num.bst
+                  Corrosion Science version: main-cas.tex (generated), highlights,
+                  cover letter, SI wrapper, Elsevier CAS single-column class files
 docs/             pdm_eqns.md (full derivation), IMPL_REPORT.md (validation record),
                   REPRODUCE.md (artefact -> command map, generated)
 docs/internal/    planning and drafting notes, kept for provenance
@@ -190,7 +190,7 @@ typo is documented in the manuscript; the true times are 72/168/480 h.
 Apache-2.0 (`LICENSE`). The publisher class and style files are **not** covered by it —
 they are distributed by their own authors under the LaTeX Project Public License 1.3c:
 `paper/sn-jnl.cls` and `paper/sn-nature.bst` (Springer Nature), and
-`paper-corrosion-science/elsarticle.cls` and `elsarticle-num.bst` (Elsevier).
+`paper-corrosion-science/cas-sc.cls` and `cas-common.sty` (Elsevier CAS bundle).
 
 ---
 

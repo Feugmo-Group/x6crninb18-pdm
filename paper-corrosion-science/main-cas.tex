@@ -1,40 +1,48 @@
-%% Corrosion Science (Elsevier) -- elsarticle template
+%% Corrosion Science (Elsevier) -- CAS single-column template (cas-sc)
 %% Companion version of the npj Materials Degradation submission
 %% (paper/main-snjnl.tex).  Same science, same numbers; restructured to the
 %% Elsevier order (Methods as section 2 rather than at the back) and
-%% reformatted from sn-jnl to elsarticle.
+%% reformatted from sn-jnl to cas-sc.
 %%
-%% preprint,12pt is the single-column submission format Elsevier asks for;
-%% the journal typesets two columns itself at production.  Because it is one
-%% column, the figures keep their \textwidth sizing unchanged from the npj
-%% version and no float needs promoting.
-\documentclass[preprint,12pt]{elsarticle}
+%% cas-sc is the single-column member of Elsevier's CAS bundle.  Being one
+%% column, the figures keep the \textwidth sizing they have in the npj version
+%% and no float needs promoting to a starred environment.
+\documentclass[a4paper,fleqn]{cas-sc}
 
+%% Corrosion Science numbers its references.  The CAS bundle ships only an
+%% author-year .bst (cas-model2-names), so the numbered style comes from natbib.
+\usepackage[numbers,sort&compress]{natbib}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{multirow}
 
-%% Long unbreakable tokens (X6CrNiNb18-10) overrun the 12pt single-column
-%% measure; let TeX stretch a little rather than leave an overfull line.
+%% Long unbreakable tokens (X6CrNiNb18-10) overrun the measure; let TeX stretch
+%% a little rather than leave an overfull line.
 \emergencystretch=1em
 
 \graphicspath{{figures/}}
 
-\journal{Corrosion Science}
-
 \begin{document}
 
-\begin{frontmatter}
+\let\WriteBookmarks\relax
+\def\floatpagepagefraction{1}
+\def\textpagefraction{.001}
 
-\title{Identifiability of a point defect model for oxide growth on AISI~347}
+\shorttitle{Identifiability of a point defect model for AISI~347}
+\shortauthors{C. G. Tetsassi Feugmo}
 
-\author[uw]{Conrard Giresse Tetsassi Feugmo}
+\title[mode=title]{Identifiability of a point defect model for oxide growth on AISI~347}
+
+\author[1]{Conrard Giresse Tetsassi Feugmo}[orcid=0000-0002-8992-4335]
+\cormark[1]
 \ead{giresse.feugmo@gmail.com}
 
-\address[uw]{Department of Chemistry and Department of Physics \& Astronomy,
-             University of Waterloo, 200 University Avenue West,
-             Waterloo, ON N2L 3G1, Canada}
+\address[1]{Department of Chemistry and Department of Physics \& Astronomy,
+            University of Waterloo, 200 University Avenue West,
+            Waterloo, ON N2L 3G1, Canada}
+
+\cortext[1]{Corresponding author.}
 
 \begin{abstract}
 Mechanistic corrosion models are routinely fitted with four to six
@@ -62,15 +70,15 @@ inversion.
 
 %% Corrosion Science classifies keywords: A. materials, B. techniques
 %% and methods, C. processes and phenomena.
-\begin{keyword}
+\begin{keywords}
 A. Stainless steel \sep
 B. Modelling studies \sep
 C. Oxidation \sep
 C. Passive films \sep
 C. High temperature corrosion
-\end{keyword}
+\end{keywords}
 
-\end{frontmatter}
+\maketitle
 
 \section{Introduction}\label{sec:intro}
 
@@ -533,7 +541,7 @@ elsewhere, on individual scans in unweighted linear space---so it costs
 no degrees of freedom here and its residual dof is 6. No information
 criterion is computed for that row.}
 \label{tab:ladder}
-\footnotesize
+\small
 \begin{tabular}{lccccc}
 \toprule
 Model & Extra params & $n_\text{free}$ & $\chi^2_\text{data}$ & dof & $A_\text{bl}$ (nm/h) \\
@@ -711,7 +719,7 @@ likelihood alone.}
 \label{tab:params}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
-\scriptsize
+\small
 \begin{tabular}{lccccl}
 \toprule
 Parameter & Unit & M4 fit & Profile 1$\sigma$ & Bootstrap & Verdict \\
@@ -865,7 +873,7 @@ observations rather than as a demonstrated result.
 closed-form $\chi^2$ at the recovered parameters (seed-0 runs; see SI
 Section~S4.4 for run-to-run variability).}
 \label{tab:f1}
-\scriptsize
+\small
 \begin{tabular}{llccc}
 \toprule
 Inverse mode & Note & $\chi^2$ traj. & $\chi^2$ closed-form & Self-consistent \\
@@ -1412,7 +1420,7 @@ the cited analyses.}
 \label{tab:context}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
-\scriptsize
+\small
 \begin{tabular}{lllll}
 \toprule
 System & Environment & $T$ ($^\circ$C) & Inner layer & $\varepsilon_f$ (V/cm) \\
@@ -1650,7 +1658,7 @@ The author declares that they have no known competing financial interests
 or personal relationships that could have appeared to influence the work
 reported in this paper.
 
-\bibliographystyle{elsarticle-num}
+\bibliographystyle{unsrtnat}
 \bibliography{references}
 
 \end{document}

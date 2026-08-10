@@ -2,7 +2,7 @@
 
 The two submissions carry identical science; they differ in section order
 (Elsevier puts Methods second, Nature Portfolio puts it at the back), in
-document class (cas-dc vs sn-jnl), and in the venue front matter.  Rather
+document class (cas-sc vs sn-jnl), and in the venue front matter.  Rather
 than maintain two copies of 1600 lines, this script derives one from the
 other, so a correction to the science can only be made in one place.
 
@@ -80,43 +80,51 @@ back = back.replace(
     "or personal relationships that could have appeared to influence the work\n"
     "reported in this paper.")
 
-PREAMBLE = r"""%% Corrosion Science (Elsevier) -- elsarticle template
+PREAMBLE = r"""%% Corrosion Science (Elsevier) -- CAS single-column template (cas-sc)
 %% Companion version of the npj Materials Degradation submission
 %% (paper/main-snjnl.tex).  Same science, same numbers; restructured to the
 %% Elsevier order (Methods as section 2 rather than at the back) and
-%% reformatted from sn-jnl to elsarticle.
+%% reformatted from sn-jnl to cas-sc.
 %%
-%% preprint,12pt is the single-column submission format Elsevier asks for;
-%% the journal typesets two columns itself at production.  Because it is one
-%% column, the figures keep their \textwidth sizing unchanged from the npj
-%% version and no float needs promoting.
-\documentclass[preprint,12pt]{elsarticle}
+%% cas-sc is the single-column member of Elsevier's CAS bundle.  Being one
+%% column, the figures keep the \textwidth sizing they have in the npj version
+%% and no float needs promoting to a starred environment.
+\documentclass[a4paper,fleqn]{cas-sc}
 
+%% Corrosion Science numbers its references.  The CAS bundle ships only an
+%% author-year .bst (cas-model2-names), so the numbered style comes from natbib.
+\usepackage[numbers,sort&compress]{natbib}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{multirow}
 
-%% Long unbreakable tokens (X6CrNiNb18-10) overrun the 12pt single-column
-%% measure; let TeX stretch a little rather than leave an overfull line.
+%% Long unbreakable tokens (X6CrNiNb18-10) overrun the measure; let TeX stretch
+%% a little rather than leave an overfull line.
 \emergencystretch=1em
 
 \graphicspath{{figures/}}
 
-\journal{Corrosion Science}
-
 \begin{document}
 
-\begin{frontmatter}
+\let\WriteBookmarks\relax
+\def\floatpagepagefraction{1}
+\def\textpagefraction{.001}
 
-\title{Identifiability of a point defect model for oxide growth on AISI~347}
+\shorttitle{Identifiability of a point defect model for AISI~347}
+\shortauthors{C. G. Tetsassi Feugmo}
 
-\author[uw]{Conrard Giresse Tetsassi Feugmo}
+\title[mode=title]{Identifiability of a point defect model for oxide growth on AISI~347}
+
+\author[1]{Conrard Giresse Tetsassi Feugmo}[orcid=0000-0002-8992-4335]
+\cormark[1]
 \ead{giresse.feugmo@gmail.com}
 
-\address[uw]{Department of Chemistry and Department of Physics \& Astronomy,
-             University of Waterloo, 200 University Avenue West,
-             Waterloo, ON N2L 3G1, Canada}
+\address[1]{Department of Chemistry and Department of Physics \& Astronomy,
+            University of Waterloo, 200 University Avenue West,
+            Waterloo, ON N2L 3G1, Canada}
+
+\cortext[1]{Corresponding author.}
 
 \begin{abstract}
 Mechanistic corrosion models are routinely fitted with four to six
@@ -144,34 +152,31 @@ inversion.
 
 %% Corrosion Science classifies keywords: A. materials, B. techniques
 %% and methods, C. processes and phenomena.
-\begin{keyword}
+\begin{keywords}
 A. Stainless steel \sep
 B. Modelling studies \sep
 C. Oxidation \sep
 C. Passive films \sep
 C. High temperature corrosion
-\end{keyword}
+\end{keywords}
 
-\end{frontmatter}
+\maketitle
 """
 
 TAIL = r"""
-\bibliographystyle{elsarticle-num}
+\bibliographystyle{unsrtnat}
 \bibliography{references}
 
 \end{document}
 """
 
 # --- table sizing ----------------------------------------------------------
-# elsarticle preprint is one column at 12pt, a narrower measure than the npj
-# version's, so the wider tables overrun it.  Shrink every tabular one step
-# (captions stay at body size), and the four widest two steps.  Sizes are
-# applied here rather than in main-snjnl.tex because they are a property of
-# this class, not of the science.
-NARROW_TABLES = ("tab:ladder",)
-# These three still overrun at \\footnotesize; \\scriptsize clears them.
-TINY_TABLES = ("tab:params", "tab:f1", "tab:context")
-
+# cas-sc sets one column on a measure narrower than the npj version's, so the
+# tables are stepped down once.  \small is enough for all of them here -- it
+# was not under elsarticle's 12pt preprint, where four needed two or three
+# steps -- so the size is applied uniformly rather than per-table.  This is a
+# property of the class, not of the science, which is why it lives here and
+# not in main-snjnl.tex.
 def size_tables(t):
     out=[]; buf=None
     for line in t.split("\n"):
@@ -181,10 +186,7 @@ def size_tables(t):
             buf.append(line)
             if re.match(r"\s*\\end\{table\}", line):
                 blk="\n".join(buf)
-                has = lambda names: any(("\\label{%s}" % w) in blk for w in names)
-                size = ("\\scriptsize" if has(TINY_TABLES)
-                        else "\\footnotesize" if has(NARROW_TABLES) else "\\small")
-                blk = blk.replace("\\begin{tabular}", size + "\n\\begin{tabular}", 1)
+                blk=blk.replace("\\begin{tabular}", "\\small\n\\begin{tabular}", 1)
                 out.append(blk); buf=None
             continue
         out.append(line)
@@ -205,6 +207,6 @@ doc = "\n".join([
     TAIL,
 ])
 
-out = ROOT / "paper-corrosion-science" / "main-els.tex"
+out = ROOT / "paper-corrosion-science" / "main-cas.tex"
 out.write_text(doc)
 print("wrote", out, len(doc.split(chr(10))), "lines")
