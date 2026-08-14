@@ -16,6 +16,7 @@ veile2024investigation.pdf
 *.pdf
 !paper/pdf/*.pdf
 !paper-corrosion-science/*.pdf
+!talk/*.pdf
 
 # LaTeX build artifacts
 *.aux
@@ -27,6 +28,9 @@ veile2024investigation.pdf
 *.fdb_latexmk
 *.fls
 *.abs
+*.nav
+*.snm
+*.vrb
 !paper/main-snjnl.bbl
 !paper-corrosion-science/main-cas.bbl
 

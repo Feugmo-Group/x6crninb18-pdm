@@ -1,0 +1,639 @@
+%% Seminar deck for the X6CrNiNb18-10 point defect model identifiability study.
+%%
+%% Every number on these slides is quoted from a committed artefact under
+%% outputs/paper/ (referee_stats.json, table1_parameters.csv,
+%% table2_model_ladder.csv, table10_pbr_closure.csv).  Do not retype a value
+%% here from memory; see docs/REPRODUCE.md for the command behind each one.
+%%
+%% Build:  latexmk -pdf slides.tex
+
+\documentclass[aspectratio=169,10pt]{beamer}
+\usetheme{metropolis}
+\metroset{block=fill,numbering=fraction,progressbar=frametitle}
+
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,decorations.pathmorphing,patterns,fit,backgrounds,calc}
+
+%% Figures live in the manuscript folder; the deck reads them rather than
+%% keeping a second copy that could go stale.
+\graphicspath{{../paper/figures/}}
+
+\definecolor{barrier}{RGB}{31,110,160}
+\definecolor{outer}{RGB}{200,110,40}
+\definecolor{alloyc}{RGB}{110,110,120}
+\definecolor{nizone}{RGB}{60,150,90}
+\definecolor{warn}{RGB}{180,40,40}
+
+\newcommand{\Lbl}{L_{\mathrm{bl}}}
+\newcommand{\Lol}{L_{\mathrm{ol}}}
+\newcommand{\Abl}{A_{\mathrm{bl}}}
+\newcommand{\Cbl}{C_{\mathrm{bl}}}
+\newcommand{\Cx}{C_{x}}
+\newcommand{\PBR}{\mathrm{PBR}_{\mathrm{eff}}}
+
+\title{Sparse data limit what a corrosion model can predict}
+\subtitle{Identifiability of a point defect model for oxide growth on AISI~347}
+\author{Conrard Giresse Tetsassi Feugmo}
+\institute{Department of Chemistry, Department of Physics \& Astronomy\\University of Waterloo}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+% ---------------------------------------------------------------- problem ---
+\begin{frame}{The problem}
+Mechanistic corrosion models are routinely
+\begin{itemize}
+  \item written with four to six adjustable parameters,
+  \item fitted to a handful of measurements,
+  \item and then extrapolated across a service lifetime.
+\end{itemize}
+
+\vspace{0.6em}
+\begin{alertblock}{What is almost never tested}
+Whether the data determine those parameters at all.
+\end{alertblock}
+
+\vspace{0.6em}
+A model that fits is not the same as a model that is \emph{identified}.
+If several very different parameter sets fit equally well, the fit is
+reported honestly and the extrapolation is still meaningless.
+\end{frame}
+
+\begin{frame}{The system}
+\begin{columns}[T]
+\begin{column}{0.46\textwidth}
+\small
+Nb-stabilised austenitic stainless steel\\
+\textbf{X6CrNiNb18-10} (AISI~347)
+
+\vspace{0.5em}
+Simulated boiling-water-reactor hydrothermal water
+\begin{itemize}\small
+  \item $240\,^\circ$C, $7$~MPa
+  \item $0.4$~ppm dissolved O$_2$
+  \item exposures $72$, $168$, $480$~h
+\end{itemize}
+
+\vspace{0.5em}
+A \textbf{duplex} oxide forms: a thin Cr-rich barrier layer that
+controls the kinetics, and a thicker, far more variable Fe-rich
+outer layer.
+\end{column}
+
+\begin{column}{0.52\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.95,every node/.style={font=\scriptsize}]
+  % layers
+  \fill[alloyc!25] (0,0) rectangle (1.7,3.2);
+  \fill[nizone!35]  (1.7,0) rectangle (2.1,3.2);
+  \fill[barrier!30] (2.1,0) rectangle (3.5,3.2);
+  \fill[outer!30]   (3.5,0) rectangle (5.9,3.2);
+  \fill[blue!8]     (5.9,0) rectangle (7.2,3.2);
+
+  \draw[thick] (0,0) rectangle (7.2,3.2);
+  \draw[thick] (1.7,0)--(1.7,3.2);
+  \draw[very thick,barrier] (2.1,0)--(2.1,3.2);
+  \draw[very thick,outer] (3.5,0)--(3.5,3.2);
+  \draw[thick] (5.9,0)--(5.9,3.2);
+
+  % labels
+  \node[rotate=90] at (0.85,1.6) {alloy};
+  \node[rotate=90,nizone!60!black] at (1.9,1.6) {Ni zone};
+  \node[rotate=90,barrier!70!black] at (2.8,1.6) {barrier};
+  \node[outer!70!black] at (4.7,1.6) {outer layer (Fe$_3$O$_4$)};
+  \node[rotate=90] at (6.55,1.6) {coolant};
+
+  % interfaces
+  \node[below] at (2.1,-0.05) {\tiny m$|$f};
+  \node[below] at (5.9,-0.05) {\tiny f$|$s};
+
+  % thickness braces
+  \draw[<->,barrier,thick] (2.1,3.45)--(3.5,3.45) node[midway,above,barrier!70!black] {$\Lbl$};
+  \draw[<->,outer,thick] (3.5,3.95)--(5.9,3.95) node[midway,above,outer!70!black] {$\Lol$};
+
+  % fluxes
+  \draw[-{Stealth[length=2mm]},thick] (2.3,0.6)--(5.7,0.6) node[midway,below,yshift=1pt] {Fe outward};
+  \draw[-{Stealth[length=2mm]},thick] (5.7,2.7)--(2.3,2.7) node[midway,above,yshift=-1pt] {O inward};
+  \draw[-{Stealth[length=2mm]},thick,warn] (6.0,0.6)--(7.1,0.6);
+  \node[warn,font=\tiny] at (6.55,-0.85) {Fe release $\Cx$};
+\end{tikzpicture}
+
+\vspace{0.2em}
+{\tiny The barrier layer sets the kinetics; the outer layer is where the
+information runs out.}
+\end{column}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------ data ---
+\begin{frame}{All of the calibration data}
+\centering
+\begin{tabular}{lrrr}
+\toprule
+$t$ (h) & Cr barrier (nm) & Fe outer (nm) & scans \\
+\midrule
+72  & $37.3 \pm 7.7$  & $143.3 \pm 111.5$ & 3 \\
+168 & $98.3 \pm 21.7$ & $225.5 \pm 142.7$ & 4 \\
+480 & $134.3 \pm 5.4$ & $240.3 \pm 172.5$ & 3 \\
+\bottomrule
+\end{tabular}
+
+\vspace{1em}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\begin{alertblock}{Six numbers}
+Three Cr, three Fe. Five fitted parameters.
+\end{alertblock}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{alertblock}{Extrapolated 180-fold}
+Last observation $480$~h $\rightarrow$ target $87\,600$~h.
+\end{alertblock}
+\end{column}
+\end{columns}
+
+\vspace{0.6em}
+\small
+The Fe standard deviations are $50$ to $70\%$ of the means. Whatever the
+model says about the outer layer, the data barely constrain it.
+\end{frame}
+
+% ----------------------------------------------------------------- model ---
+\begin{frame}{The reduced two-layer model}
+Barrier layer, from point defect kinetics with a field that relaxes as the
+film thickens:
+\[
+  \frac{d\Lbl}{dt} \;=\; \Abl\, e^{\,b_3 \Lbl} \;-\; \Cbl ,
+  \qquad \Lbl(0) = L_0 .
+\]
+
+Outer layer, fed by cations crossing the barrier and losing mass to the coolant:
+\[
+  \frac{d\Lol}{dt} \;=\; \PBR \, \frac{d\Lbl}{dt} \;+\; \Cx ,
+  \qquad \Lol(0) = L_{\mathrm{ol},0} .
+\]
+
+\vspace{0.5em}
+\begin{block}{One-way coupling, and why it matters}
+$\Lbl$ never reads $\PBR$, $\Cx$ or $L_{\mathrm{ol},0}$. Every barrier-layer
+result, including the ten-year prediction, is structurally immune to
+everything the outer layer does. This is what lets us report an
+outer-layer non-result without contaminating the headline number.
+\end{block}
+\end{frame}
+
+\begin{frame}{Closed form, and what we verify against it}
+With $\Cbl = 0$ the barrier equation integrates exactly:
+\[
+  \Lbl(t) \;=\; \frac{1}{b_3}\,
+  \ln\!\Big( e^{\,b_3 L_0} + \Abl\, b_3\, t \Big).
+\]
+
+\vspace{0.4em}
+\begin{columns}[T]
+\begin{column}{0.55\textwidth}
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[node distance=7mm,every node/.style={font=\scriptsize}]
+  \node[draw,rounded corners,fill=alloyc!12,minimum width=22mm,minimum height=7mm] (data) {6 data points};
+  \node[draw,rounded corners,fill=barrier!15,right=10mm of data,minimum width=26mm,minimum height=7mm] (inv) {differentiable inversion};
+  \node[draw,rounded corners,fill=barrier!15,right=10mm of inv,minimum width=20mm,minimum height=7mm] (par) {$\hat\theta$};
+  \node[draw,rounded corners,fill=outer!18,below=9mm of par,minimum width=20mm,minimum height=7mm] (ext) {$\Lbl(10\,\mathrm{y})$};
+  \node[draw,rounded corners,fill=nizone!18,below=9mm of inv,minimum width=26mm,minimum height=7mm] (cf) {closed form};
+
+  \draw[-{Stealth[length=2mm]}] (data)--(inv);
+  \draw[-{Stealth[length=2mm]}] (inv)--(par);
+  \draw[-{Stealth[length=2mm]}] (par)--(ext);
+  \draw[-{Stealth[length=2mm]},dashed,nizone!60!black] (cf)--(inv) node[midway,right,font=\tiny] {verify};
+\end{tikzpicture}}
+\end{column}
+\begin{column}{0.42\textwidth}
+\small
+The numerical solver is validated against the closed form to better than
+$1\times10^{-10}$~nm, so any misfit we report is a statement about the
+data and the model, never about the solver.
+\end{column}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------ hypothesis ---
+\begin{frame}{The question we actually ask}
+\begin{block}{Hypothesis}
+The six measurements are enough to \emph{fit} the reduced point defect
+model, but not enough to \emph{identify} it; and the resulting
+extrapolation is dominated by the choice of model form rather than by the
+data.
+\end{block}
+
+\vspace{0.8em}
+Three tests, each capable of falsifying it:
+\begin{enumerate}
+  \item \textbf{Profile likelihood} across each parameter, with the others re-optimised.
+  \item \textbf{Parametric bootstrap}, 1000 members, resampling at the measured scatter.
+  \item \textbf{Prior relaxation}, to check that a conclusion is not an artefact of a prior.
+\end{enumerate}
+
+\vspace{0.6em}
+\small And one comparison: the same data fitted with a purely empirical
+power law, then both extrapolated.
+\end{frame}
+
+% --------------------------------------------------------------- results ---
+\begin{frame}{Result 1: the model fits}
+\begin{columns}[T]
+\begin{column}{0.6\textwidth}
+\centering
+\includegraphics[width=\linewidth]{fig3_fits_vs_data.png}
+\end{column}
+\begin{column}{0.38\textwidth}
+\small
+Accepted model \textbf{M4}:
+\[
+\begin{aligned}
+\Abl &= 0.7269~\mathrm{nm/h}\\
+b_3 &= -0.012487~\mathrm{nm^{-1}}\\
+\PBR &= 1.096\\
+L_0 &= 1.924~\mathrm{nm}\\
+L_{\mathrm{ol},0} &= 115.6~\mathrm{nm}
+\end{aligned}
+\]
+\vspace{-0.3em}
+\[\chi^2 = 5.79,\quad \mathrm{dof}=1\]
+
+\vspace{0.4em}
+{\footnotesize The empirical power law gives $\chi^2 = 20.10$ on 2 dof, so
+the mechanistic model is the better description of \emph{these} points.}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Result 2: but the fit is one measurement}
+Weighted residual decomposition at M4:
+
+\vspace{0.5em}
+\centering
+\begin{tabular}{lrrr}
+\toprule
+ & $72$~h & $168$~h & $480$~h \\
+\midrule
+Cr (barrier) & $+0.924$ & $\mathbf{-2.154}$ & $+0.149$ \\
+Fe (outer)   & $+0.242$ & $-0.419$ & $+0.210$ \\
+\bottomrule
+\end{tabular}
+
+\vspace{1em}
+\begin{columns}
+\begin{column}{0.48\textwidth}
+\begin{alertblock}{95\%}
+of $\chi^2$ sits on the three chromium points.
+\end{alertblock}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{alertblock}{80\%}
+sits on the single $168$~h chromium point.
+\end{alertblock}
+\end{column}
+\end{columns}
+
+\vspace{0.7em}
+\small
+A goodness-of-fit statistic reported as a single number hides this
+completely. The model is being judged, in effect, by one measurement.
+\end{frame}
+
+\begin{frame}{Result 3: one parameter is not determined at all}
+\begin{columns}[T]
+\begin{column}{0.56\textwidth}
+\centering
+\includegraphics[width=\linewidth]{fig4_profile_likelihood.png}
+\end{column}
+\begin{column}{0.42\textwidth}
+\scriptsize
+\begin{tabular}{lrl}
+\toprule
+param & $\max\Delta\chi^2$ & verdict \\
+\midrule
+$b_3$   & $129.6$ & identifiable \\
+$L_{\mathrm{ol},0}$ & $58.2$ & identifiable \\
+$\Abl$  & $50.0$ & identifiable \\
+$\PBR$  & $19.5$ & weakly id. \\
+$L_0$   & $\mathbf{1.0}$ & \textcolor{warn}{unidentifiable} \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.8em}
+\normalsize
+$L_0$'s profile is \textbf{flat}: the data cannot move it. Its apparent
+bootstrap precision ($1.92 \pm 0.04$~nm) is the prior speaking, not the
+measurements.
+
+\vspace{0.5em}
+$\PBR$ spans $[0.24,\,2.32]$ at $1\sigma$.
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Result 4: the outer layer is exactly determined, so it says nothing}
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\centering
+\begin{tikzpicture}[every node/.style={font=\scriptsize}]
+  \node[draw,rounded corners,fill=outer!15,minimum width=46mm,minimum height=11mm,align=center] (p) at (0,1.6)
+    {\textbf{3 free parameters}\\[1pt] $\PBR$ \quad $\Cx$ \quad $L_{\mathrm{ol},0}$};
+  \node[draw,rounded corners,fill=alloyc!15,minimum width=46mm,minimum height=11mm,align=center] (d) at (0,-0.3)
+    {\textbf{3 observations}\\[1pt] Fe at $72$, $168$, $480$~h};
+  \draw[<->,very thick,warn] (p)--(d) node[midway,right,warn,font=\tiny,xshift=2pt] {0 dof};
+  \node[align=center,font=\footnotesize] at (0,-1.9) {exactly determined\\$\Rightarrow$ \emph{any} admissible $\PBR$ is reachable};
+\end{tikzpicture}
+\end{column}
+\begin{column}{0.48\textwidth}
+\scriptsize
+\begin{tabular}{lrr}
+\toprule
+$\PBR$ & $\Delta\chi^2$ & $\Cx$ (nm/h) \\
+\midrule
+$1.096$ (fit, $\Cx\!=\!0$) & --- & $0$ \\
+$2.053$ (mass balance) & $-0.120$ & $-0.241$ \\
+$2.156$ (with Ni routing) & $-0.131$ & $-0.264$ \\
+$2.433$ (no precipitate) & $-0.157$ & $-0.327$ \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.8em}
+\normalsize
+The apparent factor-$1.9$ discrepancy between the fitted $\PBR$ and the
+stoichiometric mass balance is \textbf{not a discrepancy}. The
+stoichiometric value costs nothing; $\chi^2$ even improves.
+
+\vspace{0.4em}
+\footnotesize The data cannot separate iron \emph{production} from iron
+\emph{loss to the coolant}.
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{A falsifiable by-product}
+Imposing the stoichiometric ratio forces a specific outer-layer loss rate,
+and therefore a specific iron release into the coolant:
+
+\vspace{0.6em}
+\centering
+\begin{tabular}{lrr}
+\toprule
+$\PBR$ imposed & $\Cx$ (nm/h) & Fe release ($\mu$g\,dm$^{-2}$\,h$^{-1}$) \\
+\midrule
+$1.096$ & $-0.025$ & $0.94$ \\
+$2.156$ & $-0.264$ & $\mathbf{9.94}$ \\
+$2.433$ & $-0.327$ & $12.29$ \\
+\bottomrule
+\end{tabular}
+
+\vspace{1em}
+\raggedright
+\small
+A coolant-chemistry measurement discriminates these by an order of
+magnitude. The non-result therefore comes with an experiment that would
+convert it into a result.
+\end{frame}
+
+\begin{frame}{Result 5: uncertainty, propagated honestly}
+\centering
+\includegraphics[height=0.62\textheight]{fig5_uncertainty_ensemble.png}
+
+\vspace{0.4em}
+\small
+1000 bootstrap members, zero failures. At ten years:
+$\Lbl = \mathbf{535}$~nm, $95\%$ interval $[447,\,704]$~nm.
+
+\vspace{0.2em}
+{\footnotesize This interval is \emph{conditional on the model form being right}.}
+\end{frame}
+
+% ---------------------------------------------------------- the key result --
+\begin{frame}{Result 6: the key result}
+\begin{columns}[T]
+\begin{column}{0.52\textwidth}
+\centering
+\includegraphics[width=\linewidth]{fig6_long_time.png}
+\end{column}
+\begin{column}{0.46\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.85,every node/.style={font=\tiny}]
+  \draw[->] (0,0)--(6.2,0) node[right,font=\scriptsize] {$t$};
+  \draw[->] (0,0)--(0,3.4) node[above,font=\scriptsize] {$\Lbl$};
+  \fill[alloyc!18] (0,0) rectangle (1.5,3.4);
+  \node[rotate=90,alloyc!60!black] at (0.75,1.7) {data};
+  \draw[very thick,barrier] plot[domain=0:6,samples=60] (\x,{1.35*ln(1+2.6*\x)/ln(3.6)*0.62});
+  \draw[very thick,outer,dashed] plot[domain=0:6,samples=60] (\x,{0.86*pow(\x,0.62)});
+  \node[barrier!70!black,anchor=west,font=\scriptsize] at (4.4,1.35) {mechanistic};
+  \node[outer!70!black,anchor=west,font=\scriptsize] at (3.5,2.95) {power law};
+  \draw[<->,warn,very thick] (6.0,1.42)--(6.0,3.05);
+  \node[warn,anchor=west,font=\scriptsize,align=left] at (6.05,2.2) {$\times 3.5$\\to $6.3$};
+\end{tikzpicture}
+
+\vspace{0.6em}
+\begin{alertblock}{Same data, divergent futures}
+Ten-year barrier thickness\\[2pt]
+mechanistic \quad $535$~nm\\
+power law \quad\; $1853$ to $3375$~nm\\[3pt]
+a factor of \textbf{3.5 to 6.3}
+\end{alertblock}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Why you cannot choose between them on the data}
+\centering
+\begin{tabular}{lrrr}
+\toprule
+ & $\chi^2$/dof & AIC & BIC \\
+\midrule
+M4 (mechanistic) & $5.79/1$ & $15.79$ & $\mathbf{14.75}$ \\
+power law        & $20.10/2$ & $15.84$ & $15.01$ \\
+\bottomrule
+\end{tabular}
+
+\vspace{1.2em}
+\raggedright
+\begin{alertblock}{$\Delta\mathrm{AIC} = 0.05$}
+On $n = 6$ points the two models are \textbf{statistically
+indistinguishable}, and they disagree six-fold about the thing we
+actually want to know.
+\end{alertblock}
+
+\vspace{0.6em}
+\small
+This is the whole argument in one line. Model selection on the
+calibration window carries essentially no information about the
+extrapolation.
+\end{frame}
+
+\begin{frame}{So: design the experiment that settles it}
+The two forms separate as the exposure lengthens. Against the measured
+scan-to-scan scatter:
+
+\vspace{0.8em}
+\centering
+\begin{tabular}{lr}
+\toprule
+separation criterion & exposure required \\
+\midrule
+$2\sigma$, published coefficients & $1437$~h \\
+$3\sigma$, published coefficients & $2020$~h \\
+$3\sigma$, refit coefficients & $4011$~h \\
+$2\sigma$, full envelope & $\mathbf{\sim 3000}$~h \\
+\bottomrule
+\end{tabular}
+
+\vspace{1.2em}
+\raggedright
+\begin{block}{Recommendation}
+A single designed exposure of roughly $3000$~h discriminates the
+mechanistic and empirical kinetics. That is the cheapest possible
+resolution, and nothing short of it will do.
+\end{block}
+\end{frame}
+
+\begin{frame}{Result 7: how much does the operating envelope matter?}
+\centering
+\includegraphics[height=0.66\textheight]{fig7_sensitivity_maps.png}
+
+\vspace{0.3em}
+\small
+Across the scanned temperature, pressure and oxygen envelope the ten-year
+prediction varies by a factor of $1.19$ to $1.56$; small next to the
+$3.5$ to $6.3$ from the choice of model form.
+\end{frame}
+
+\begin{frame}{Result 8: the spatial extension predicts composition with no new parameters}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{fig8_steady_spatial.png}\\
+{\scriptsize steady spatial solution}
+\end{column}
+\begin{column}{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{fig10_composition_edx.png}\\
+{\scriptsize predicted vs measured composition}
+\end{column}
+\end{columns}
+
+\vspace{0.5em}
+\small
+The spatial model is calibrated only by the kinetics above, then asked
+for depth-resolved composition and the interfacial nickel enrichment.
+This is a genuine out-of-sample test, and it is where the mechanistic
+model earns its keep over the power law.
+\end{frame}
+
+% ------------------------------------------------------------- limitations --
+\begin{frame}{What this study cannot claim}
+\begin{itemize}
+  \item \textbf{Six data points.} No amount of further computation raises
+        the information content. We add no new experiment.
+  \item \textbf{The fit is formally rejected.} $\chi^2 = 5.79$ on $1$ dof
+        gives $p = 0.016$; the error scale needed to make it acceptable is
+        $s = 2.4$.
+  \item \textbf{Part of the data is digitised} from a published figure.
+  \item \textbf{The $[447, 704]$~nm interval understates the truth.} It is
+        conditional on the model form, and the power-law comparison shows
+        model-form uncertainty is roughly an order of magnitude larger.
+  \item \textbf{The identifiability machinery is standard} elsewhere. The
+        novelty is the application and the two structural findings, not
+        the method.
+\end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------- conclusions --
+\begin{frame}{Conclusions}
+\begin{enumerate}
+  \item A reduced point defect model fits published depth-profile data for
+        AISI~347 in BWR hydrothermal water, but \textbf{one of five
+        parameters is undetermined} and a second only weakly determined.
+  \item \textbf{95\% of the fit statistic rests on three points and 80\% on
+        one.} Single-number goodness of fit conceals this.
+  \item The outer layer has \textbf{three parameters and three
+        observations}. The apparent mass-balance discrepancy is a counting
+        artefact, and the stoichiometric ratio is fully admissible.
+  \item Mechanistic and empirical kinetics are \textbf{indistinguishable on
+        the calibration data} ($\Delta\mathrm{AIC} = 0.05$) yet differ
+        \textbf{3.5 to 6.3 fold} at ten years.
+  \item \textbf{A designed exposure near $3000$~h would settle it.}
+\end{enumerate}
+
+\vspace{0.6em}
+\begin{block}{The transferable point}
+Report identifiability alongside goodness of fit, or the extrapolation is
+not evidence.
+\end{block}
+\end{frame}
+
+\begin{frame}[standout]
+Questions
+\end{frame}
+
+% ---------------------------------------------------------------- backup ---
+\appendix
+
+\begin{frame}{Backup: the model ladder}
+\centering
+\scriptsize
+\begin{tabular}{lrrrrrr}
+\toprule
+model & extra & $n_{\mathrm{free}}$ & $\chi^2$ & $\Abl$ & $\PBR$ & $L_{\mathrm{ol},0}$ \\
+\midrule
+M1 core & --- & 4 & $7.15$ & $0.7516$ & $2.433$ & $0$ \\
+M2 & $+\Cbl$ & 5 & $7.15$ & $0.7516$ & $2.433$ & $0$ \\
+M3 & $+\Cbl+\Cx$ & 6 & $4.11$ & $955.8$ & $4.873$ & $0$ \\
+\textbf{M4 (accepted)} & $+L_{\mathrm{ol},0}$ & 5 & $\mathbf{5.79}$ & $0.7269$ & $1.096$ & $115.6$ \\
+M5 & $+L_{\mathrm{ol},0}+\Cbl$ & 6 & $5.79$ & $0.7269$ & $1.096$ & $115.6$ \\
+power law & $k,n$ per layer & 4 & $20.10$ & --- & --- & --- \\
+\bottomrule
+\end{tabular}
+
+\vspace{1em}
+\raggedright
+\small
+M3 reaches a lower $\chi^2$ by running onto a degenerate ridge
+($\Abl \approx \Cbl \approx 956$, $b_3 \to 0$), which is why it is not
+accepted. M5 recovers M4 exactly, confirming $\Cbl$ is redundant.
+\end{frame}
+
+\begin{frame}{Backup: solver verification}
+\centering
+\includegraphics[width=\linewidth,height=0.7\textheight,keepaspectratio]{fig2_baseline_verification.png}
+
+\vspace{0.3em}
+\small
+Numerical against closed form, agreement to better than
+$1\times10^{-10}$~nm.
+\end{frame}
+
+\begin{frame}{Backup: reproducing every number}
+\small
+All quantities on these slides come from committed artefacts:
+
+\vspace{0.6em}
+\begin{tabular}{ll}
+\toprule
+slide content & artefact \\
+\midrule
+M4 parameters, profiles & \texttt{outputs/paper/table1\_parameters.csv} \\
+model ladder & \texttt{outputs/paper/table2\_model\_ladder.csv} \\
+bootstrap, AIC, power law & \texttt{outputs/paper/referee\_stats.json} \\
+$\PBR$ closure, Fe release & \texttt{outputs/paper/table10\_pbr\_closure.csv} \\
+\bottomrule
+\end{tabular}
+
+\vspace{1em}
+The command behind each artefact is listed in
+\texttt{docs/REPRODUCE.md}.
+\end{frame}
+
+\end{document}
