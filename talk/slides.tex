@@ -17,9 +17,11 @@
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,decorations.pathmorphing,patterns,fit,backgrounds,calc}
 
-%% Figures live in the manuscript folder; the deck reads them rather than
-%% keeping a second copy that could go stale.
-\graphicspath{{../paper/figures/}}
+%% The deck keeps its own copies so talk/ is self-contained and can be
+%% handed over or zipped on its own.  Refresh them with
+%% scripts/make_talk_figs.py after regenerating the paper figures; that
+%% script reads the \includegraphics names below, so the two cannot drift.
+\graphicspath{{figures/}}
 
 \definecolor{barrier}{RGB}{31,110,160}
 \definecolor{outer}{RGB}{200,110,40}
