@@ -78,3 +78,7 @@ paper/npj-submission.zip
 # tracked; the .tex, the class files and the built PDFs are not.
 paper/
 paper-corrosion-science/
+
+# Drafting material: the paper plan, the writing plan, the literature notes,
+# the facts table and the working draft. Not part of the released software.
+docs/internal/

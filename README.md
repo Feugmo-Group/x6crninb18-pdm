@@ -221,7 +221,6 @@ paper-corrosion-science/
 docs/             pdm_eqns.md (full derivation), IMPL_REPORT.md (validation record),
                   REPRODUCE.md (artefact -> command map, generated),
                   NSEM_DEPENDENCY.md (what PhysicsNeMo is needed for, and the pin)
-docs/internal/    planning and drafting notes, kept for provenance
 outputs/          committed results behind every number in the paper;
                   regenerable — see docs/REPRODUCE.md
 ```
