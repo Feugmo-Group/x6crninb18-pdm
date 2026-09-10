@@ -3,12 +3,9 @@
 Run from the example root:  python -m pytest tests/ -q
 """
 
-import os
-import sys
 
 import numpy as np
 import pytest
-
 
 import htw_pdm.baseline_fit as bf  # noqa: E402
 import htw_pdm.mass_balance as mb  # noqa: E402

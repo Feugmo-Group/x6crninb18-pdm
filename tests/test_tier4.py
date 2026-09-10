@@ -7,15 +7,22 @@ unverifiable-by-construction results trustworthy.
 Run from the example root:  python -m pytest tests/test_tier4.py -q
 """
 
-import os
-import sys
 import warnings
 
 import numpy as np
 import pytest
-import torch
 
 warnings.filterwarnings("ignore")
+
+# Tier 4 is the neural half throughout -- there is no classical subset here to
+# preserve, so the whole module stands down when the dependencies are absent.
+pytest.importorskip("torch", reason="PyTorch not installed (Tier-4 is neural)")
+pytest.importorskip(
+    "physicsnemo", reason="PhysicsNeMo not installed; see docs/NSEM_DEPENDENCY.md"
+)
+
+import torch  # noqa: E402
+from physicsnemo.experimental.models.scen import DVRMapper  # noqa: E402
 
 from htw_pdm.physics import Parameters  # noqa: E402
 from htw_pdm.tier2_physics import (  # noqa: E402
@@ -24,19 +31,18 @@ from htw_pdm.tier2_physics import (  # noqa: E402
     transient_groups,
     transient_residuals,
 )
-from htw_pdm.tier3_wagner import NI_M, RISE, T_OBS, model as wagner_scipy  # noqa: E402
+from htw_pdm.tier3_wagner import NI_M, RISE, T_OBS  # noqa: E402
+from htw_pdm.tier3_wagner import model as wagner_scipy  # noqa: E402
 from htw_pdm.tier4_ni_closure import _tgrid, soft_width, wagner_torch  # noqa: E402
 from htw_pdm.tier4_pnp import field_diagnostics, newton_pnp, pnp_species  # noqa: E402
 from htw_pdm.tier4_transient_inverse import (  # noqa: E402
     NT,
     NX,
-    TAU0,
     T_C_H,
+    TAU0,
     cn_forward,
     scaled_groups,
 )
-
-from physicsnemo.experimental.models.scen import DVRMapper  # noqa: E402
 
 P1 = Parameters()
 L_TEST_NM = 134.785  # L_bl(480 h) at the M4 kinetics

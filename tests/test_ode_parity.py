@@ -3,12 +3,27 @@
 Run from the example root:  python -m pytest tests/ -q
 """
 
-import os
-import sys
 
 import numpy as np
 import pytest
-import torch
+
+from htw_pdm._optional import have
+
+# The classical parity and digitization tests are the ones that pin the
+# manuscript's headline numbers, and they must run on a NumPy/SciPy-only
+# install.  Only the tests that genuinely exercise the neural path are skipped
+# when its dependencies are absent -- an import-time `import torch` here would
+# have failed collection for the whole module instead.
+requires_torch = pytest.mark.skipif(
+    not have("torch"), reason="PyTorch not installed (neural path only)"
+)
+requires_physicsnemo = pytest.mark.skipif(
+    not have("physicsnemo"),
+    reason="PhysicsNeMo not installed; see docs/NSEM_DEPENDENCY.md",
+)
+
+if have("torch"):
+    import torch
 
 
 from htw_pdm.baseline_ode import (  # noqa: E402
@@ -65,6 +80,7 @@ class TestVeileDigitization:
 
 
 class TestNSEMPhysics:
+    @requires_torch
     def test_cn_residual_of_exact_solution(self):
         """CN residuals of the closed-form solution vanish at O(dt^3)."""
         from htw_pdm.physics import L_C_NM, T_C_H, NondimGroups, Parameters, pdm_residuals
@@ -91,6 +107,7 @@ class TestNSEMPhysics:
         for f in ("A_bl", "b3", "C_bl", "PBR_eff", "C_x", "L0", "L_ol0"):
             assert getattr(q, f) == pytest.approx(getattr(p, f), rel=1e-12)
 
+    @requires_physicsnemo
     def test_hard_integrator_vs_closed_form(self):
         from htw_pdm.inverse_trainer import KineticParams, integrate_hard
         from htw_pdm.physics import L_C_NM, T_C_H, NondimGroups, Parameters
@@ -108,11 +125,12 @@ class TestNSEMPhysics:
 
 
 class TestTier2Spatial:
+    @requires_physicsnemo
     def test_newton_vs_analytic_both_species(self):
+        from physicsnemo.experimental.models.scen import DVRMapper
+
         from htw_pdm.physics import Parameters
         from htw_pdm.tier2_physics import analytic_steady, newton_steady, species_groups
-
-        from physicsnemo.experimental.models.scen import DVRMapper
 
         mapper = DVRMapper(24, 0.0, 1.0, 0.0, dtype=torch.float64)
         for g in species_groups(Parameters(), 134.0).values():
@@ -120,12 +138,13 @@ class TestTier2Spatial:
             exact = torch.tensor(analytic_steady(g, mapper.nodes.numpy()))
             assert float((chat - exact).abs().max()) < 1e-10
 
+    @requires_physicsnemo
     def test_steady_flux_is_constant(self):
         """The analytic steady profile carries Jhat = s at every node."""
+        from physicsnemo.experimental.models.scen import DVRMapper
+
         from htw_pdm.physics import Parameters
         from htw_pdm.tier2_physics import analytic_steady, flux_hat, species_groups
-
-        from physicsnemo.experimental.models.scen import DVRMapper
 
         mapper = DVRMapper(32, 0.0, 1.0, 0.0, dtype=torch.float64)
         for g in species_groups(Parameters(), 134.0).values():
@@ -133,6 +152,7 @@ class TestTier2Spatial:
             J = flux_hat(chat, mapper.D1, g)
             assert float((J - g.s).abs().max()) < 1e-8
 
+    @requires_torch
     def test_transient_groups_reduce_to_steady_at_reference(self):
         """jhat(tau_end) = 1 and Pe(tau_end) matches the steady groups."""
         import numpy as np
@@ -179,7 +199,7 @@ class TestParametricPhysics:
         """Arrhenius: A_bl increases with T; field: |b3| decreases with T;
         ECP: A_bl increases with [O2]; dissolution scales as sqrt(C_O)."""
         from htw_pdm.physics import Parameters
-        from htw_pdm.physics_parametric import C_O, ConditionScan, apparent_parameters
+        from htw_pdm.physics_parametric import ConditionScan, apparent_parameters
 
         ref = Parameters()
         scan = ConditionScan(dG0_R=50e3)

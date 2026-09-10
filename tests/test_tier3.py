@@ -3,12 +3,9 @@
 Run from the example root:  python -m pytest tests/ -q
 """
 
-import os
-import sys
 
 import numpy as np
 import pytest
-
 
 from htw_pdm.physics import Parameters  # noqa: E402
 from htw_pdm.tier3_wagner import (  # noqa: E402
