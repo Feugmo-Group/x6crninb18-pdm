@@ -1,0 +1,48 @@
+cff-version: 1.2.0
+message: "If you use this software or its results, please cite both the software and the paper it accompanies."
+title: "htw-pdm: Point Defect Model identification for X6CrNiNb18-10 in BWR hydrothermal water"
+abstract: >-
+  Mechanistic identification of passive-film growth kinetics on Nb-stabilized
+  AISI 347 (X6CrNiNb18-10) in boiling-water-reactor hydrothermal water at
+  240 C, 7 MPa and 0.4 ppm dissolved oxygen, fitted to published oxide depth
+  profiles at three exposure times. Includes the classical fits and model
+  ladder, a differentiable physics-informed inversion, profile-likelihood and
+  bootstrap identifiability analysis, and the spatial extension.
+type: software
+version: 1.0.0
+license: Apache-2.0
+repository-code: "https://github.com/Feugmo-Group/x6crninb18-pdm"
+keywords:
+  - corrosion
+  - point defect model
+  - parameter identifiability
+  - physics-informed neural networks
+  - stainless steel
+  - boiling-water reactor
+authors:
+  - family-names: "Tetsassi Feugmo"
+    given-names: "Conrard Giresse"
+    email: "cgtetsas@uwaterloo.ca"
+    affiliation: "University of Waterloo"
+    orcid: "https://orcid.org/0000-0002-8992-4335"
+references:
+  - type: article
+    title: "Neural spectral element methods for stiff multiphysics PDEs with electrochemical transport benchmarks"
+    authors:
+      - family-names: "Tetsassi Feugmo"
+        given-names: "Conrard Giresse"
+      - family-names: "Pankaczy"
+        given-names: "David"
+    journal: "Machine Learning: Science and Technology"
+    year: 2026
+    volume: 7
+    issue: 4
+    start: 45053
+    doi: "10.1088/2632-2153/ae8e2f"
+  - type: article
+    title: "Investigation of Oxide Layer Development of X6CrNiNb18-10 Stainless Steel Exposed to High-Temperature Water"
+    year: 2024
+    journal: "Materials"
+    volume: 17
+    doi: "10.3390/ma17184500"
+    notes: "Source of the digitized layer-thickness data (CC-BY)."

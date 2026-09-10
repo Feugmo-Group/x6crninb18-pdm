@@ -76,6 +76,57 @@
     "n_scans_assumed": 3,
     "rel_sigma_mean": 0.1272227310733374,
     "t_2sigma_h": 1437.2896630170967,
-    "t_3sigma_h": 2020.132674765531
+    "t_3sigma_h": 2020.132674765531,
+    "n_powerlaw_bootstrap": 1000,
+    "thresholds": {
+      "published_coeffs__scatter_only": {
+        "t_2sigma_h": 2545.581471127752,
+        "sustained_to_window_end_2sigma": true,
+        "t_3sigma_h": 4013.96764078344,
+        "sustained_to_window_end_3sigma": true,
+        "t_2sigma_window_end_h": null,
+        "t_3sigma_window_end_h": null,
+        "separation_max_sigma": 14.63194225811325,
+        "t_at_separation_max_h": 49999.99999999999,
+        "separation_at_window_end_sigma": 14.63194225811325,
+        "powerlaw_fit_uncertainty_included": false
+      },
+      "published_coeffs__full_budget": {
+        "t_2sigma_h": 2988.2439635784795,
+        "sustained_to_window_end_2sigma": true,
+        "t_3sigma_h": 5129.0351451092065,
+        "sustained_to_window_end_3sigma": true,
+        "t_2sigma_window_end_h": null,
+        "t_3sigma_window_end_h": null,
+        "separation_max_sigma": 10.593804077515532,
+        "t_at_separation_max_h": 49999.99999999999,
+        "separation_at_window_end_sigma": 10.593804077515532,
+        "powerlaw_fit_uncertainty_included": false
+      },
+      "weighted_refit__scatter_only": {
+        "t_2sigma_h": 1437.2896630170967,
+        "sustained_to_window_end_2sigma": true,
+        "t_3sigma_h": 2020.132674765531,
+        "sustained_to_window_end_3sigma": true,
+        "t_2sigma_window_end_h": null,
+        "t_3sigma_window_end_h": null,
+        "separation_max_sigma": 30.391435768507918,
+        "t_at_separation_max_h": 49999.99999999999,
+        "separation_at_window_end_sigma": 30.391435768507918,
+        "powerlaw_fit_uncertainty_included": false
+      },
+      "weighted_refit__full_budget": {
+        "t_2sigma_h": 1928.4019411166487,
+        "sustained_to_window_end_2sigma": true,
+        "t_3sigma_h": 5492.936980821108,
+        "sustained_to_window_end_3sigma": false,
+        "t_2sigma_window_end_h": null,
+        "t_3sigma_window_end_h": 34355.60994230855,
+        "separation_max_sigma": 3.1774293933720243,
+        "t_at_separation_max_h": 12047.198007769643,
+        "separation_at_window_end_sigma": 2.886176763888387,
+        "powerlaw_fit_uncertainty_included": true
+      }
+    }
   }
 }

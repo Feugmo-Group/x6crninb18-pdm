@@ -10,13 +10,13 @@ material rather than a published benchmark:
 |---|---|---|---|
 | 1 | NSEM method paper (SCEN spectral-element networks, DVR operators) | *Machine Learning: Science and Technology* — submitted | Introduces the architecture |
 | 2 | PINNACLE PDM paper (autodiff MLP-PINN, passive PDM, failure modes, FEM branch anchor) | *APL Machine Learning* — under revision | Establishes the PINN failure-mode taxonomy on the PDM family |
-| 2.5 | Farooqi, Bösing, Tetsassi Feugmo (2025), "A physics-informed neural network approach to the point defect model for electrochemical oxide film growth," arXiv:2510.02872 | preprint | **Directly adjacent companion paper (found via lit review, `paper/literature_review.md` Thread 5) — same PDM/PINN lineage, likely overlapping authorship.** Validates forward/inverse PDM-PINN machinery against synthetic FEM benchmarks; catalogues 4 training-stability failure modes (imbalanced losses, scale disparity, BC enforcement, spurious convergence). Never touches real alloy data, identifiability, or extrapolation. |
+| 2.5 | Farooqi, Bösing, Tetsassi Feugmo (2025), "A physics-informed neural network approach to the point defect model for electrochemical oxide film growth," arXiv:2510.02872 | preprint | **Directly adjacent companion paper (found via lit review, `docs/internal/literature_review.md` Thread 5) — same PDM/PINN lineage, likely overlapping authorship.** Validates forward/inverse PDM-PINN machinery against synthetic FEM benchmarks; catalogues 4 training-stability failure modes (imbalanced losses, scale disparity, BC enforcement, spurious convergence). Never touches real alloy data, identifiability, or extrapolation. |
 | 3 | rpdm_nsem (hard-constrained NSEM, full Bösing Fig. 4, Newton verification) | *Journal of Computational Physics* — planned | Proves the toolkit on the hardest published PDM benchmark, pure-forward |
 | 4 | **This paper** (HTW_PDM for AISI 347 in BWR water, inverse from Veile 2024 data) | **to decide — see Section 2** | First inverse identification from real data; first engineering-relevant material/environment; completes the *applied half* of 2.5's methodology (real data, identifiability, a 5th failure mode specific to sparse-real-data inversion, long-time/operating-envelope prediction) |
 
 **CONFIRMED (2026-07-11)**: arXiv:2510.02872 is our own prior work — required
 self-citation, Introduction frames paper 4 as "completing the applied half"
-of it (see `paper/literature_review.md` Thread 5 synthesis), not as a first
+of it (see `docs/internal/literature_review.md` Thread 5 synthesis), not as a first
 PINN-PDM attempt.
 
 Framing consequence: papers 1–3 carry the methods burden. Paper 4 **must not** be
@@ -130,7 +130,7 @@ Continuity requirements (reviewers will cross-read):
     identifiability message; belongs in Discussion/Limitations, not its own
     Results section.
 
-**Sharpened gap statement** (from `paper/literature_review.md`, informed by a
+**Sharpened gap statement** (from `docs/internal/literature_review.md`, informed by a
 full lit review — see that file for the complete reference list and
 per-thread analysis): PDM kinetics have been fit to sparse data (3-6 points,
 whether EIS spectra or depth profiles) for four decades without ever
@@ -184,7 +184,7 @@ chemistry discussion grows), *npj Computational Materials* (only if the editors
 at npj Mater. Degrad. redirect — it would drag the framing back toward methods,
 which papers 1–3 already cover).
 
-**Audience-specific gap framing** (from `paper/literature_review.md` synthesis
+**Audience-specific gap framing** (from `docs/internal/literature_review.md` synthesis
 — both share the same evidence base, differ only in what leads the
 Introduction):
 - **Nuclear/BWR materials framing (npj MD lead)**: current LWR-internals
@@ -350,7 +350,7 @@ distinctive.)
       note): the paper should present the E1-corrected statement (no bound below
       1 nm/h from thickness data alone; branches indistinguishable to 10⁵ y),
       not the earlier 0.71 nm/h figure.
-- [x] Literature review complete — `paper/literature_review.md` (24 references,
+- [x] Literature review complete — `docs/internal/literature_review.md` (24 references,
       6 threads, full synthesis + audience-specific gap framings). Recommend a
       citation-management pass to verify DOIs/page ranges before submission
       (several entries reconstructed from secondary listings).
@@ -358,7 +358,7 @@ distinctive.)
       17:4500), Macdonald PDM lineage, papers 1–3 of the series (statuses as of
       submission), Farooqi/Bösing/Tetsassi Feugmo 2025 (arXiv:2510.02872),
       IAPWS-97 for water properties — full candidate list in
-      `paper/literature_review.md` Section "Full reference list".
+      `docs/internal/literature_review.md` Section "Full reference list".
 - [ ] Confirm the [O₂]/ECP caveat wording with a BWR water-chemistry reference
       (measured ECP-vs-O₂ curves are steeper than ideal-Nernst in the ppb
       transition region — the maps are a lower bound on O₂ sensitivity).
@@ -369,7 +369,7 @@ distinctive.)
    confirmation (Section 6, first boxes) — the latter materially changes how
    the Introduction can be framed.
 2. I draft the abstract + introduction for review in the chosen framing,
-   using `paper/literature_review.md`'s synthesis as the citation backbone.
+   using `docs/internal/literature_review.md`'s synthesis as the citation backbone.
 3. Build Figs. 8-9 (Tier-2 D-cancellation/Newton parity, quasi-steady lag);
    publication pass on Figs. 3-7; assemble Tables 1-7 (1-4 Tier-1, 5-7 new
    Tier-2/3) from IMPL_REPORT + the `outputs/tier2_*`/`tier3_*` CSVs.

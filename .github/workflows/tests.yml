@@ -1,0 +1,100 @@
+name: tests
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # The classical path is what carries every headline number in the manuscript,
+  # and it must keep working on a NumPy/SciPy-only install -- so that is what CI
+  # installs. The neural half needs a pinned PhysicsNeMo revision and a PyTorch
+  # download; it is exercised by the `nsem` job below, not here.
+  classical:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install (classical path only)
+        run: uv sync --locked --python ${{ matrix.python-version }}
+
+      - name: Report what this environment can run
+        run: uv run python -m htw_pdm.check_environment
+
+      - name: Tests
+        run: uv run pytest tests/ -q
+
+      - name: The manuscript's headline numbers still hold
+        run: uv run pytest tests/test_paper_numbers.py -q
+
+      # The classical tier is a documented promise: every figure in the paper is
+      # drawable without the neural extra, and REPRODUCE.md labels commands on
+      # that basis. This job is the only place the promise can actually be
+      # tested, because it is the only environment without torch.
+      - name: Every manuscript figure is drawable without the neural extra
+        run: uv run pytest tests/test_classical_install.py -q
+
+      - name: The figure scripts really do run here
+        run: |
+          uv run python scripts/make_ni_curve.py
+          uv run python scripts/plot_results.py
+          uv run python scripts/plot_sensitivity_maps.py
+          uv run python scripts/make_paper_fig_f1.py
+          uv run python scripts/make_paper_fig_closure.py
+          uv run python scripts/make_paper_fig5.py
+          uv run python scripts/make_paper_figs.py
+
+      - name: REPRODUCE.md is current
+        run: |
+          uv run python scripts/make_reproduce_doc.py
+          git diff --exit-code docs/REPRODUCE.md
+
+      - name: The two venue versions still agree
+        run: uv run python scripts/check_versions_agree.py
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - run: uv run ruff check .
+
+
+  # Opt-in: pulls PyTorch and builds PhysicsNeMo from the pinned revision, so it
+  # is slow and is not run on every push. Run it before submitting or after
+  # changing the pin in [tool.uv.sources].
+  nsem:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install with the neural extras
+        run: uv sync --locked --extra nsem
+      - run: uv run python -m htw_pdm.check_environment
+      - run: uv run pytest tests/ -q
+      # Regenerating the F-1 artefact must keep reproducing the manuscript's
+      # numbers, not merely run. The seed-0 soft-mode inversion is deterministic
+      # in float64 on CPU, so this is a real check rather than a smoke test.
+      - name: The F-1 artefact regenerates to the published values
+        run: |
+          uv run python scripts/make_f1_trajectory.py
+          uv run pytest tests/test_paper_numbers.py -q -k NeuralArtefacts

@@ -117,7 +117,7 @@
       "b3": -0.0124787643678388,
       "oxide_ug_dm2_h": 1.2926589144722551,
       "Fe_ug_dm2_h": 0.9353633476126706,
-      "note": "M4 optimum (C_x pinned to zero)"
+      "note": "fitted value imposed, C_x free"
     },
     {
       "PBR_eff": 2.053,

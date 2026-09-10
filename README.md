@@ -26,25 +26,55 @@ leaving the governing equation unsatisfied, and is caught by re-solving the reco
 parameters through an exact forward solve.
 
 The manuscript exists in two venue versions, same science and same numbers:
-`paper/` targets *npj Materials Degradation* (Springer Nature `sn-jnl`, Methods at the
-back), and `paper-corrosion-science/` targets *Corrosion Science* (Elsevier `cas-sc`,
-Methods as section 2, plus the Highlights that venue requires). Built PDFs are in `paper/pdf/`
+`paper/` targets *npj Materials Degradation* (Springer Nature `sn-jnl`) and
+`paper-corrosion-science/` targets *Corrosion Science* (Elsevier `cas-sc`, plus the
+Highlights that venue requires). Both run Methods as section 2; the Corrosion Science
+version is generated from the npj source by `scripts/make_corrosion_science_version.py`. Built PDFs are in `paper/pdf/`
 and, for Corrosion Science, beside their sources in `paper-corrosion-science/`.
 
 ---
 
 ## Install
 
+The project is managed with [uv](https://docs.astral.sh/uv/), and everything —
+including the one dependency that is not on PyPI — installs from a locked,
+reproducible specification.
+
 ```bash
-pip install -e .            # classical fits, mass balance, Wagner/Tier-3 solves
-pip install -e .[nsem,dev]  # + the neural inversions and the test suite
+uv sync                 # classical path: fits, identifiability, mass balance,
+                        # Wagner/Tier-3 solves, and the test suite (~300 MB)
+uv sync --extra nsem    # + PyTorch and PhysicsNeMo, for the neural inversions
+uv run python -m htw_pdm.check_environment   # what can this environment run?
 ```
 
-**PhysicsNeMo is a hard dependency of the neural parts and is not installable from PyPI in
-the form this work needs.** Nine modules import `physicsnemo.experimental.models.scen`
-(`DVRMapper`), `physicsnemo.optim` (`TwoPhaseOptimizer`, `build_aggregator`) and
-`physicsnemo.utils`. Install the fork this package was developed against before
-`pip install -e .[nsem]`. Everything under "classical" below runs without it.
+Then prefix commands with `uv run`, or activate `.venv` and drop the prefix. Every
+command in this README works either way.
+
+**The split is deliberate.** Every headline number in the manuscript — the accepted
+fit, the identifiability verdicts, the bootstrap, the ten-year predictions — is
+reachable from `uv sync` alone, and so is **every figure**, including the two
+exhibits that report neural results: the F-1 failure mode and the constant-field
+closure refutation are drawn from committed artefacts rather than from checkpoints,
+so a classical clone rebuilds the whole paper. Only tables 3 and 4 are read out of
+training checkpoints; a classical run of `make_paper_tables.py` regenerates the rest
+and says so instead of overwriting those two with empty files.
+`docs/REPRODUCE.md` labels every command with the tier it needs, derived from an
+import graph rather than a hand-kept list, and `tests/test_classical_install.py`
+checks that label against reality in the classical CI job. The neural half is opt-in because it needs PyTorch and
+a PhysicsNeMo revision that is not on PyPI: the NSEM solver imports
+`physicsnemo.experimental.models.scen` (`DVRMapper`), `physicsnemo.optim`
+(`TwoPhaseOptimizer`, `build_aggregator`) and `physicsnemo.utils`, none of which are in
+the NVIDIA upstream. `[tool.uv.sources]` pins that dependency to an **immutable commit**
+of the fork that carries them, because a branch can move after publication and the
+revision behind a paper's results must not. See `docs/NSEM_DEPENDENCY.md` for the exact
+revision, the pip equivalent, and what to re-run if the pin changes.
+
+This package is standalone. It is not a fork of PhysicsNeMo and does not live inside
+one; PhysicsNeMo is an ordinary pinned dependency of an optional extra.
+
+Absent the neural half, the modules that need it raise an `ImportError` naming that
+document rather than a bare `ModuleNotFoundError`, and the neural tests skip rather
+than fail.
 
 Paths are resolved once by `htw_pdm.paths`, which locates the project root by walking up to
 `pyproject.toml`. Set `HTW_PDM_ROOT` to override. Nothing depends on the working directory.
@@ -61,6 +91,8 @@ Ordering matters in two places, noted inline. Timings are for a workstation CPU.
 
 ### Classical — no PhysicsNeMo required
 
+Prefix each with `uv run` (or activate `.venv` first).
+
 ```bash
 python -m htw_pdm.baseline_fit          # ~5 s   model ladder M1-M6, profile likelihood,
                                         #        long-time predictions (535 nm)
@@ -76,11 +108,18 @@ python scripts/make_referee_analyses.py # ~1 min MUST follow make_paper_stats.py
                                         #        R1 residual/chi2 leverage; R2 prior
                                         #        relaxation; R3 activation-energy
                                         #        envelope; R4 error budget
+python scripts/make_ni_curve.py         # ~30 s  the rejected Ni closure, for fig 3g
 python scripts/plot_results.py          # ~20 s  figs 3, 4, 6
-python scripts/plot_sensitivity_maps.py # ~30 s  fig 7
-python scripts/make_paper_figs.py       # ~20 s  figs 1, 2 + collects 3,4,6,7
-python scripts/make_paper_tables.py     # ~10 s  tables 1-4
+python scripts/plot_sensitivity_maps.py # ~30 s  fig 7 + the SI contour maps (fig S3)
+python scripts/make_paper_figs.py       # ~20 s  figs 1, 2 + collects 3,4,6,7,S3
+python scripts/make_paper_fig_f1.py     # ~5 s   fig 11, the F-1 exhibit
+python scripts/make_paper_fig_closure.py# ~5 s   fig 12, the constant-field closure
+python scripts/make_paper_tables.py     # ~10 s  tables 1, 2, 8, 10 (3 and 4 need nsem)
 ```
+
+`make_ni_curve.py` must precede `plot_results.py`, and `plot_results.py` and
+`plot_sensitivity_maps.py` must precede `make_paper_figs.py`, which copies their
+PNGs and fails loudly if they are absent. `docs/REPRODUCE.md` has the full map.
 
 ### Spatial extension (Tiers 2–3)
 
@@ -106,14 +145,19 @@ python -m htw_pdm.inverse_trainer data.synthetic=true \
 python -m htw_pdm.inverse_trainer inverse.mode=soft        # the F-1 failure exhibit
 python -m htw_pdm.uncertainty_ensemble 50                  # ~11 min NSEM bootstrap
 python -m htw_pdm.parametric_trainer                       # joint (T, [O2]) inversion
-python scripts/make_paper_fig_nsem.py                      # NSEM workflow figure
-python scripts/make_paper_fig5.py                          # fig 5 (after make_paper_stats)
+python -m htw_pdm.tier4_pnp_solve                          # Poisson closure test
+python scripts/make_f1_trajectory.py                       # F-1 trajectory artefact
 ```
+
+Those write the artefacts. Drawing the figures from them does not need this half:
+`make_paper_fig_f1.py`, `make_paper_fig_closure.py`, `make_paper_fig_nsem.py` and
+`make_paper_fig5.py` are all in the classical list above.
 
 ### Tests and the paper
 
 ```bash
-python -m pytest tests/ -q     # 50 tests, ~30 s
+uv run pytest tests/ -q                        # 85 tests (6 skip classically)
+uv run pytest tests/test_paper_numbers.py -q   # ~1 s: the manuscript's claims alone
 
 # npj Materials Degradation version
 cd paper && pdflatex main-snjnl && bibtex main-snjnl && pdflatex main-snjnl && pdflatex main-snjnl
@@ -168,14 +212,15 @@ src/htw_pdm/      the model, fits, tiers and inversions (importable package)
 scripts/          figure and table generators for the manuscript
 conf/             Hydra configs for the five neural entry points
 data/             digitized layer thicknesses (means, per-scan)
-tests/            50 tests
+tests/            68 tests, including test_paper_numbers.py -- see below
 paper/            npj Materials Degradation version: manuscript, SI, cover letter,
                   shared figures/ and references.bib, built PDFs in pdf/
 paper-corrosion-science/
                   Corrosion Science version: main-cas.tex (generated), highlights,
                   cover letter, SI wrapper, Elsevier CAS single-column class + cas-model2-names.bst
 docs/             pdm_eqns.md (full derivation), IMPL_REPORT.md (validation record),
-                  REPRODUCE.md (artefact -> command map, generated)
+                  REPRODUCE.md (artefact -> command map, generated),
+                  NSEM_DEPENDENCY.md (what PhysicsNeMo is needed for, and the pin)
 docs/internal/    planning and drafting notes, kept for provenance
 outputs/          committed results behind every number in the paper;
                   regenerable — see docs/REPRODUCE.md
@@ -196,6 +241,27 @@ the CSVs) on 2026-07-13: all 9 mean/SD pairs and both power-law fits (Cr k = 6.5
 n = 0.4964; Fe k = 64.51, n = 0.2209) match exactly. The source paper's "78 h" exposure-time
 typo is documented in the manuscript; the true times are 72/168/480 h.
 
+That check is about **transcription** — that the numbers quoted here are the numbers the
+source paper prints. Refitting our digitized scans is a separate and weaker check, and it
+passes for one element only: the chromium refit returns k = 6.522, n = 0.4964 against the
+published 6.521 / 0.4964, but the iron refit returns 54.6 / 0.249 against 64.51 / 0.2209,
+about 15% out. That is expected rather than a defect — the outer layer is discrete
+magnetite crystals whose scan-to-scan physical scatter exceeds digitization precision, and
+the individual Fe scan positions in `veile2024_fig9_scans.csv` are figure read-offs, not
+quoted values. The iron **means** are transcribed from the source text and are the
+authoritative data; no result in the manuscript rests on the Fe refit. Both halves of this
+are pinned in `tests/test_paper_numbers.py`, including the disagreement, so neither can be
+quietly assumed later.
+
+## Citing
+
+`CITATION.cff` carries the machine-readable record. In text, cite the manuscript for the
+science and this repository for the code; the NSEM solver the neural half is built on is
+Tetsassi Feugmo & Pankaczy, *Mach. Learn.: Sci. Technol.* **7**, 045053 (2026),
+[10.1088/2632-2153/ae8e2f](https://doi.org/10.1088/2632-2153/ae8e2f). The layer-thickness
+data are from Veile et al., *Materials* **17**, 4500 (2024), CC-BY, and should be cited
+with any reuse of the digitized values in `data/`.
+
 ## Licence
 
 Apache-2.0 (`LICENSE`). The publisher class and style files are **not** covered by it —
@@ -206,7 +272,23 @@ they are distributed by their own authors under the LaTeX Project Public License
 
 ---
 
-## Two things worth knowing before changing anything
+## Three things worth knowing before changing anything
+
+### The manuscript's numbers are tested, not just produced
+
+`tests/test_paper_numbers.py` asserts the values the paper actually claims — the accepted
+fit and its chi2, the ten-year predictions and their ratio to the power law, the
+residual-leverage shares, which parameters the profile likelihood does and does not
+determine, and the one-way coupling below. Tolerances are the precision at which the
+manuscript quotes each number.
+
+This exists because every other test here checks that the machinery is internally
+consistent — closed form against Radau, Newton against analytic, the differentiable
+stepper against the classical one — and all of them would pass while chi2 drifted from
+5.79 to 6.4. That is the drift that would matter, because 5.79 is in the abstract.
+
+The test module runs on the classical install in about a second, which is deliberate: the
+claims in the abstract should be checkable without a PyTorch download.
 
 ### The layer coupling is one-way
 

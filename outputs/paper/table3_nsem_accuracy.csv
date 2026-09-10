@@ -3,11 +3,11 @@ forward MLP,rel Linf L_bl vs closed form,1.37e-03,PASS
 forward MLP,rel Linf L_ol vs closed form,1.20e-03,PASS
 forward KAN,rel Linf L_bl vs closed form,1.09e-03,PASS
 forward KAN,rel Linf L_ol vs closed form,3.95e-04,PASS
-inverse hard (real data),A_bl vs deterministic M4,0.73065 (dev 0.52%),PASS
-inverse hard (real data),b3 vs deterministic M4,-0.012547 (dev 0.48%),PASS
-inverse hard (real data),PBR_eff vs deterministic M4,1.0512 (dev 4.10%),CHECK
+inverse hard (real data),A_bl vs deterministic M4,0.73087 (dev 0.55%),PASS
+inverse hard (real data),b3 vs deterministic M4,-0.012551 (dev 0.51%),PASS
+inverse hard (real data),PBR_eff vs deterministic M4,1.0962 (dev 0.00%),PASS
 inverse hard (real data),L0 vs deterministic M4,1.9235 (dev 0.01%),PASS
-inverse hard (real data),L_ol0 vs deterministic M4,118.69 (dev 2.69%),CHECK
+inverse hard (real data),L_ol0 vs deterministic M4,115.57 (dev 0.00%),PASS
 inverse hard (real data),chi2 (= M4 baseline 5.79),5.79,PASS
 "inverse hard (synthetic, 2% noise)",A_bl vs ground truth,0.71681 (dev 1.35%),
 "inverse hard (synthetic, 2% noise)",b3 vs ground truth,-0.012061 (dev 3.36%),

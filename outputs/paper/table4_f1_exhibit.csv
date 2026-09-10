@@ -1,4 +1,4 @@
 inverse mode,note,chi2_trajectory,chi2_closed_form_at_recovered_params,self_consistency
-hard (real data),physics exact by construction,5.795,5.79,PASS
-"soft, lambda_phys=1e3 (real data)",joint field+parameter PINN,0.127,33.69,FAIL
-"soft, lambda_data=10 (real data)",joint field+parameter PINN,0.501,21.38,FAIL
+hard (real data),physics exact by construction,5.793,5.79,PASS
+"soft, lambda_phys=1e3 (real data)",joint field+parameter PINN,0.207,16.64,FAIL
+"soft, lambda_data=10 (real data)",joint field+parameter PINN,0.673,15.57,FAIL

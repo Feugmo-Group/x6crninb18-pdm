@@ -1,0 +1,42 @@
+{
+  "provenance": {
+    "script": "scripts/make_f1_trajectory.py",
+    "seed": 0,
+    "torch": "2.13.0+cu130",
+    "nvidia-physicsnemo": "2.2.0a0"
+  },
+  "runs": [
+    {
+      "mode": "hard (real data)",
+      "note": "physics exact by construction",
+      "overrides": [
+        "inverse.mode=hard"
+      ],
+      "chi2_trajectory": 5.793430768392645,
+      "chi2_closed_form": 5.792575012947753,
+      "self_consistent": "PASS"
+    },
+    {
+      "mode": "soft, lambda_phys=1e3 (real data)",
+      "note": "joint field+parameter PINN",
+      "overrides": [
+        "inverse.mode=soft",
+        "inverse.lambda_phys=1000.0"
+      ],
+      "chi2_trajectory": 0.20698205257610583,
+      "chi2_closed_form": 16.63920878856903,
+      "self_consistent": "FAIL"
+    },
+    {
+      "mode": "soft, lambda_data=10 (real data)",
+      "note": "joint field+parameter PINN",
+      "overrides": [
+        "inverse.mode=soft",
+        "inverse.lambda_data=10.0"
+      ],
+      "chi2_trajectory": 0.6725622385201601,
+      "chi2_closed_form": 15.571758274023995,
+      "self_consistent": "FAIL"
+    }
+  ]
+}
