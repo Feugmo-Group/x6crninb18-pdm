@@ -52,16 +52,11 @@ results    = block("Results")
 discussion = block("Discussion")
 backmatter = SRC[_BACK:].rstrip() + "\n"
 
-# npj Articles permit no conclusions section, so the npj Discussion closes with
-# the synthesis as running prose, marked by a CLOSING-BLOCK comment.  Corrosion
-# Science expects a numbered Conclusions, so the same text is promoted here.
-# Identical text, different heading: the numeric-token parity check still holds.
-_MARK = "%% CLOSING-BLOCK"
-assert _MARK in discussion, "CLOSING-BLOCK marker missing from the Discussion"
-_head, _tail = discussion.split(_MARK, 1)
-discussion  = _head.rstrip() + "\n"
-conclusions = ("\\section{Conclusions}\\label{sec:conclusions}\n\n"
-               + re.sub(r"\A(?:%%.*\n)+", "", _tail.split("\n", 1)[1]).lstrip())
+# All three venues now carry a numbered Conclusions, so it is an ordinary
+# block like the rest.  Earlier revisions synthesised it here by splitting the
+# npj Discussion at a CLOSING-BLOCK comment, because npj permits no conclusions
+# section; that marker is gone and the section is sliced by its own heading.
+conclusions = block("Conclusions")
 
 # The abstract is read from the npj source too, so the two versions cannot
 # drift on the one paragraph an editor is guaranteed to read.
