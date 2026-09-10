@@ -1,11 +1,13 @@
 """Generate the Corrosion Science version from the npj manuscript.
 
-The two submissions carry identical science but NOT identical section order.
-npj Materials Degradation specifies Introduction, Results, Discussion, Methods
-(Methods last); Corrosion Science expects Methods before Results.  The blocks
-are therefore extracted from the npj source in npj order and reassembled below
-in Elsevier order.  They also differ in document class (cas-sc vs sn-jnl),
-citation style, and the venue front matter.  Rather
+The two submissions carry identical science and, as the npj file is currently
+ordered, identical section order: both run Methods before Results.  Note that
+npj Materials Degradation actually specifies Methods LAST for Articles, which
+the npj file will have to adopt at acceptance (see the VENUE NOTE above its
+\\section{Methods}); when that happens, the block boundaries below must slice
+the npj source in npj order while the assembly stays in Elsevier order.  The
+two also differ in document class (cas-sc vs sn-jnl), citation style, and the
+venue front matter.  Rather
 than maintain two copies of 1600 lines, this script derives one from the
 other, so a correction to the science can only be made in one place.
 
@@ -34,11 +36,11 @@ def block(start, end):
     j = len(SRC) if end is None else SRC.index(end, i)
     return SRC[i:j].rstrip() + "\n"
 
-# npj order: Introduction -> Results -> Discussion -> Methods -> backmatter.
-intro       = block("\\section{Introduction}",  "\\section{Results}")
+# npj file order: Introduction -> Methods -> Results -> Discussion -> backmatter.
+intro       = block("\\section{Introduction}",  "\\section{Methods}")
+methods     = block("\\section{Methods}",       "\\section{Results}")
 results     = block("\\section{Results}",       "\\section{Discussion}")
-discussion  = block("\\section{Discussion}",    "\\section{Methods}")
-methods     = block("\\section{Methods}",       "\\backmatter")
+discussion  = block("\\section{Discussion}",    "\\backmatter")
 backmatter  = block("\\backmatter", None)
 
 # npj Articles permit no conclusions section, so the npj Discussion closes with
@@ -58,26 +60,10 @@ _abs = re.search(r"\\abstract\{(.*?)\}\s*\n\s*\n\\keywords", SRC, re.S)
 assert _abs, "could not locate \\abstract{...} in main-snjnl.tex"
 ABSTRACT = _abs.group(1).strip()
 
-# --- Introduction: the roadmap paragraph must be re-ordered ---------------
-# The npj roadmap describes Results-first (Methods last), which is wrong for
-# Elsevier.  Restore the methods-first wording here.  This is prose only: the
-# numeric-token diff still holds because neither form carries a number.
-_NPJ_ROADMAP = (
-    "Section~\\ref{sec:results} carries the argument above; the Discussion\n"
-    "reads the identified parameters mechanistically before bounding how far\n"
-    "that reading can be taken; and Section~\\ref{sec:methods} derives the\n"
-    "reduced model step by step and sets out the data, the statistical\n"
-    "machinery and the solver."
-)
-_CAS_ROADMAP = (
-    "The paper is organized methods-first: Section~\\ref{sec:methods} derives\n"
-    "the reduced model step by step and sets out the data, the statistical\n"
-    "machinery and the solver; Section~\\ref{sec:results} carries the argument\n"
-    "above; and the Discussion reads the identified parameters\n"
-    "mechanistically before bounding how far that reading can be taken."
-)
-assert _NPJ_ROADMAP in intro, "npj roadmap paragraph not found in the Introduction"
-intro = intro.replace(_NPJ_ROADMAP, _CAS_ROADMAP, 1)
+# --- Introduction: no roadmap rewrite is needed --------------------------
+# Both files currently run Methods before Results, so the npj roadmap
+# paragraph describes the Elsevier order correctly as written.  If the npj
+# file moves Methods last at acceptance, reinstate a rewrite here.
 
 # --- author-year citations -------------------------------------------------
 # The npj version cites numerically, where "Li et al.~[18]" reads correctly.
