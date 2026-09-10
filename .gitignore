@@ -78,6 +78,11 @@ paper/npj-submission.zip
 # tracked; the .tex, the class files and the built PDFs are not.
 paper/
 paper-corrosion-science/
+# ...except the two TikZ figure sources, which are the author's own work and
+# are what a reader needs to rebuild Figures 1 and 2 rather than take them
+# from the committed PNGs.
+!paper/figures/
+!paper/figures/*.tex
 
 # Drafting material: the paper plan, the writing plan, the literature notes,
 # the facts table and the working draft. Not part of the released software.
@@ -86,3 +91,11 @@ docs/internal/
 # Presentation material, not part of the released software.
 talk/
 scripts/make_talk_figs.py
+scripts/check_highlights.py
+scripts/check_versions_agree.py
+scripts/make_arxiv_package.py
+scripts/make_arxiv_version.py
+scripts/make_corrosion_science_version.py
+scripts/make_npj_package.py
+scripts/make_cover_letter_docx.py
+scripts/make_toc_figure.py
