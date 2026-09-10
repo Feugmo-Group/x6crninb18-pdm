@@ -264,7 +264,8 @@ with any reuse of the digitized values in `data/`.
 
 ## Licence
 
-Apache-2.0 (`LICENSE`). The publisher class and style files are **not** covered by it —
+Apache-2.0 (`LICENSE`; attribution and third-party components in `NOTICE`).
+The publisher class and style files are **not** covered by it —
 they are distributed by their own authors under the LaTeX Project Public License 1.3c:
 `paper/sn-jnl.cls` and `paper/sn-nature.bst` (Springer Nature), and
 `paper-corrosion-science/cas-sc.cls`, `cas-common.sty` and `cas-model2-names.bst`

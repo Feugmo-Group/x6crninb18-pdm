@@ -1,5 +1,4 @@
-# SPDX-FileCopyrightText: Copyright (c) 2023 - 2026 NVIDIA CORPORATION & AFFILIATES.
-# SPDX-FileCopyrightText: All rights reserved.
+# SPDX-FileCopyrightText: Copyright (c) 2026 Conrard Giresse Tetsassi Feugmo
 # SPDX-License-Identifier: Apache-2.0
 
 """Paper tables T5-T7 (PAPER_PLAN.md Section 5, Tier-2/3 items) under

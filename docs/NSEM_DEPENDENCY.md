@@ -73,10 +73,14 @@ Everything the manuscript's headline claims rest on:
   `outputs/paper/tier4_pnp.json`) rather than from checkpoints, so producing them
   needs this dependency and *plotting* them does not.
 
-Tables 3 and 4 are the exception: they are read out of training checkpoints, so
-`scripts/make_paper_tables.py` regenerates tables 1, 2, 8 and 10 on a classical
-install and leaves those two as committed, printing that it did rather than
-writing two empty files.
+Table 3 is the exception: it is read out of training checkpoints, so
+`scripts/make_paper_tables.py` regenerates tables 1, 2, 4, 8 and 10 on a
+classical install and leaves that one as committed, printing that it did rather
+than writing an empty file. Table 4, the F-1 self-consistency exhibit, used to
+be in the same position; it is now built from `outputs/paper/f1_runs.json`,
+which `scripts/make_f1_trajectory.py` writes from the same runs that produce the
+figure, so the table and the figure cannot disagree and neither needs this
+dependency to be rebuilt.
 
 The committed artefacts are pinned against the numbers printed in the manuscript
 by `tests/test_paper_numbers.py::TestNeuralArtefacts`, which runs in the

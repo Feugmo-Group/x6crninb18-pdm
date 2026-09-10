@@ -1,5 +1,4 @@
-# SPDX-FileCopyrightText: Copyright (c) 2023 - 2026 NVIDIA CORPORATION & AFFILIATES.
-# SPDX-FileCopyrightText: All rights reserved.
+# SPDX-FileCopyrightText: Copyright (c) 2026 Conrard Giresse Tetsassi Feugmo
 # SPDX-License-Identifier: Apache-2.0
 
 """Dense-in-time Ni zone width from the fitted constant-mobility closure.

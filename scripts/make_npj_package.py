@@ -1,5 +1,4 @@
-# SPDX-FileCopyrightText: Copyright (c) 2023 - 2026 NVIDIA CORPORATION & AFFILIATES.
-# SPDX-FileCopyrightText: All rights reserved.
+# SPDX-FileCopyrightText: Copyright (c) 2026 Conrard Giresse Tetsassi Feugmo
 # SPDX-License-Identifier: Apache-2.0
 
 """Build the npj Materials Degradation submission zip.
@@ -136,7 +135,7 @@ with zipfile.ZipFile(ZIP, "w", zipfile.ZIP_DEFLATED) as z:
 print(f"Staged: {OUT}")
 print(f"  main-snjnl.tex ({removed} comment lines stripped), references.bib, main-snjnl.bbl")
 print(f"  sn-jnl.cls, sn-nature.bst, {len(copied)} figures")
-print(f"  supplementary.pdf, cover_letter.pdf, cover_letter.docx")
+print("  supplementary.pdf, cover_letter.pdf, cover_letter.docx")
 print(f"Isolated build from scratch (pdflatex + bibtex): clean, "
       f"{pages[-1] if pages else '?'} pages, {cited[-1] if cited else '?'} references, "
       f"{bad['overfull boxes']} overfull")

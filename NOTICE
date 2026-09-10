@@ -1,0 +1,44 @@
+htw-pdm
+Copyright (c) 2026 Conrard Giresse Tetsassi Feugmo
+
+This product includes software developed at the University of Waterloo
+(Department of Chemistry and Department of Physics & Astronomy).
+
+Licensed under the Apache License, Version 2.0. See LICENSE for the full text.
+
+--------------------------------------------------------------------------------
+Third-party components
+--------------------------------------------------------------------------------
+
+No third-party source code is redistributed in this repository. The components
+below are dependencies, resolved at install time from their own distributions.
+
+PhysicsNeMo (optional `nsem` extra)
+  Copyright (c) NVIDIA CORPORATION & AFFILIATES
+  Licensed under the Apache License, Version 2.0.
+  Pinned by immutable commit to a fork that carries the neural spectral element
+  method implementation -- `experimental.models.scen` and the two-phase
+  optimizer -- which is not present in the NVIDIA upstream. That implementation
+  is the work of Tetsassi Feugmo & Pankaczy, Mach. Learn.: Sci. Technol. 7,
+  045053 (2026), doi:10.1088/2632-2153/ae8e2f. See docs/NSEM_DEPENDENCY.md.
+
+NumPy, SciPy, Matplotlib
+  Licensed under the BSD 3-Clause License.
+
+PyTorch (optional `nsem` extra)
+  Licensed under the BSD 3-Clause License.
+
+Hydra, OmegaConf (optional `nsem` extra)
+  Licensed under the MIT License.
+
+--------------------------------------------------------------------------------
+Data and typesetting files
+--------------------------------------------------------------------------------
+
+The layer-thickness data under data/ are digitized from Veile et al.,
+Materials 17, 4500 (2024), doi:10.3390/ma17184500, published under CC BY 4.0.
+Provenance notes tracing each value to its source figure accompany the files.
+
+The publisher class and style files under paper/ and paper-corrosion-science/
+are distributed by their own authors under the LaTeX Project Public License
+1.3c and are not covered by this repository's licence.
