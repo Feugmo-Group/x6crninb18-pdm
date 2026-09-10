@@ -1198,30 +1198,9 @@ backbone architecture.
 \section{Inversion workflow}
 \label{sec:workflow}
 
-Fig.~\ref{fig:nsem_workflow} summarizes how the reduced model is inverted. It
+the workflow figure of the main text summarizes how the reduced model is inverted. It
 restates in one picture the procedure described in Section~2.4 of the main text
 and specified in full in Section~\ref{sec:nsem-details}.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{figures/fig_nsem_workflow}
-\caption{How the reduced model is inverted. Exposure time, and for the
-spatial extension depth, enters an element network whose field values
-are evaluated at Legendre--Gauss--Lobatto collocation nodes; the
-network returns the two layer thicknesses and the five kinetic
-parameters $\theta$. Spectral differentiation on the same node set
-gives the residuals of Eqs.~(10)--(11) of the main text, which
-are enforced at every node and combined with the data misfit of
-Eq.~(16) of the main text by a balanced-residual dynamic reweighting of
-the two terms; a two-phase schedule, Adam then L-BFGS, drives the total
-loss to convergence. The identified kinetics are graded against the
-exact closed form of Eqs.~(13)--(14) of the main text
-before they are used for profile likelihood, the bootstrap, and the
-long-time prediction. The solver is the neural spectral-element method
-(NSEM) of Tetsassi Feugmo and Pankaczy; architecture and hyperparameters for
-each configuration are tabulated in Section~\ref{sec:nsem-details}.}
-\label{fig:nsem_workflow}
-\end{figure}
 
 \section{Bootstrap ensembles}
 \label{sec:ensembles}
@@ -1230,29 +1209,6 @@ The 1000-member parametric bootstrap summarized in Table~4 of the main text is
 shown here parameter by parameter against the profile-likelihood band, which is
 where the two weakly constrained parameters fail in opposite directions.
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{figures/fig5_uncertainty_ensemble.png}
-\caption{Bootstrap ensemble versus profile likelihood: 1000-member
-parametric bootstrap distribution for each M4 parameter, compared
-against the profile-likelihood 1$\sigma$ band. Panels follow the order
-of Table~4 of the main text: (a)~$A_\text{bl}$, (b)~$b_3$,
-(c)~$\mathrm{PBR}_\text{eff}$, (d)~$L_0$, (e)~$L_\text{ol,0}$. In each,
-the blue histogram is the distribution of the 1000 refitted values
-(plotted as a probability density, so panel heights are not comparable
-across parameters), the red shaded band is the profile-likelihood
-1$\sigma$ interval of Table~4 of the main text, and the dashed vertical
-line is the M4 point estimate. Two annotated features
-are results rather than plotting artifacts. The spike at the lower bound
-in (c) and (e) is the fraction of resampled datasets for which the
-parameter is driven to zero, which is what weak identifiability looks
-like in a resampling ensemble. In (d) the bootstrap is far narrower than
-the profile band: resampling the data cannot explore a direction the
-data do not constrain, so the narrow histogram is not a tighter
-constraint but the signature of a prior-set parameter.}
-\label{fig:ensemble}
-\end{figure}
-
 \section{The F-1 failure mode of soft-mode inversion}
 \label{sec:f1}
 
@@ -1260,26 +1216,6 @@ Section~3.3 of the main text reports a failure mode specific to sparse-data
 physics-informed inversion: a soft-mode solve whose trajectory passes through
 every measurement while the parameters it reports do not satisfy the governing
 equation. The exhibit is reproduced here.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{figures/fig11_f1_failure.png}
-\caption{The F-1 failure mode. Both panels use the same six measurements
-and the same recovered parameters; in both, blue denotes the barrier
-layer and orange the outer layer, and the points are the measured means
-with their standard errors. (a)~The trained soft-mode trajectory (solid
-curves), which is what the data loss sees: it passes through every
-point, at a
-$\chi^2$ of 0.21 that is lower than the accepted model's 5.79.
-(b)~The exact forward solution (dashed curves) evaluated at exactly the
-parameters that trajectory reports, against the same data, with the
-hard-mode M4 solution (gray dotted) for reference: $\chi^2 = 16.6$. The trajectory absorbed the
-misfit as slack in the governing equation, so the apparent quality of
-the fit in (a) is not a property of the recovered parameters. The
-factor of roughly 80 between the two is the diagnostic; the hard mode
-returns 5.79 by either route and passes by construction.}
-\label{fig:f1}
-\end{figure}
 
 \begin{table}[htbp]
 \centering
@@ -1360,22 +1296,6 @@ and 0.5\% acceptance bounds.}
 Table~6 of the main text gives the envelope spreads; the sweeps behind them are
 shown here, with temperature and dissolved oxygen varied one at a time on a
 common vertical scale.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{figures/fig7_envelope_lines.png}
-\caption{Operating-envelope sensitivity of the predicted barrier-layer
-thickness, at (a,~b)~480~h and (c,~d)~ten years. Left panels sweep
-temperature at the calibration oxygen level; right panels sweep
-dissolved oxygen across three decades at the calibration temperature,
-on the same vertical scale. Each curve is one scanned value of the
-effective activation energy $\alpha_3\Delta G^0_R$, spanning
-3--50~kJ/mol; the dotted line marks the Veile et al.\ calibration
-condition, through which every curve passes by construction. Temperature
-carries the sensitivity and it grows with activation energy, while three decades of dissolved oxygen shift the prediction by under six percent at 480~h and under two percent at ten years, and do so identically at every activation energy, the oxygen channel being a prefactor shift. Boxed factors are the full-envelope spreads of the four plotted activation energies, from Table~6 of the main text. Contour maps over the full
-$(T, [\mathrm{O}_2])$ box are given in Fig.~\ref{fig:maps}.}
-\label{fig:sensitivity}
-\end{figure}
 
 \section{The identified kinetics in context}
 \label{sec:context}

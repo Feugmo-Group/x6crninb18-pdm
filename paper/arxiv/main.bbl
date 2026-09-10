@@ -278,6 +278,13 @@ Marius Almanst{\"o}tter, Roman Vetter, and Dagmar Iber.
 \newblock {PINNverse}: Accurate parameter estimation in differential equations
   from noisy data with constrained physics-informed neural networks, 2025.
 
+\bibitem[Liu et~al.(2024)Liu, Wang, Vaidya, Ruehle, Halverson,
+  Solja{\v{c}}i{\'c}, Hou, and Tegmark]{liu2024kan}
+Ziming Liu, Yixuan Wang, Sachin Vaidya, Fabian Ruehle, James Halverson, Marin
+  Solja{\v{c}}i{\'c}, Thomas~Y. Hou, and Max Tegmark.
+\newblock {KAN}: Kolmogorov-arnold networks, 2024.
+\newblock International Conference on Learning Representations (ICLR) 2025.
+
 \bibitem[Ziemniak and Castelli(2003)]{ziemniak2003spinel}
 Stephen~E. Ziemniak and Roy~A. Castelli.
 \newblock Immiscibility in the {Fe$_3$O$_4$}--{FeCr$_2$O$_4$} spinel binary.
@@ -301,12 +308,5 @@ Kathleen Jaffr{\'e}, Hiroshi Abe, Beno{\^i}t Ter-Ovanessian, Nicolas Mary,
   on 304l stainless steel in simulated bwr and pwr primary water.
 \newblock \emph{Journal of Nuclear Materials}, 556:\penalty0 153258, 2021.
 \newblock \doi{10.1016/j.jnucmat.2021.153258}.
-
-\bibitem[Liu et~al.(2024)Liu, Wang, Vaidya, Ruehle, Halverson,
-  Solja{\v{c}}i{\'c}, Hou, and Tegmark]{liu2024kan}
-Ziming Liu, Yixuan Wang, Sachin Vaidya, Fabian Ruehle, James Halverson, Marin
-  Solja{\v{c}}i{\'c}, Thomas~Y. Hou, and Max Tegmark.
-\newblock {KAN}: Kolmogorov-arnold networks, 2024.
-\newblock International Conference on Learning Representations (ICLR) 2025.
 
 \end{thebibliography}

@@ -219,6 +219,14 @@ machinery and the solver; Section~\ref{sec:results} carries the argument
 above; and the Discussion reads the identified parameters
 mechanistically before bounding how far that reading can be taken.
 
+%% VENUE NOTE: npj Materials Degradation specifies Introduction, Results,
+%% Discussion, Methods (Methods LAST) for Articles.  This file runs Methods
+%% before Results by author preference, for readability; npj permits that at
+%% initial submission, since "formatting requirements only apply at the time
+%% of acceptance".  MOVE THIS SECTION AFTER THE DISCUSSION IF ACCEPTED.
+%% Corrosion Science and the arXiv preprint both want Methods early, and the
+%% generators slice by \section marker, so they need no change either way.
+
 
 \section{Model and methods}\label{sec:methods}
 
@@ -711,7 +719,28 @@ formulation, loss terms are combined by a balanced-residual dynamic
 reweighting aggregator, and optimization proceeds in two phases (Adam,
 then L-BFGS). Full architecture, loss definitions, and hyperparameters
 for every configuration are tabulated in the SI (Section~S4), which also
-summarizes the workflow in one diagram (Fig.~S4).
+summarizes the workflow in one diagram (Fig.~\ref{fig:nsem_workflow}).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_nsem_workflow}
+\caption{How the reduced model is inverted. Exposure time, and for the
+spatial extension depth, enters an element network whose field values
+are evaluated at Legendre--Gauss--Lobatto collocation nodes; the
+network returns the two layer thicknesses and the five kinetic
+parameters $\theta$. Spectral differentiation on the same node set
+gives the residuals of Eqs.~\eqref{eq:odebl}--\eqref{eq:odeol}, which
+are enforced at every node and combined with the data misfit of
+Eq.~\eqref{eq:objective} by a balanced-residual dynamic reweighting of
+the two terms; a two-phase schedule, Adam then L-BFGS, drives the total
+loss to convergence. The identified kinetics are graded against the
+exact closed form of Eqs.~\eqref{eq:blclosed}--\eqref{eq:olclosed}
+before they are used for profile likelihood, the bootstrap, and the
+long-time prediction. The solver is the neural spectral-element method
+(NSEM)~\citep{feugmo2026nsem}; architecture and hyperparameters for
+each configuration are tabulated in the SI (Section~S4).}
+\label{fig:nsem_workflow}
+\end{figure}
 
 Three configurations produce the results reported here; a fourth, a
 pure forward solve, is used only for the backbone verification
@@ -1139,7 +1168,7 @@ Both (impose PBR, $L_0$ off) & 0.20 & --- & 1.051 & 0.000 & 5.59 \\
 \end{table}
 
 The 1000-member parametric bootstrap cross-validates these conclusions
-by an independent method (SI, Fig.~S5), and the two weakly
+by an independent method Fig.~\ref{fig:ensemble}, and the two weakly
 constrained parameters fail it in opposite directions. For the sharply
 identifiable growth prefactor and field exponent the bootstrap and
 profile intervals agree closely. For $L_0$ the bootstrap spread
@@ -1164,6 +1193,29 @@ $\mathrm{PBR}_\text{eff}$ the two methods agree that the constraint is
 weak; and for $L_\text{ol,0}$ the wider bootstrap should be preferred,
 since it is the one that samples the trade-off. All three verdicts are
 consequences of the same shortage of exposure times.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/fig5_uncertainty_ensemble.png}
+\caption{Bootstrap ensemble versus profile likelihood: 1000-member
+parametric bootstrap distribution for each M4 parameter, compared
+against the profile-likelihood 1$\sigma$ band. Panels follow the order
+of Table~\ref{tab:params}: (a)~$A_\text{bl}$, (b)~$b_3$,
+(c)~$\mathrm{PBR}_\text{eff}$, (d)~$L_0$, (e)~$L_\text{ol,0}$. In each,
+the blue histogram is the distribution of the 1000 refitted values
+(plotted as a probability density, so panel heights are not comparable
+across parameters), the red shaded band is the profile-likelihood
+1$\sigma$ interval of Table~\ref{tab:params}, and the dashed vertical
+line is the M4 point estimate. Two annotated features
+are results rather than plotting artifacts. The spike at the lower bound
+in (c) and (e) is the fraction of resampled datasets for which the
+parameter is driven to zero, which is what weak identifiability looks
+like in a resampling ensemble. In (d) the bootstrap is far narrower than
+the profile band: resampling the data cannot explore a direction the
+data do not constrain, so the narrow histogram is not a tighter
+constraint but the signature of a prior-set parameter.}
+\label{fig:ensemble}
+\end{figure}
 
 \subsection{Long-time extrapolation and operating-envelope sensitivity}\label{sec:predictions}
 
@@ -1288,8 +1340,7 @@ and the dissolved-oxygen channel is an ideal-Nernst shift of the growth
 prefactor, which is an explicit lower bound on the true
 corrosion-potential response (Section~\ref{sec:discussion}).
 
-Across this envelope (Table~\ref{tab:envelope}; line sweeps in the SI,
-Fig.~S8), the predicted barrier-layer thickness varies
+Across this envelope (Table~\ref{tab:envelope}; line sweeps in the Fig.~\ref{fig:sensitivity}, the predicted barrier-layer thickness varies
 by a factor of 1.20 to 2.92 at 480~h and 1.19 to 1.56 at ten years,
 depending on the scanned effective activation energy; temperature
 dominates through the combined Arrhenius and field-attenuation channels,
@@ -1311,6 +1362,22 @@ condition across the full plausible activation-energy range, and a
 factor of about 1.6 should be carried alongside the parametric band of
 Fig.~\ref{fig:longtime} rather than the 1.25 the narrow scan alone would
 suggest.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/fig7_envelope_lines.png}
+\caption{Operating-envelope sensitivity of the predicted barrier-layer
+thickness, at (a,~b)~480~h and (c,~d)~ten years. Left panels sweep
+temperature at the calibration oxygen level; right panels sweep
+dissolved oxygen across three decades at the calibration temperature,
+on the same vertical scale. Each curve is one scanned value of the
+effective activation energy $\alpha_3\Delta G^0_R$, spanning
+3--50~kJ/mol; the dotted line marks the Veile et al.\ calibration
+condition, through which every curve passes by construction. Temperature
+carries the sensitivity and it grows with activation energy, while three decades of dissolved oxygen shift the prediction by under six percent at 480~h and under two percent at ten years, and do so identically at every activation energy, the oxygen channel being a prefactor shift. Boxed factors are the full-envelope spreads of the four plotted activation energies, from Table~\ref{tab:envelope}. Contour maps over the full
+$(T, [\mathrm{O}_2])$ box are given in the SI (Fig.~S3).}
+\label{fig:sensitivity}
+\end{figure}
 
 \begin{table}[htbp]
 \centering
@@ -1377,7 +1444,7 @@ spectral collocation grid and by an NSEM forward solve, agrees with its
 analytic reference to $8.9\times10^{-16}$ (oxygen vacancies) and
 $2.2\times10^{-13}$ (cation vacancies); the NSEM solve agrees with the
 Newton reference to $2.5\times10^{-4}$ and $5.4\times10^{-5}$ relative
-error (SI, Fig.~S7). The verification also establishes a
+error (SI, Fig.~S4). The verification also establishes a
 structural identifiability result: the steady nondimensional profile
 shape depends only on the P\'eclet-type group
 $\mathrm{Pe} = |z|\gamma \varepsilon_f L$ (in which $z$ is the charge
@@ -1534,7 +1601,7 @@ low data loss suggests. Re-solving the recovered parameters through the
 exact forward solution exposes the inconsistency directly: the
 trajectory's own $\chi^2$ is 0.21, but the same parameters evaluated
 through the exact solution give $\chi^2 = 16.6$
-(SI, Fig.~S6 and Table~S6), a factor of roughly 80
+Fig.~\ref{fig:f1} and Table~S6), a factor of roughly 80
 apart.
 Increasing the fixed weight on the physics residual does not resolve
 this, because the adaptive loss aggregator renormalizes relative term
@@ -1548,6 +1615,26 @@ gradient is too small to pull the trajectory off that manifold. This
 mechanism, and the expectation that dense data would prevent the
 imbalance, are offered as a working explanation consistent with the
 observations rather than as a demonstrated result.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/fig11_f1_failure.png}
+\caption{The F-1 failure mode. Both panels use the same six measurements
+and the same recovered parameters; in both, blue denotes the barrier
+layer and orange the outer layer, and the points are the measured means
+with their standard errors. (a)~The trained soft-mode trajectory (solid
+curves), which is what the data loss sees: it passes through every
+point, at a
+$\chi^2$ of 0.21 that is lower than the accepted model's 5.79.
+(b)~The exact forward solution (dashed curves) evaluated at exactly the
+parameters that trajectory reports, against the same data, with the
+hard-mode M4 solution (gray dotted) for reference: $\chi^2 = 16.6$. The trajectory absorbed the
+misfit as slack in the governing equation, so the apparent quality of
+the fit in (a) is not a property of the recovered parameters. The
+factor of roughly 80 between the two is the diagnostic; the hard mode
+returns 5.79 by either route and passes by construction.}
+\label{fig:f1}
+\end{figure}
 
 The practical fix is the hard-mode construction, available for the
 zero-dimensional kinetics but not, in general, for the spatial
