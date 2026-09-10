@@ -229,9 +229,8 @@ model in the formulation \citet{li2020scwpdm} developed for
 supercritical water, adapted here to subcritical hydrothermal water.
 Every parameter reported later is an output of the reduction rather than
 an elementary rate constant, so the derivation is set out step by step
-below and each symbol is defined where it first appears. The six reactions whose rate constants appear in
-the equations below are collected in Table~\ref{tab:reactions}; the full
-reaction network, the activated-complex derivation of the rate-constant
+below and each symbol is defined where it first appears. The complete reaction network is given in
+Table~\ref{tab:reactions}; the activated-complex derivation of the rate-constant
 form, and known errata in the source
 formulations~\citep{li2020scwpdm} are given in the Supplementary
 Information (SI, Section~S1).
@@ -262,43 +261,62 @@ rates.
 
 \begin{table}[htbp]
 \centering
-\caption{The interfacial reactions that enter the thickness equations.
-$M_M$ is a lattice cation, $V_M^{\chi\prime}$ a cation vacancy,
-$M_i^{\chi+}$ a cation interstitial, $V_O^{\bullet\bullet}$ an oxygen
-vacancy, $v_m$ a vacancy in the metal lattice and $e'$ an electron;
+\caption{The complete interfacial reaction network of the reduced point
+defect model, retained from the supercritical-water
+formulation~\citep{li2020scwpdm}. $m$ is a metal atom, $M_M$ a lattice
+cation, $V_M^{\chi\prime}$ a cation vacancy, $M_i^{\chi+}$ a cation
+interstitial, $V_O^{\bullet\bullet}$ an oxygen vacancy, $O_O$ a lattice
+oxygen, $v_m$ a vacancy in the metal lattice and $e'$ an electron;
 $\chi$ and $\delta$ are the cation valences in the barrier and outer
 layers and $\theta$ the valence in the dissolved or further-oxidized
-product. Reactions~3, 10, $10'$ and 11 displace a boundary and so appear
-in Eqs.~\eqref{eq:blraw} and \eqref{eq:olraw}; Reactions~1 and 2 are
-lattice-conservative but supply the outer layer, and are eliminated by
-the constant-volume closure of Step~6. The eight further
-lattice-conservative reactions of the network are tabulated in the SI
-(Tables~S2--S4).}
+product. Only the four reactions in bold displace a boundary and so
+enter Eqs.~\eqref{eq:blraw} and \eqref{eq:olraw}; the other ten are
+lattice-conservative, and the cation fluxes they carry are eliminated by
+the constant-volume closure of Step~6. Primed variants are alternative
+routes to the same defect change, favored in condensed water.}
 \label{tab:reactions}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{@{}c@{\ \ }l@{\quad}p{0.26\textwidth}@{}}
+\begin{tabular}{@{}c@{\ \ }l@{\quad}p{0.30\textwidth}@{}}
 \toprule
 \# & Reaction & Role \\
 \midrule
-\multicolumn{3}{l}{\emph{metal/barrier-layer interface}}\\
+\multicolumn{3}{@{}l}{\emph{metal/barrier-layer interface, $x = L_\text{bl}$}}\\
 1 & $m + V_M^{\chi\prime} \rightarrow M_M + v_m + \chi e'$
-  & outer-layer cation feed, vacancy path \\
+  & annihilates a cation vacancy; outer-layer cation feed, vacancy path \\
 2 & $m \rightarrow M_i^{\chi+} + v_m + \chi e'$
-  & outer-layer cation feed, interstitial path \\
+  & generates a cation interstitial; outer-layer cation feed, interstitial path \\
 3 & $m \rightarrow M_M + (\chi/2)\, V_O^{\bullet\bullet} + \chi e'$
-  & grows the barrier layer into the metal \\[2pt]
-\multicolumn{3}{l}{\emph{barrier-layer/outer-layer interface}}\\
+  & generates oxygen vacancies; \textbf{grows the barrier layer into the metal} \\[3pt]
+\multicolumn{3}{@{}l}{\emph{barrier-layer/outer-layer interface, $x = 0$}}\\
+4 & $M_M + (\delta/4)\,\mathrm{O_2} + \chi e' \rightarrow
+     V_M^{\chi\prime} + \mathrm{MO}_{\delta/2}$
+  & generates a cation vacancy; deposits outer layer, direct $\mathrm{O_2}$ route \\
+$4'$ & $M_M \rightarrow V_M^{\chi\prime} + M^{\delta+} + (\delta-\chi)\, e'$
+  & generates a cation vacancy; cation ejected to solution \\
+5 & $M_i^{\chi+} + (\delta/4)\,\mathrm{O_2} + \chi e' \rightarrow
+     \mathrm{MO}_{\delta/2}$
+  & annihilates an interstitial; deposits outer layer \\
+$5'$ & $M_i^{\chi+} \rightarrow M^{\delta+} + (\delta-\chi)\, e'$
+  & annihilates an interstitial; cation ejected to solution \\
+6 & $V_O^{\bullet\bullet} + \tfrac12 \mathrm{O_2} + 2e' \rightarrow O_O$
+  & annihilates an oxygen vacancy, $\mathrm{O_2}$ route \\
+7 & $V_O^{\bullet\bullet} + \mathrm{H_2O} + 2e' \rightarrow O_O + \mathrm{H_2}$
+  & annihilates an oxygen vacancy, water route \\
+8 & $V_O^{\bullet\bullet} + \mathrm{H_2O} \rightarrow O_O + 2\mathrm{H^+}$
+  & annihilates an oxygen vacancy with proton release, classical PDM \\
+9 & $\mathrm{H_2O} + 2e' \rightarrow \tfrac12 \mathrm{H_2} + \mathrm{OH^-}$
+  & cathodic partial reaction; carries no defect \\
 10 & $\mathrm{MO}_{\chi/2} + \frac{\delta-\chi}{4}\,\mathrm{O_2}
       \rightarrow \mathrm{MO}_{\delta/2}$
-  & converts barrier oxide to outer oxide \\
+  & \textbf{converts barrier oxide to outer oxide}, chemical route \\
 $10'$ & $\mathrm{MO}_{\chi/2} + \chi\,\mathrm{H^+} \rightarrow
         M^{\delta+} + (\chi/2)\,\mathrm{H_2O} + (\delta-\chi)\, e'$
-  & proton-assisted barrier-layer dissolution \\[2pt]
-\multicolumn{3}{l}{\emph{outer-layer/water interface}}\\
+  & \textbf{proton-assisted barrier-layer dissolution} \\[3pt]
+\multicolumn{3}{@{}l}{\emph{outer-layer/water interface, $x = -L_\text{ol}$}}\\
 11 & $\mathrm{MO}_{\delta/2} + \frac{\theta-\delta}{4}\,\mathrm{O_2}
       \rightarrow \mathrm{MO}_{\theta/2}(d)$
-  & destroys the outer layer: dissolution or further oxidation \\
+  & \textbf{destroys the outer layer}: dissolution or further oxidation \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -363,7 +381,7 @@ k_i = k_i^{0}\, e^{\,a_i V}\, e^{\,b_i L_\text{bl}}\, e^{\,c_i\,\mathrm{pH}},
 \label{eq:rateconstant}
 \end{equation}
 with $k_i^0$ the standard rate constant of Reaction~$i$ and $a_i$,
-$b_i$, $c_i$ fixed by which interfacial drop that reaction sees (SI, Table~S5). Reactions at bl/ol and at the outer surface see
+$b_i$, $c_i$ fixed by which interfacial drop that reaction sees (SI, Table~S2). Reactions at bl/ol and at the outer surface see
 $\phi_\text{bl/e}$, which by Eq.~\eqref{eq:phible} carries no
 $L_\text{bl}$ dependence, so $b_i = 0$ for all of them. The m/bl
 reactions see $\phi_\text{m/bl}$ and therefore inherit
@@ -1343,7 +1361,7 @@ instrument model with position jitter, compositional noise, and,
 critically, the scan-to-scan physical heterogeneity Veile et al.'s
 replicate scans exhibit (SI, Section~S2.5; omitting the heterogeneity
 term produces a spuriously optimistic verdict for every parameter).
-Twenty replicate synthetic experiments (SI, Table~S10) show that
+Twenty replicate synthetic experiments (SI, Table~S7) show that
 the barrier-layer thickness, interfacial transition widths, nickel-zone
 amplitude and width, and in-layer chromium fraction are identifiable
 (replicate relative standard deviations 2--19\%), while the in-layer
@@ -1440,7 +1458,7 @@ the measured widths are approximately flat (31, 43, 36~nm at 72, 168 and
 comparisons obtained under a structurally rejected model are not
 interpretable as estimates or as evidence, the fitted values and the
 nested-model comparison are reported in the SI (Section~S3.1,
-Table~S6) and are not carried into the Discussion as findings.
+Table~S3) and are not carried into the Discussion as findings.
 
 Two statements about the nickel zone do survive independently of that
 fit, and they are the section's result. First, the measured widths are
@@ -1461,7 +1479,7 @@ physically motivated one-parameter extensions were tested, a
 defect-flux-coupled effective mobility tied to the identified growth
 kinetics and a finite-capacity interfacial trapping closure, and both
 fail a twenty-replicate synthetic identifiability gate before touching
-real data (SI, Table~S7): the flux-coupled closure's new parameter is
+real data (SI, Table~S4): the flux-coupled closure's new parameter is
 recoverable but destabilizes the already-identified transport parameters
 past threshold, and the finite-capacity closure's parameter is not
 recoverable at all (SI, Section~S3.2). A forward-only scan across the
@@ -1488,7 +1506,7 @@ training loss does not reveal.
 Applied to the real dataset, the hard-mode neural inversion recovers the
 deterministic M4 optimum to within 0.6\% on every parameter, and its
 trajectory $\chi^2$ of 5.79 matches the classical baseline exactly
-(SI, Table~S9). Its recovery behavior was first validated on
+(SI, Table~S6). Its recovery behavior was first validated on
 synthetic data generated from known ground-truth kinetics with 2\%
 relative noise at the same exposure times: recovery deviations are
 1.37\% (growth prefactor), 3.39\% (field exponent), 0.59\%
@@ -1516,7 +1534,7 @@ low data loss suggests. Re-solving the recovered parameters through the
 exact forward solution exposes the inconsistency directly: the
 trajectory's own $\chi^2$ is 0.21, but the same parameters evaluated
 through the exact solution give $\chi^2 = 16.6$
-(SI, Fig.~S6 and Table~S9), a factor of roughly 80
+(SI, Fig.~S6 and Table~S6), a factor of roughly 80
 apart.
 Increasing the fixed weight on the physics residual does not resolve
 this, because the adaptive loss aggregator renormalizes relative term
@@ -1737,7 +1755,7 @@ water~\citep{ss316l_pwr_pdm,bojinov_mcm,ss316ln_pdm2024}) do not report
 directly comparable apparent field strengths.
 
 The identified kinetics sit within the high-temperature-water oxide
-corpus, tabulated against related systems in the SI (Table~S11). The inner-layer thickness
+corpus, tabulated against related systems in the SI (Table~S8). The inner-layer thickness
 trajectory recovered here (41~nm at 72~h to 135~nm at 480~h) is of the
 same order as inner-layer thicknesses reported for 304/316 stainless
 steels in oxygenated 288$^\circ$C water at comparable
