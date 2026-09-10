@@ -4,8 +4,18 @@
 % list, journal, volume, issue/article-number, and page range all
 % cross-checked against the registered publisher record), plus one
 % Zenodo record (conference paper) confirmed via the Zenodo REST API.
-% Verification performed 2026-07-12; see docs/internal/literature_review.md for
-% the original discovery notes.
+% Verification performed 2026-07-12, re-verified 2026-09-09; see
+% docs/internal/literature_review.md for the original discovery notes.
+%
+% ONE KNOWN EXCEPTION to the "page range cross-checked" claim above:
+% bojinov_mcm (10.1149/1.1931447). Crossref, OpenAlex and the publisher's
+% own citation metadata all register a first page (B250) and no last page,
+% so the end page B261 is taken from the article PDF and cannot be
+% confirmed against any machine-readable record.
+%
+% ENTRIES PRESENT BUT NOT CITED in the current version. Retained
+% deliberately: each is verified and topical, BibTeX emits only cited
+% entries, and they are the natural pool to draw on in revision.
 % NOTE: BibTeX does not support inline "%" comments inside an @entry{...}
 % block -- an earlier version of this file put VERIFY notes there, which
 % silently corrupted several entries (empty author/title/journal/year).
@@ -232,7 +242,8 @@
   title         = {{KAN}: Kolmogorov-Arnold Networks},
   year          = {2024},
   eprint        = {2404.19756},
-  archivePrefix = {arXiv}
+  archivePrefix = {arXiv},
+  note          = {International Conference on Learning Representations (ICLR) 2025}
 }
 
 @article{raue2009identifiability,
@@ -356,6 +367,7 @@
   year    = {2025},
   volume  = {10},
   number  = {1},
+  pages   = {5},
   doi     = {10.1038/s41529-025-00717-0}
 }
 
@@ -371,13 +383,14 @@
 }
 
 @article{farooqi2025pinnpdm,
-  author  = {Farooqi, M. and B{\"o}sing, I. and Tetsassi Feugmo, C. G.},
-  title   = {A physics-informed neural network approach to the point defect model for electrochemical oxide film growth},
-  journal = {arXiv preprint arXiv:2510.02872},
-  year    = {2025},
-  eprint  = {2510.02872},
-  archivePrefix = {arXiv},
-  primaryClass = {physics.chem-ph}
+  author  = {Farooqi, Mohid and B{\"o}sing, Ingmar and Tetsassi Feugmo, Conrard Giresse},
+  title   = {Physics-informed neural networks for the point defect model: Solving and inverting passive-film growth kinetics},
+  journal = {APL Machine Learning},
+  year    = {2026},
+  volume  = {4},
+  number  = {3},
+  pages   = {036110},
+  doi     = {10.1063/5.0335271}
 }
 
 @misc{pinnverse2025,

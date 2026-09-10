@@ -74,17 +74,19 @@
 \newblock \bibinfo{title}{Machine learning for modeling intergranular stress
   corrosion cracking of stainless steels in light water reactors with
   uncertainty quantification and explainability}.
-\newblock \bibinfo{journal}{npj Materials Degradation} \bibinfo{volume}{10}.
+\newblock \bibinfo{journal}{npj Materials Degradation} \bibinfo{volume}{10},
+  \bibinfo{pages}{5}.
 \newblock \DOIprefix\doi{10.1038/s41529-025-00717-0}.
 %Type = Article
-\bibitem[{Farooqi et~al.(2025)Farooqi, B{\"o}sing and
+\bibitem[{Farooqi et~al.(2026)Farooqi, B{\"o}sing and
   Tetsassi~Feugmo}]{farooqi2025pinnpdm}
 \bibinfo{author}{Farooqi, M.}, \bibinfo{author}{B{\"o}sing, I.},
-  \bibinfo{author}{Tetsassi~Feugmo, C.G.}, \bibinfo{year}{2025}.
-\newblock \bibinfo{title}{A physics-informed neural network approach to the
-  point defect model for electrochemical oxide film growth}.
-\newblock \bibinfo{journal}{arXiv preprint arXiv:2510.02872}
-  \href{http://arxiv.org/abs/2510.02872}{\tt arXiv:2510.02872}.
+  \bibinfo{author}{Tetsassi~Feugmo, C.G.}, \bibinfo{year}{2026}.
+\newblock \bibinfo{title}{Physics-informed neural networks for the point defect
+  model: Solving and inverting passive-film growth kinetics}.
+\newblock \bibinfo{journal}{APL Machine Learning} \bibinfo{volume}{4},
+  \bibinfo{pages}{036110}.
+\newblock \DOIprefix\doi{10.1063/5.0335271}.
 %Type = Article
 \bibitem[{Fattah-alhosseini(2016)}]{ss321_pdm}
 \bibinfo{author}{Fattah-alhosseini, A.}, \bibinfo{year}{2016}.
@@ -212,6 +214,8 @@
   \bibinfo{author}{Tegmark, M.}, \bibinfo{year}{2024}.
 \newblock \bibinfo{title}{{KAN}: Kolmogorov-arnold networks}.
 \newblock \href{http://arxiv.org/abs/2404.19756}{\tt arXiv:2404.19756}.
+  \bibinfo{note}{international Conference on Learning Representations (ICLR)
+  2025}.
 %Type = Article
 \bibitem[{Macdonald(1992a)}]{macdonald1992pdm}
 \bibinfo{author}{Macdonald, D.D.}, \bibinfo{year}{1992}a.

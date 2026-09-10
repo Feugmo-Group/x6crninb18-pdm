@@ -412,8 +412,8 @@ form used below only when both are unity. The convention bears on the
 physical quantities recovered in Step~9, not on the fitted parameters,
 which absorb it.
 Substituting Eq.~\eqref{eq:cv} into Eq.~\eqref{eq:olraw}, the two
-destruction terms combine exactly---$(\mathrm{PBR}-1)k_3 -
-\mathrm{PBR}\,k_d + k_d = (\mathrm{PBR}-1)(k_3-k_d)$---leaving the
+destruction terms combine exactly, $(\mathrm{PBR}-1)k_3 -
+\mathrm{PBR}\,k_d + k_d = (\mathrm{PBR}-1)(k_3-k_d)$, leaving the
 cation fluxes eliminated and the outer-layer growth rate an exact affine
 function of the barrier-layer growth rate,
 \begin{equation}
@@ -700,8 +700,8 @@ The results follow the order the argument requires. We first establish
 that the reduced model of Section~\ref{sec:model-methods} can be
 identified from these data at all, and which of its variants the data
 select (Section~\ref{sec:ladder}). We then ask the question that decides
-what the identification is worth---which parameters the three exposure
-times actually determine (Section~\ref{sec:identifiability})---and
+what the identification is worth, namely which parameters the three exposure
+times actually determine (Section~\ref{sec:identifiability}), and
 validate the inversion machinery itself against the exact reference this
 problem happens to admit, which is also where the failure mode we
 document is exposed (Section~\ref{sec:pinn}). The remaining sections
@@ -850,9 +850,9 @@ recovered $\mathrm{PBR}_\text{eff} = 1.096$ carries no prior and is
 therefore a statement of the likelihood alone. It sits near unity, and
 roughly a factor of two below the value a chromium mass balance on this
 alloy implies for an FeCr$_2$O$_4$ barrier. That comparison does not
-survive scrutiny in either direction---the mass-balance figure is
+survive scrutiny in either direction, since the mass-balance figure is
 phase-dependent, and the fitted parameter is not the same quantity once
-outer-layer loss is admitted---and is taken up in
+outer-layer loss is admitted; it is taken up in
 Section~\ref{sec:discussion}.
 
 \subsubsection*{Where the fit statistic comes from}
@@ -865,8 +865,8 @@ $\chi^2 = 5.79$ and the three iron points only 5\%: the outer layer's
 scan-to-scan scatter is so large (standard errors of the mean of 32--45\%
 of the mean, against 2--12\% for chromium) that it constrains the fit
 only weakly. Within the chromium set the misfit is concentrated in a
-single datum---the 168~h point, at $-2.15\sigma$, supplies 80\% of the
-total---and the residual signs run $+$, $-$, $+$ across the three
+single datum: the 168~h point, at $-2.15\sigma$, supplies 80\% of the
+total. The residual signs run $+$, $-$, $+$ across the three
 exposures, a systematic pattern rather than scatter, indicating that the
 \emph{curvature} of the fitted logarithmic law does not track the three
 measured chromium thicknesses.
@@ -875,7 +875,7 @@ Two consequences follow, and both are carried through the rest of the
 paper. First, the curvature parameter $b_3$ is what governs the long-time
 extrapolation of Section~\ref{sec:predictions}, so a systematic curvature
 residual on the only three points that constrain it is the dominant
-structural caveat on the ten-year number---larger, in our view, than the
+structural caveat on the ten-year number, and in our view larger than the
 parametric uncertainty the bootstrap propagates. Second, the
 constant-volume coupling and the initial-precipitate parameter
 $L_\text{ol,0}$, although motivated by the iron layer, are in practice
@@ -1206,9 +1206,9 @@ Newton reference to $2.5\times10^{-4}$ and $5.4\times10^{-5}$ relative
 error (SI, Fig.~S7). The verification also establishes a
 structural identifiability result: the steady nondimensional profile
 shape depends only on the P\'eclet-type group
-$\mathrm{Pe} = |z|\gamma \varepsilon_f L$---in which $z$ is the charge
+$\mathrm{Pe} = |z|\gamma \varepsilon_f L$ (in which $z$ is the charge
 number of the migrating defect, $L$ the barrier-layer thickness, and
-$\gamma$ and $\varepsilon_f$ are as above---which the zero-dimensional
+$\gamma$ and $\varepsilon_f$ are as above), which the zero-dimensional
 fit already fixes, and not on the defect diffusivity. This was confirmed numerically,
 not only by inspection of the equations: solving the identical problem
 with the diffusivity varied over four orders of magnitude leaves the
@@ -1239,16 +1239,16 @@ assumed.
 The composition-map prediction uses no free parameters, and its two
 components test different things. The predicted chromium plateau inside
 the barrier layer, 46.7 weight percent against a measured plateau of
-approximately 45 weight percent, follows from spinel stoichiometry alone---the FeCr$_2$O$_4$ assignment~\citep{ziemniak2003spinel} Veile et
+approximately 45 weight percent, follows from spinel stoichiometry alone, using the FeCr$_2$O$_4$ assignment~\citep{ziemniak2003spinel} Veile et
 al.\ report as one of several candidate chromium-rich spinels (alongside
 Cr$_2$O$_3$, Fe$_2$CrO$_4$, and NiCr$_2$O$_4$) consistent with their
-X-ray photoelectron spectroscopy results---and therefore validates a
+X-ray photoelectron spectroscopy results, and therefore validates a
 plausible phase assignment, not the kinetics. The kinetic content is in
 the layer widths, which the frozen kinetics match to within $+22\%$,
 $-20\%$, and $+3\%$ at the three exposure times
-(Fig.~\ref{fig:composition})---agreement at the tens-of-percent level
+(Fig.~\ref{fig:composition}), agreement at the tens-of-percent level
 from a zero-free-parameter prediction, not a quantitative
-reproduction---extracted from prediction and measurement by the same
+reproduction, with widths extracted from prediction and measurement by the same
 criterion Veile et al.\ use (chromium trace exceeding its far-field
 baseline by three weight percent). The predicted in-layer defect
 gradient (1.45, 0.96, and 0.46 absolute weight percent at 72, 168, and
@@ -1301,9 +1301,9 @@ rather than lattice-diffusive. Taken together, the two point to a
 time-decaying or interface-coupled mobility.
 
 That mechanism is exactly what three exposure times cannot resolve. Two
-physically motivated one-parameter extensions were tested---a
+physically motivated one-parameter extensions were tested, a
 defect-flux-coupled effective mobility tied to the identified growth
-kinetics, and a finite-capacity interfacial trapping closure---and both
+kinetics and a finite-capacity interfacial trapping closure, and both
 fail a twenty-replicate synthetic identifiability gate before touching
 real data (SI, Table~S7): the flux-coupled closure's new parameter is
 recoverable but destabilizes the already-identified transport parameters
@@ -1363,8 +1363,8 @@ mechanistic barrier layer and outside its 95\% band.}
 \label{fig:longtime}
 \end{figure}
 
-The model's own two long-time branches---unbounded logarithmic growth
-(M4) versus eventual saturation (M5)---track within about five percent
+The model's own two long-time branches, unbounded logarithmic growth
+(M4) versus eventual saturation (M5), track within about five percent
 of each other out to $10^5$~years, which is well inside the 2--12\% standard error of the chromium layer means: no exposure
 experiment at the precision this technique delivers could distinguish
 them from thickness data, the prediction-space
@@ -1491,7 +1491,7 @@ $\Delta G^0_R$ & $\alpha_3\Delta G^0_R$ & \multicolumn{2}{c}{$L_\text{bl}$(480~h
 \section{Discussion}\label{sec:discussion}
 
 The discussion falls into two halves. The first asks what the identified
-parameters mean---what the empirical exponents become under a
+parameters mean: what the empirical exponents become under a
 mechanistic reading, what the Pilling--Bedworth ratio can be compared
 against, and what the nickel zone implies about transport at the
 receding interface. The second bounds how far those readings can be
@@ -1533,10 +1533,10 @@ The first is that 2.05 is not a bound but one value of a
 phase-dependent quantity. It follows from assigning the barrier the
 composition FeCr$_2$O$_4$, and the photoelectron spectroscopy admits
 three further chromium-rich spinels. Carrying the same mass balance
-through each of them---using lattice-parameter molar volumes, the
+through each of them (using lattice-parameter molar volumes, the
 nominal alloy composition, and, in one variant, the nickel routing
 fraction identified in Section~\ref{sec:spatial} rather than an
-assumption of complete nickel rejection---gives production ratios, under complete nickel
+assumption of complete nickel rejection) gives production ratios, under complete nickel
 rejection, of 2.05 (FeCr$_2$O$_4$), 2.50 (NiCr$_2$O$_4$), 3.64
 (Cr$_2$O$_3$) and 0.52 (Fe$_2$CrO$_4$); routing nickel at the identified
 fraction instead moves these to 2.16, 2.50, 3.79 and 0.57. Taken over
@@ -1798,9 +1798,9 @@ parametric guess.
 \section{Conclusions}\label{sec:conclusions}
 
 What remains after all four bounds is the paper's recurring finding.
-Every identifiability limitation encountered here---the zero-dimensional
+Every identifiability limitation encountered here (the zero-dimensional
 profile analysis, the residual-leverage imbalance, the spatial gate and
-the nickel-closure gate---traces to too few independent exposure times.
+the nickel-closure gate) traces to too few independent exposure times.
 The convergence of four unrelated analyses on one cause is the
 methodological result, and the remedy it implies is concrete: a designed
 exposure near 3000~h would separate the mechanistic prediction from the
