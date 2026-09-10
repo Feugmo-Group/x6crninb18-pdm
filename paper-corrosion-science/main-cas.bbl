@@ -1,4 +1,4 @@
-\begin{thebibliography}{38}
+\begin{thebibliography}{39}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 \providecommand{\url}[1]{\texttt{#1}}
 \providecommand{\href}[2]{#2}
@@ -83,9 +83,8 @@
   \bibinfo{author}{Tetsassi~Feugmo, C.G.}, \bibinfo{year}{2025}.
 \newblock \bibinfo{title}{A physics-informed neural network approach to the
   point defect model for electrochemical oxide film growth}.
-\newblock \bibinfo{journal}{\textup{[journal --- to be added]}}
-  \DOIprefix\doi{10.XXXX/XXXXXX}, \href{http://arxiv.org/abs/2510.02872}{\tt
-  arXiv:2510.02872}. \bibinfo{note}{in press}.
+\newblock \bibinfo{journal}{arXiv preprint arXiv:2510.02872}
+  \href{http://arxiv.org/abs/2510.02872}{\tt arXiv:2510.02872}.
 %Type = Article
 \bibitem[{Fattah-alhosseini(2016)}]{ss321_pdm}
 \bibinfo{author}{Fattah-alhosseini, A.}, \bibinfo{year}{2016}.
@@ -299,6 +298,15 @@
 \newblock \bibinfo{journal}{Journal of Nuclear Science and Technology}
   \bibinfo{volume}{45}, \bibinfo{pages}{975--984}.
 \newblock \DOIprefix\doi{10.3327/jnst.45.975}.
+%Type = Article
+\bibitem[{Tetsassi~Feugmo and Pankaczy(2026)}]{feugmo2026nsem}
+\bibinfo{author}{Tetsassi~Feugmo, C.G.}, \bibinfo{author}{Pankaczy, D.},
+  \bibinfo{year}{2026}.
+\newblock \bibinfo{title}{Neural spectral element methods for stiff
+  multiphysics {PDEs} with electrochemical transport benchmarks}.
+\newblock \bibinfo{journal}{Machine Learning: Science and Technology}
+  \bibinfo{volume}{7}, \bibinfo{pages}{045053}.
+\newblock \DOIprefix\doi{10.1088/2632-2153/ae8e2f}.
 %Type = Article
 \bibitem[{Veile et~al.(2024)Veile, Hirpara, Lackmann and Weihe}]{veile2024}
 \bibinfo{author}{Veile, G.}, \bibinfo{author}{Hirpara, R.},
