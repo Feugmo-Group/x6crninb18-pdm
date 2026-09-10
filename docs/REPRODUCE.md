@@ -100,6 +100,8 @@ the manuscript, and that test runs in the classical tier.
 | `outputs/paper/fig1_model_schematic.pdf` | classical | `python scripts/make_paper_figs.py` |
 | `outputs/paper/fig6_band.npz` | classical | `python scripts/plot_results.py` |
 | `outputs/paper/fig_nsem_workflow.pdf` | classical | `python scripts/make_paper_fig_nsem.py` |
+| `outputs/paper/fig_toc.pdf` | classical | `python scripts/make_toc_figure.py` |
+| `outputs/paper/fig_toc.svg` | classical | `python scripts/make_toc_figure.py` |
 | `outputs/paper/ni_zone_curve.npz` | classical | `python scripts/make_ni_curve.py` |
 | `outputs/paper/pbr_closure.json` | classical | `python -m htw_pdm.pbr_closure` |
 | `outputs/paper/referee_response.json` | classical | `python scripts/make_referee_analyses.py` |
@@ -144,4 +146,5 @@ run time, so they are listed by the command that produces the directory.
 | `outputs/nsem_soft_data/` | `python -m htw_pdm.inverse_trainer` |
 | `outputs/nsem_soft_phys/` | `python -m htw_pdm.inverse_trainer` |
 | `outputs/nsem_synth/` | `python -m htw_pdm.inverse_trainer` |
+| `outputs/paper/` | — |
 | `outputs/tier2/` | `python -m htw_pdm.tier2_identifiability` |

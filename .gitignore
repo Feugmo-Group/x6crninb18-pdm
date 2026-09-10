@@ -82,3 +82,7 @@ paper-corrosion-science/
 # Drafting material: the paper plan, the writing plan, the literature notes,
 # the facts table and the working draft. Not part of the released software.
 docs/internal/
+
+# Presentation material, not part of the released software.
+talk/
+scripts/make_talk_figs.py
