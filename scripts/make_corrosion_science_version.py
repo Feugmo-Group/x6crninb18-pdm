@@ -1,13 +1,11 @@
 """Generate the Corrosion Science version from the npj manuscript.
 
-The two submissions carry identical science and, as the npj file is currently
-ordered, identical section order: both run Methods before Results.  Note that
-npj Materials Degradation actually specifies Methods LAST for Articles, which
-the npj file will have to adopt at acceptance (see the VENUE NOTE above its
-\\section{Methods}); when that happens, the block boundaries below must slice
-the npj source in npj order while the assembly stays in Elsevier order.  The
-two also differ in document class (cas-sc vs sn-jnl), citation style, and the
-venue front matter.  Rather
+The two submissions carry identical science but may not carry identical
+section order.  npj Materials Degradation specifies Methods LAST for Articles;
+Corrosion Science wants Methods before Results.  The blocks below are located
+by their own \\section markers and sliced at whatever the NEXT section happens
+to be, so the npj file can be reordered freely without touching this script;
+the assembly order here is always the Elsevier one.  Rather
 than maintain two copies of 1600 lines, this script derives one from the
 other, so a correction to the science can only be made in one place.
 
@@ -30,18 +28,29 @@ SRC = (P / "main-snjnl.tex").read_text()
 # An earlier version sliced by hardcoded line ranges, which silently went stale
 # the first time a subsection was added; boundaries are now derived, so editing
 # the manuscript cannot desynchronise this generator.
-def block(start, end):
-    """Text from the start marker up to (not including) the end marker."""
-    i = SRC.index(start)
-    j = len(SRC) if end is None else SRC.index(end, i)
-    return SRC[i:j].rstrip() + "\n"
+_SECTS = [(m.group(1), m.start()) for m in re.finditer(r"\\section\{([^}]*)\}", SRC)]
+_BACK = SRC.index("\\backmatter")
 
-# npj file order: Introduction -> Methods -> Results -> Discussion -> backmatter.
-intro       = block("\\section{Introduction}",  "\\section{Methods}")
-methods     = block("\\section{Methods}",       "\\section{Results}")
-results     = block("\\section{Results}",       "\\section{Discussion}")
-discussion  = block("\\section{Discussion}",    "\\backmatter")
-backmatter  = block("\\backmatter", None)
+
+def block(name):
+    """The \\section{name} block, sliced at whichever section follows it.
+
+    Order-agnostic on purpose: an earlier version hardcoded the end marker of
+    each block, so reordering the npj manuscript silently produced a Corrosion
+    Science file with one section swallowing the next.
+    """
+    starts = [p for n, p in _SECTS if n == name]
+    assert len(starts) == 1, f"expected exactly one \\section{{{name}}}, found {len(starts)}"
+    i = starts[0]
+    later = [p for _, p in _SECTS if p > i] + [_BACK]
+    return SRC[i:min(later)].rstrip() + "\n"
+
+
+intro      = block("Introduction")
+methods    = block("Methods")
+results    = block("Results")
+discussion = block("Discussion")
+backmatter = SRC[_BACK:].rstrip() + "\n"
 
 # npj Articles permit no conclusions section, so the npj Discussion closes with
 # the synthesis as running prose, marked by a CLOSING-BLOCK comment.  Corrosion
@@ -60,10 +69,28 @@ _abs = re.search(r"\\abstract\{(.*?)\}\s*\n\s*\n\\keywords", SRC, re.S)
 assert _abs, "could not locate \\abstract{...} in main-snjnl.tex"
 ABSTRACT = _abs.group(1).strip()
 
-# --- Introduction: no roadmap rewrite is needed --------------------------
-# Both files currently run Methods before Results, so the npj roadmap
-# paragraph describes the Elsevier order correctly as written.  If the npj
-# file moves Methods last at acceptance, reinstate a rewrite here.
+# --- Introduction: the roadmap must describe the Elsevier order ------------
+# npj (Methods last) and Corrosion Science (Methods second) need different
+# roadmap sentences.  Swap only when the npj wording is the one present, so
+# this is a no-op whenever the two files happen to share an order.
+_NPJ_ROADMAP = (
+    "Section~\\ref{sec:results} carries the argument above; the Discussion\n"
+    "reads the identified parameters mechanistically before bounding how far\n"
+    "that reading can be taken; and Section~\\ref{sec:methods} derives the\n"
+    "reduced model step by step and sets out the data, the statistical\n"
+    "machinery and the solver."
+)
+_CAS_ROADMAP = (
+    "The paper is organized methods-first: Section~\\ref{sec:methods} derives\n"
+    "the reduced model step by step and sets out the data, the statistical\n"
+    "machinery and the solver; Section~\\ref{sec:results} carries the argument\n"
+    "above; and the Discussion reads the identified parameters\n"
+    "mechanistically before bounding how far that reading can be taken."
+)
+if _NPJ_ROADMAP in intro:
+    intro = intro.replace(_NPJ_ROADMAP, _CAS_ROADMAP, 1)
+elif _CAS_ROADMAP not in intro:
+    raise AssertionError("neither roadmap wording found in the Introduction")
 
 # --- author-year citations -------------------------------------------------
 # The npj version cites numerically, where "Li et al.~[18]" reads correctly.

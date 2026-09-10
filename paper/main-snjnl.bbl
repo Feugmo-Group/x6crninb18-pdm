@@ -303,14 +303,6 @@
 \newblock
   \bibinfo{eprint}{{\href{https://arxiv.org/abs/2504.05248}{{arXiv:2504.05248}}}}.
 
-\bibitem{liu2024kan}
-\bibinfo{author}{Liu, Z.} \emph{et~al.}
-\newblock \bibinfo{title}{{KAN}: Kolmogorov-arnold networks}
-  (\bibinfo{year}{2024}).
-\newblock \bibinfo{note}{International Conference on Learning Representations
-  (ICLR) 2025},
-  \bibinfo{eprint}{{\href{https://arxiv.org/abs/2404.19756}{{arXiv:2404.19756}}}}.
-
 \bibitem{ziemniak2003spinel}
 \bibinfo{author}{Ziemniak, S.~E.} \& \bibinfo{author}{Castelli, R.~A.}
 \newblock \bibinfo{title}{Immiscibility in the {Fe$_3$O$_4$}--{FeCr$_2$O$_4$}
@@ -337,5 +329,13 @@
 \newblock \emph{\bibinfo{journal}{Journal of Nuclear Materials}}
   \textbf{\bibinfo{volume}{556}}, \bibinfo{pages}{153258}
   (\bibinfo{year}{2021}).
+
+\bibitem{liu2024kan}
+\bibinfo{author}{Liu, Z.} \emph{et~al.}
+\newblock \bibinfo{title}{{KAN}: Kolmogorov-arnold networks}
+  (\bibinfo{year}{2024}).
+\newblock \bibinfo{note}{International Conference on Learning Representations
+  (ICLR) 2025},
+  \bibinfo{eprint}{{\href{https://arxiv.org/abs/2404.19756}{{arXiv:2404.19756}}}}.
 
 \end{thebibliography}
