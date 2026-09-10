@@ -1,0 +1,28 @@
+arXiv submission metadata for paper/arxiv-submission.tar.gz
+(this file is NOT part of the upload)
+
+TITLE
+Sparse data limit what a mechanistic corrosion model can predict
+
+AUTHOR
+Conrard Giresse Tetsassi Feugmo (University of Waterloo)
+
+ABSTRACT (148 words)
+Mechanistic corrosion models are routinely fitted with four to six parameters to a few measurements and extrapolated across service lifetimes, yet whether the data determine them is rarely tested. We identify a reduced point defect model for the duplex oxide on Nb-stabilized AISI 347 in simulated boiling-water-reactor water from published depth profiles at three exposure times, by differentiable inversion graded against a closed-form reference. Profile likelihood, a 1000-member bootstrap and a prior-relaxation test agree that one of the five parameters is undetermined and a second only weakly so, and that 95% of the fit statistic rests on three chromium points. The kinetics track an empirical power law over the calibration window but diverge from it by a factor of 3.5 to 6.3 at ten years, outside the propagated uncertainty band. That separation, not the thickness it brackets, is what these data determine; an exposure near 3000 hours would resolve it.
+
+SUGGESTED CATEGORIES
+ primary cond-mat.mtrl-sci (materials science; matches the companion PDM paper)
+ cross physics.chem-ph (electrochemistry, defect transport)
+ cross stat.AP (profile likelihood, bootstrap identifiability)
+
+COMMENTS FIELD (suggested)
+ Supplementary Information included as an ancillary file (anc/supplementary.pdf).
+ Code and every reported number: https://github.com/Feugmo-Group/x6crninb18-pdm
+
+JOURNAL-REF / DOI
+ leave blank until the npj Materials Degradation submission is resolved
+
+UPLOAD NOTES
+ - upload paper/arxiv-submission.tar.gz directly; arXiv unpacks it
+ - main.tex is the only document; main.bbl is included so BibTeX is not run
+ - anc/ is recognised by arXiv as ancillary files and is not compiled
