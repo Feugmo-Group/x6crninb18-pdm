@@ -1,0 +1,114 @@
+Department of Chemistry and 
+ Department of Physics & Astronomy 
+
+University of Waterloo 
+ 200 University Avenue West 
+ Waterloo, ON N2L 3G1, Canada 
+
+`cgtetsas@uwaterloo.ca`
+
+The Editors 
+ *npj Materials Degradation* 
+ Nature Portfolio
+
+Dear Editors,
+
+We are pleased to submit our manuscript, **“Sparse data limit
+what a mechanistic corrosion model can predict,”** for consideration as an Article
+in the Collection ***Computational Modeling of
+Corrosion***.
+
+The Collection asks for work that moves corrosion research from
+phenomenological description toward mechanism-based prediction. This
+manuscript addresses a precondition for that move which the field has
+largely left untested: whether the data a mechanistic model is
+calibrated against actually determine its parameters. Mechanistic
+corrosion models are routinely fitted with four to six parameters to a
+handful of measurements and then extrapolated across service lifetimes.
+We show, for a representative case, that several parameters are not
+determined, and that the consequences are large enough to change a
+lifetime assessment. The case is the duplex oxide grown on Nb-stabilized
+AISI 347 (X6CrNiNb18-10) in simulated boiling-water-reactor hydrothermal
+water (240 °C, 7 MPa, 0.4 ppm dissolved O₂), modeled with a
+reduced point defect model (PDM) and identified by differentiable,
+physics-informed inversion. Five aspects speak directly to the
+Collection's aims.
+
+- **A transferable computational framework.** Profile
+likelihood, a 1000-member bootstrap, a prior-leverage test and a
+residual-leverage decomposition are built into the inversion rather than
+bolted on afterward, made affordable by exact parameter gradients
+through a vectorized solver. They show that of the five parameters of
+the accepted model, three exposure times leave one undetermined and pin
+a second only to within an order of magnitude, and that 95% of the fit
+statistic is carried by three chromium points, 80% by a single
+measurement. These tools are mature in systems biology and battery
+modeling but, to our knowledge, have not been brought to the PDM. The
+diagnosis transfers to any sparsely sampled degradation model, which is
+most of them.
+
+- **Corrosion prognosis and service-life assessment, stated at
+the resolution the data support.** The identified kinetics fit the
+calibration data as well as an empirical power law but extrapolate
+differently: at ten years the power law lies a factor of 3.5 to 6.3
+above the mechanistic barrier layer and outside its uncertainty band
+under every error treatment we apply, including one that widens that
+band from 447–704 nm to roughly 340–1040 nm. We are deliberate that
+the *separation* is the result and the point estimate it brackets
+(535 nm) is not. An analysis whose thesis is that sparse data
+under-determine parameters should not then quote a lifetime number as
+though it were determined. A designed exposure of roughly 3000 hours
+would resolve the separation. That is a concrete, costed experiment for
+service-life assessment, and the reason a re-analysis of data already in
+the literature is worth doing.
+
+- **A failure mode in physics-informed corrosion modeling,
+diagnosed and remedied.** Physics-informed learning is being adopted
+quickly in this field. We document a failure specific to sparse
+experimental data, in which the data loss is satisfied while the
+governing equation is not, so a trajectory that looks like an excellent
+fit reports parameters that are wrong. We remedy it with a forward-solve
+self-consistency check that we propose for reporting alongside any
+physics-informed inverse result. Because the reduced kinetics have a
+closed form, the framework can be graded against an exact reference
+rather than trusted, which is what makes the diagnosis possible.
+
+- **Mechanistic insight at the electrochemical interface,
+including a negative result.** Extended spatially with no additional free
+parameters, the identified kinetics predict the measured composition
+profile, and a structural argument shows why composition data cannot
+constrain the defect diffusivity however many are taken. Solving
+Poisson's equation self-consistently with the defect transport, instead
+of imposing the field, shows that the PDM's constant-field closure is
+not supported at the defect concentrations the model itself implies: the
+implied Debye length is about 0.06 nm, several times smaller than an
+interatomic spacing. This leaves the fitted kinetics untouched, since
+the identification is of b₃ and not of the field, but it bounds how
+derived field strengths may be read.
+
+- **Passivation modeling for an alloy and environment that had
+none.** Prior characterization of AISI 347 oxide in BWR water stopped at
+empirical per-element power-law fits with no shared physical parameter
+set. We connect the Cr-rich barrier and Fe-rich outer layers through a
+single kinetic description built on a constant-volume constraint, and it
+is that coupling, not fit quality, that drives the divergent
+extrapolations. We are equally explicit about the limits: the model
+structure is not itself Nb-specific, and the neural inversion is
+validated against an exact classical reference rather than required by
+the problem.
+
+The manuscript is original, has not been published elsewhere, and is not
+under consideration by any other journal. The author declares no
+competing interests. The work involves no human or animal subjects. All
+code, the digitized data, and a committed artifact behind every number
+in the manuscript are available in a public repository, together with a
+generated map from each figure and table to the command that produces
+it, so that any reported value can be re-derived without re-running the
+full pipeline.
+
+Thank you for considering our submission.
+
+
+Sincerely,
+
+Conrard Giresse Tetsassi Feugmo

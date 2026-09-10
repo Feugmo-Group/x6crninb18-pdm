@@ -58,3 +58,9 @@ venv/
 # run. The results that matter are copied into outputs/paper/; the run logs
 # and resolved configs are not inputs to anything.
 outputs/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/
+
+# Local input: arXiv template zip (only arxiv.sty is needed, and it is vendored)
+paper/arxiv.zip
+
+# macOS
+.DS_Store

@@ -1,0 +1,99 @@
+%% fig_toc.tex -- standalone TikZ/pgfplots source for the table-of-contents
+%% (graphical-abstract) figure of "Sparse data limit what a mechanistic
+%% corrosion model can predict".
+%%
+%% A thumbnail has to carry the whole argument alone, so this is the long-time
+%% figure stripped to five things: the three measurements, the window they
+%% span, the mechanistic band, the empirical family it separates from, and the
+%% one exposure that would tell the two apart.  The M5 saturating branch, its
+%% steady-state line, the two power laws drawn separately and the decades of
+%% pre-calibration time are all dropped, because none of them read at 500 px.
+%%
+%% Curve and point data are read from fig_toc_curves.csv and fig_toc_points.csv,
+%% written by scripts/make_toc_figure.py from the committed bootstrap artifact,
+%% so the drawing cannot drift from the numbers the manuscript reports.
+%%
+%% Build:  pdflatex fig_toc.tex   (scripts/make_toc_figure.py also emits PNG+SVG)
+
+\documentclass[tikz,border=4pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{textcomp}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{sansmath}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween}
+\usetikzlibrary{arrows.meta}
+
+\definecolor{mech}{RGB}{31,119,180}
+\definecolor{emp}{RGB}{214,39,40}
+
+\begin{document}\sansmath
+\begin{tikzpicture}
+\begin{axis}[
+  width=13.2cm, height=7.2cm,
+  xmode=log, ymode=log,
+  xlabel={exposure time (years)},
+  ylabel={barrier-layer thickness (nm)},
+  xmin=0.0046, xmax=60, ymin=22, ymax=7000,
+  tick align=outside, tick pos=left,
+  grid=major, grid style={black!12},
+  label style={font=\large}, tick label style={font=\normalsize},
+  legend style={font=\normalsize, at={(0.025,0.975)}, anchor=north west,
+                draw=black!35, fill=white, fill opacity=0.94,
+                text opacity=1, row sep=1pt},
+  legend cell align=left,
+]
+
+%% calibration window: 72--480 h
+\addplot[draw=none, fill=black!11, forget plot]
+  coordinates {(0.008213,22) (0.054757,22) (0.054757,7000) (0.008213,7000)}
+  \closedcycle;
+
+%% empirical family: between the published and the refit power law
+\addplot[name path=pllo, draw=none, forget plot]
+  table[x=ty, y=pllo, col sep=comma] {fig_toc_curves.csv};
+\addplot[name path=plhi, draw=none, forget plot]
+  table[x=ty, y=plhi, col sep=comma] {fig_toc_curves.csv};
+\addplot[emp!22, forget plot] fill between[of=pllo and plhi];
+
+%% mechanistic 95% band
+\addplot[name path=mlo, draw=none, forget plot]
+  table[x=ty, y=mlo, col sep=comma] {fig_toc_curves.csv};
+\addplot[name path=mhi, draw=none, forget plot]
+  table[x=ty, y=mhi, col sep=comma] {fig_toc_curves.csv};
+\addplot[mech!28, forget plot] fill between[of=mlo and mhi];
+
+%% the two descriptions
+\addplot[emp, very thick, dashed]
+  table[x=ty, y=plhi, col sep=comma] {fig_toc_curves.csv};
+\addlegendentry{empirical power law}
+\addplot[mech, ultra thick]
+  table[x=ty, y=mmid, col sep=comma] {fig_toc_curves.csv};
+\addlegendentry{mechanistic model, 95\% band}
+
+%% the measurements
+\addplot[only marks, mark=*, mark size=2.6pt, black,
+         error bars/.cd, y dir=both, y explicit]
+  table[x=ty, y=L, y error=err, col sep=comma] {fig_toc_points.csv};
+\addlegendentry{measured Cr layer}
+
+%% the exposure that would decide it
+\draw[black!55, densely dotted, very thick]
+  (axis cs:0.34224,22) -- (axis cs:0.34224,7000);
+\node[font=\normalsize, align=center, text=black!75, anchor=north]
+  at (axis cs:2.6,105) {one exposure here\\separates them at $2\sigma$};
+\draw[->, black!55, thick]
+  (axis cs:1.35,120) to[out=170,in=-30] (axis cs:0.352,275);
+
+%% the separation the paper rests on
+\draw[<->, black, very thick] (axis cs:10,537) -- (axis cs:10,3375);
+\node[font=\large\bfseries, anchor=west, align=left]
+  at (axis cs:12.5,1400) {\texttimes 3.5--6.3\\at 10 y};
+
+\node[font=\normalsize, text=black!55, anchor=south]
+  at (axis cs:0.0212,25) {the data};
+\end{axis}
+\end{tikzpicture}
+\end{document}

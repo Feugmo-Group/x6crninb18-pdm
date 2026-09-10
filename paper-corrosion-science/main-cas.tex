@@ -77,6 +77,15 @@ C. High temperature corrosion
 
 \section{Introduction}\label{sec:intro}
 
+Computational corrosion models are built to predict degradation beyond
+the conditions and durations that were measured. Whether they can do so
+depends on a question asked far less often than the fit is reported: do
+the calibration data determine the model's parameters, or merely fail to
+contradict them? This paper puts that question to a mechanistic
+passive-film model, on a dataset whose sparsity is typical rather than
+exceptional, and follows the answer through to what it costs a
+service-life prediction.
+
 Nb-stabilized austenitic stainless steel AISI~347 (X6CrNiNb18-10) is
 used in boiling-water-reactor (BWR) internals and piping for its
 resistance to weld-decay sensitization, yet the evolution of its passive
@@ -170,7 +179,10 @@ least-squares solver is an independent reference, and the two
 agree to within 0.6\% on every parameter and to identical $\chi^2$. The
 same machinery emulates the forward model with two neural backbones and,
 in a soft-constrained joint field-and-parameter mode, extends to the
-spatial transport problem.
+spatial transport problem. The model is exercised at three levels within
+that one framework: zero-dimensional interfacial kinetics, one-dimensional
+defect transport across the barrier layer, and a self-consistent solve of
+the potential distribution together with that transport.
 
 To be precise about what that machinery contributes: the
 property doing the statistical work is \emph{differentiability} rather
@@ -217,8 +229,9 @@ model in the formulation \citet{li2020scwpdm} developed for
 supercritical water, adapted here to subcritical hydrothermal water.
 Every parameter reported later is an output of the reduction rather than
 an elementary rate constant, so the derivation is set out step by step
-below and each symbol is defined where it first appears. The full
-reaction tables, the activated-complex derivation of the rate-constant
+below and each symbol is defined where it first appears. The six reactions whose rate constants appear in
+the equations below are collected in Table~\ref{tab:reactions}; the full
+reaction network, the activated-complex derivation of the rate-constant
 form, and known errata in the source
 formulations~\citep{li2020scwpdm} are given in the Supplementary
 Information (SI, Section~S1).
@@ -246,6 +259,49 @@ ten are lattice-conservative: they carry cations across the barrier
 layer and deposit them in the outer layer without themselves moving a
 boundary. The thickness equations therefore contain only these four
 rates.
+
+\begin{table}[htbp]
+\centering
+\caption{The interfacial reactions that enter the thickness equations.
+$M_M$ is a lattice cation, $V_M^{\chi\prime}$ a cation vacancy,
+$M_i^{\chi+}$ a cation interstitial, $V_O^{\bullet\bullet}$ an oxygen
+vacancy, $v_m$ a vacancy in the metal lattice and $e'$ an electron;
+$\chi$ and $\delta$ are the cation valences in the barrier and outer
+layers and $\theta$ the valence in the dissolved or further-oxidized
+product. Reactions~3, 10, $10'$ and 11 displace a boundary and so appear
+in Eqs.~\eqref{eq:blraw} and \eqref{eq:olraw}; Reactions~1 and 2 are
+lattice-conservative but supply the outer layer, and are eliminated by
+the constant-volume closure of Step~6. The eight further
+lattice-conservative reactions of the network are tabulated in the SI
+(Tables~S2--S4).}
+\label{tab:reactions}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}c@{\ \ }l@{\quad}p{0.26\textwidth}@{}}
+\toprule
+\# & Reaction & Role \\
+\midrule
+\multicolumn{3}{l}{\emph{metal/barrier-layer interface}}\\
+1 & $m + V_M^{\chi\prime} \rightarrow M_M + v_m + \chi e'$
+  & outer-layer cation feed, vacancy path \\
+2 & $m \rightarrow M_i^{\chi+} + v_m + \chi e'$
+  & outer-layer cation feed, interstitial path \\
+3 & $m \rightarrow M_M + (\chi/2)\, V_O^{\bullet\bullet} + \chi e'$
+  & grows the barrier layer into the metal \\[2pt]
+\multicolumn{3}{l}{\emph{barrier-layer/outer-layer interface}}\\
+10 & $\mathrm{MO}_{\chi/2} + \frac{\delta-\chi}{4}\,\mathrm{O_2}
+      \rightarrow \mathrm{MO}_{\delta/2}$
+  & converts barrier oxide to outer oxide \\
+$10'$ & $\mathrm{MO}_{\chi/2} + \chi\,\mathrm{H^+} \rightarrow
+        M^{\delta+} + (\chi/2)\,\mathrm{H_2O} + (\delta-\chi)\, e'$
+  & proton-assisted barrier-layer dissolution \\[2pt]
+\multicolumn{3}{l}{\emph{outer-layer/water interface}}\\
+11 & $\mathrm{MO}_{\delta/2} + \frac{\theta-\delta}{4}\,\mathrm{O_2}
+      \rightarrow \mathrm{MO}_{\theta/2}(d)$
+  & destroys the outer layer: dissolution or further oxidation \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \textbf{Step 2: the potential distribution and the constant-field
 postulate.} Let $V$ be the potential difference between metal and
@@ -555,33 +611,6 @@ authoritative data. No synthetic or simulated data enters the
 kinetic identification; synthetic data appears only as an explicitly
 labeled recovery test (Section~\ref{sec:pinn}).
 
-\begin{table}[htbp]
-\centering
-\caption{Layer-thickness data of \citet{veile2024} (their
-Fig.~9) used in this work: mean $\pm$ population standard deviation
-over $n$ EDX line scans. The fits use standard errors
-$\sigma = \mathrm{SD}/\sqrt{n}$. The Ni enrichment zone is not a
-growing PDM layer and enters only the analysis of
-Section~\ref{sec:nickel}.}
-\label{tab:data}
-\small
-\begin{tabular}{lcccc}
-\toprule
-Layer & $t$ (h) & mean (nm) & SD (nm) & $n$ \\
-\midrule
-Cr (barrier) & 72 & 37.3 & 7.7 & 3 \\
- & 168 & 98.3 & 21.7 & 4 \\
- & 480 & 134.3 & 5.4 & 3 \\
-Fe (outer) & 72 & 143.3 & 111.5 & 3 \\
- & 168 & 225.5 & 142.7 & 4 \\
- & 480 & 240.3 & 172.5 & 3 \\
-Ni (zone) & 72 & 31.3 & 3.4 & 3 \\
- & 168 & 43.0 & 11.1 & 4 \\
- & 480 & 36.0 & 5.0 & 3 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
 \subsection{Statistical inversion and identifiability analysis}\label{sec:stats}
 
 Six layer means at three exposure times against a five-parameter model
@@ -700,18 +729,18 @@ The results follow the order the argument requires. We first establish
 that the reduced model of Section~\ref{sec:model-methods} can be
 identified from these data at all, and which of its variants the data
 select (Section~\ref{sec:ladder}). We then ask the question that decides
-what the identification is worth, namely which parameters the three exposure
-times actually determine (Section~\ref{sec:identifiability}), and
-validate the inversion machinery itself against the exact reference this
-problem happens to admit, which is also where the failure mode we
-document is exposed (Section~\ref{sec:pinn}). The remaining sections
-spend the identified kinetics: on a spatial extension that predicts
-composition with no further free parameters
-(Section~\ref{sec:spatial}), on the one feature of the scale those
-kinetics fail to describe (Section~\ref{sec:nickel}), and on the
-long-time and operating-envelope predictions that are the reason for
-fitting a mechanistic model in the first place
-(Section~\ref{sec:predictions}).
+what the identification is worth, namely which parameters the three
+exposure times actually determine
+(Section~\ref{sec:identifiability}), and follow it straight to what
+those limits cost the prediction the model is fitted to make
+(Section~\ref{sec:predictions}). The remaining sections spend the
+identified kinetics: on a spatial extension that predicts composition
+with no further free parameters (Section~\ref{sec:spatial}), and on the
+one feature of the scale those kinetics fail to describe
+(Section~\ref{sec:nickel}). We close by grading the inversion framework
+itself against the exact reference this problem happens to admit, which
+is also where the failure mode we document is exposed
+(Section~\ref{sec:pinn}).
 
 \subsection{Differentiable inversion and the model ladder}\label{sec:ladder}
 
@@ -771,6 +800,33 @@ is nonetheless nonzero because the objective~\eqref{eq:objective} carries
 one prior residual in addition to the six data residuals, so the fit is
 not free to interpolate. No goodness-of-fit statistic is quoted for those
 rows.
+
+\begin{table}[htbp]
+\centering
+\caption{Layer-thickness data of \citet{veile2024} (their
+Fig.~9) used in this work: mean $\pm$ population standard deviation
+over $n$ EDX line scans. The fits use standard errors
+$\sigma = \mathrm{SD}/\sqrt{n}$. The Ni enrichment zone is not a
+growing PDM layer and enters only the analysis of
+Section~\ref{sec:nickel}.}
+\label{tab:data}
+\small
+\begin{tabular}{lcccc}
+\toprule
+Layer & $t$ (h) & mean (nm) & SD (nm) & $n$ \\
+\midrule
+Cr (barrier) & 72 & 37.3 & 7.7 & 3 \\
+ & 168 & 98.3 & 21.7 & 4 \\
+ & 480 & 134.3 & 5.4 & 3 \\
+Fe (outer) & 72 & 143.3 & 111.5 & 3 \\
+ & 168 & 225.5 & 142.7 & 4 \\
+ & 480 & 240.3 & 172.5 & 3 \\
+Ni (zone) & 72 & 31.3 & 3.4 & 3 \\
+ & 168 & 43.0 & 11.1 & 4 \\
+ & 480 & 36.0 & 5.0 & 3 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \begin{table}[htbp]
 \centering
@@ -1091,230 +1147,6 @@ weak; and for $L_\text{ol,0}$ the wider bootstrap should be preferred,
 since it is the one that samples the trade-off. All three verdicts are
 consequences of the same shortage of exposure times.
 
-\subsection{Validating the neural inversion, and a failure mode specific
-to sparse data}\label{sec:pinn}
-
-Every verdict above was read off a single converged optimum, which
-raises the question of how far that optimum depends on the machinery
-that produced it. Because the reduced kinetics have a closed-form
-solution, this problem
-admits something that most physics-informed inverse problems do not: an
-exact reference against which the neural inversion can be graded rather
-than merely trusted. This section uses that reference twice: once to
-establish that the hard-mode inversion is interchangeable with a
-classical fitter, and once to expose a soft-mode failure that the
-training loss does not reveal.
-
-Applied to the real dataset, the hard-mode neural inversion recovers the
-deterministic M4 optimum to within 0.6\% on every parameter, and its
-trajectory $\chi^2$ of 5.79 matches the classical baseline exactly
-(SI, Table~S9). Its recovery behavior was first validated on
-synthetic data generated from known ground-truth kinetics with 2\%
-relative noise at the same exposure times: recovery deviations are
-1.37\% (growth prefactor), 3.39\% (field exponent), 0.59\%
-(Pilling--Bedworth ratio), 11.06\% (initial barrier-layer thickness),
-and 0.16\% (initial outer-layer thickness). The one large deviation
-lands on exactly the parameter the profile-likelihood analysis flags as
-unidentifiable, a direct cross-validation of the identifiability
-finding by an independent method. A 50-member subset of the bootstrap
-re-solved through the hard-mode inversion gives spreads statistically
-consistent with the 1000-member deterministic ensemble (growth
-prefactor $0.74 \pm 0.12$ deterministic, $0.76 \pm 0.14$
-physics-informed), confirming the two fitters are interchangeable. Both neural backbones
-also pass the 0.5\% forward acceptance criterion under identical
-settings (relative $L^\infty$ errors 0.14\% and 0.12\% for the two
-thickness fields with the multilayer-perceptron backbone, 0.11\% and
-0.04\% with the Kolmogorov--Arnold-network backbone), a parity result:
-on this problem, backbone choice does not materially change forward
-accuracy.
-
-The soft-mode inversion behaves differently. Trained on the same data,
-the joint field-and-parameter optimization settles into an equilibrium
-at which the data loss is essentially zero while the governing equation
-along the recovered trajectory is not satisfied to the precision the
-low data loss suggests. Re-solving the recovered parameters through the
-exact forward solution exposes the inconsistency directly: the
-trajectory's own $\chi^2$ is 0.21, but the same parameters evaluated
-through the exact solution give $\chi^2 = 16.6$
-(SI, Fig.~S6 and Table~S9), a factor of roughly 80
-apart.
-Increasing the fixed weight on the physics residual does not resolve
-this, because the adaptive loss aggregator renormalizes relative term
-weights during training; an independent reweighting toward the data
-term reproduces the same signature (trajectory 0.67 versus closed-form
-15.6). The specific values vary from training run to run, but the
-one-to-two-orders-of-magnitude signature is stable (SI, Section~S4.4). We term
-this failure mode F-1 and attribute it to the gradient geometry near
-the data manifold: once the data loss is near zero, the physics-residual
-gradient is too small to pull the trajectory off that manifold. This
-mechanism, and the expectation that dense data would prevent the
-imbalance, are offered as a working explanation consistent with the
-observations rather than as a demonstrated result.
-
-The practical fix is the hard-mode construction, available for the
-zero-dimensional kinetics but not, in general, for the spatial
-extension. For soft-mode inversions we therefore apply, and propose for
-reporting alongside any physics-informed inverse result, a
-self-consistency check: re-solve the recovered parameters through an
-independent physics-exact forward solve (closed form, Runge--Kutta, or
-Newton iteration) and report the resulting $\chi^2$ next to the
-trajectory $\chi^2$. In our experience this is the only test among
-those we tried that reliably distinguishes a trustworthy soft-mode fit
-from an F-1 failure without requiring a hard-mode alternative to exist;
-its acceptance rule is a stated heuristic (SI, Section~S4.4).
-
-\subsection{Spatial extension: defect transport and composition}\label{sec:spatial}
-
-Veile et al.'s line scans resolve full composition-versus-depth
-profiles that the zero-dimensional fit never uses. We therefore extend
-the model spatially (resolving oxygen- and cation-vacancy transport
-across the barrier layer under the already-identified kinetics), and
-use the resulting composition predictions as an independent cross-check
-against data the fit never saw. The transport problem admits no
-differentiable-integrator shortcut of the kind the zero-dimensional
-kinetics allow, so the spatial solves use the soft-mode field
-representation; it is verified against an independent Newton solve on
-the same node set, which for this steady problem is both cheaper and
-more accurate, so the comparison below grades the neural solver rather
-than relying on it. Every kinetic parameter entering this section is
-frozen at its zero-dimensional value.
-
-That cross-check is only worth running on quantities the measurement
-could resolve, so before any spatial inversion a synthetic
-identifiability gate asks which spatial quantities the dataset could
-constrain at all, using an
-instrument model with position jitter, compositional noise, and,
-critically, the scan-to-scan physical heterogeneity Veile et al.'s
-replicate scans exhibit (SI, Section~S2.5; omitting the heterogeneity
-term produces a spuriously optimistic verdict for every parameter).
-Twenty replicate synthetic experiments (SI, Table~S10) show that
-the barrier-layer thickness, interfacial transition widths, nickel-zone
-amplitude and width, and in-layer chromium fraction are identifiable
-(replicate relative standard deviations 2--19\%), while the in-layer
-defect-transport composition gradient, the one quantity the spatial
-extension uniquely adds, is weak (47\%, with a minimum statistically
-detectable gradient of 0.93 absolute weight percent across the layer).
-The spatial model's inverse scope is restricted accordingly, and the
-defect-transport gradient is treated as a forward prediction, not a
-fitting target.
-
-The steady-state transport problem, solved by Newton iteration on a
-spectral collocation grid and by an NSEM forward solve, agrees with its
-analytic reference to $8.9\times10^{-16}$ (oxygen vacancies) and
-$2.2\times10^{-13}$ (cation vacancies); the NSEM solve agrees with the
-Newton reference to $2.5\times10^{-4}$ and $5.4\times10^{-5}$ relative
-error (SI, Fig.~S7). The verification also establishes a
-structural identifiability result: the steady nondimensional profile
-shape depends only on the P\'eclet-type group
-$\mathrm{Pe} = |z|\gamma \varepsilon_f L$ (in which $z$ is the charge
-number of the migrating defect, $L$ the barrier-layer thickness, and
-$\gamma$ and $\varepsilon_f$ are as above), which the zero-dimensional
-fit already fixes, and not on the defect diffusivity. This was confirmed numerically,
-not only by inspection of the equations: solving the identical problem
-with the diffusivity varied over four orders of magnitude leaves the
-profile shape unchanged to machine precision, while the absolute
-concentration scale, invisible to a composition measurement such as
-EDX, scales inversely with diffusivity exactly as the equations
-predict. Quasi-steady composition measurements therefore cannot
-constrain the defect diffusivity; only genuinely transient early-time
-composition data would carry diffusivity sensitivity, through the
-migration transit times quantified below. This structural argument
-independently corroborates the statistical gate above.
-
-Everything above treats the defect profile as quasi-steady, which is an
-approximation every zero-dimensional PDM application makes implicitly
-and none, as far as we are aware, has quantified: the profile is assumed
-to equilibrate instantaneously to its steady shape as the layer grows.
-The transient extension, solved on a moving Landau-transformed domain
-tracking the growing layer, measures the error that assumption incurs.
-At the end of the 480-h window the fast oxygen-vacancy species
-(migration transit time of order 5~h) lags its quasi-steady shape by
-0.69\%, and the slower cation-vacancy species (transit time of order
-36~h) by 5.79\% (SI, Fig.~S2), both errors scaling with the ratio of
-transit time to growth timescale as the physics predicts. Both are
-inside the acceptance tolerances used here, so the quasi-steady
-treatment of the composition prediction below is licensed rather than
-assumed.
-
-The composition-map prediction uses no free parameters, and its two
-components test different things. The predicted chromium plateau inside
-the barrier layer, 46.7 weight percent against a measured plateau of
-approximately 45 weight percent, follows from spinel stoichiometry alone, using the FeCr$_2$O$_4$ assignment~\citep{ziemniak2003spinel} Veile et
-al.\ report as one of several candidate chromium-rich spinels (alongside
-Cr$_2$O$_3$, Fe$_2$CrO$_4$, and NiCr$_2$O$_4$) consistent with their
-X-ray photoelectron spectroscopy results, and therefore validates a
-plausible phase assignment, not the kinetics. The kinetic content is in
-the layer widths, which the frozen kinetics match to within $+22\%$,
-$-20\%$, and $+3\%$ at the three exposure times
-(Fig.~\ref{fig:composition}), agreement at the tens-of-percent level
-from a zero-free-parameter prediction, not a quantitative
-reproduction, with widths extracted from prediction and measurement by the same
-criterion Veile et al.\ use (chromium trace exceeding its far-field
-baseline by three weight percent). The predicted in-layer defect
-gradient (1.45, 0.96, and 0.46 absolute weight percent at 72, 168, and
-480~h) straddles the 0.93 weight percent detection floor from the
-identifiability gate: marginally detectable at the earliest exposure,
-undetectable by the latest.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{figures/fig10_composition_edx.png}
-\caption{Zero-free-parameter composition-map prediction against Veile
-et al.'s measured EDX features at (a)~72, (b)~168, and (c)~480~h.
-Curves are predicted composition profiles (O, Cr, Fe, Ni; weight
-percent) versus depth from the metal/barrier-layer interface; overlays
-mark the measured features compared: Cr-layer width (shaded band), Cr
-plateau level ($\sim$45~wt\%, dotted), and the 72-h Ni-peak amplitude
-($23.7\pm7.0$~wt\%, error bar). Full digitized EDX traces are not
-available, so the comparison is feature-based.}
-\label{fig:composition}
-\end{figure}
-
-\subsection{The nickel enrichment zone}\label{sec:nickel}
-
-The nickel zone is the one feature of the duplex scale that the
-identified kinetics do not describe, and the reason is instructive. An
-exact moving-frame nickel-transport model with a constant effective
-mobility (SI, Section~S3), fitted to the measured zone widths and the
-72-h peak amplitude, is \emph{rejected} by the data: $\chi^2 = 25.7$ on
-one degree of freedom. The rejection is one of shape, not scale: the
-model predicts a zone width growing monotonically with exposure, while
-the measured widths are approximately flat (31, 43, 36~nm at 72, 168 and
-480~h; Fig.~\ref{fig:fits}g). Because parameter values and nested-model $\Delta\chi^2$
-comparisons obtained under a structurally rejected model are not
-interpretable as estimates or as evidence, the fitted values and the
-nested-model comparison are reported in the SI (Section~S3.1,
-Table~S6) and are not carried into the Discussion as findings.
-
-Two statements about the nickel zone do survive independently of that
-fit, and they are the section's result. First, the measured widths are
-flat within scatter across a factor of 6.7 in exposure time, which no
-constant-mobility transport model of this class can produce: any such
-model predicts a width growing as the square root of time or faster.
-Second, any effective mobility consistent with the observed zone
-scale (a zone tens of nanometers wide developing over hundreds of
-hours) is of order $10^{-17}$~cm$^2$/s, which exceeds extrapolated
-lattice self-diffusion of nickel in austenite at 513~K by many orders of
-magnitude. This is a scale argument, independent of the fitted value: the
-zone-forming transport must be short-circuit or defect-flux mediated
-rather than lattice-diffusive. Taken together, the two point to a
-time-decaying or interface-coupled mobility.
-
-That mechanism is exactly what three exposure times cannot resolve. Two
-physically motivated one-parameter extensions were tested, a
-defect-flux-coupled effective mobility tied to the identified growth
-kinetics and a finite-capacity interfacial trapping closure, and both
-fail a twenty-replicate synthetic identifiability gate before touching
-real data (SI, Table~S7): the flux-coupled closure's new parameter is
-recoverable but destabilizes the already-identified transport parameters
-past threshold, and the finite-capacity closure's parameter is not
-recoverable at all (SI, Section~S3.2). A forward-only scan across the
-flux-coupled closure's plausible range confirms no single value is
-simultaneously shape-correct
-and a quantitative improvement. Resolving the nickel zone is therefore
-left as a target for denser exposure-time data, and is one more instance
-of the exposure-time limitation that recurs throughout this paper.
-
 \subsection{Long-time extrapolation and operating-envelope sensitivity}\label{sec:predictions}
 
 The identified kinetics are wanted for a horizon no exposure in this
@@ -1486,6 +1318,230 @@ $\Delta G^0_R$ & $\alpha_3\Delta G^0_R$ & \multicolumn{2}{c}{$L_\text{bl}$(480~h
 \bottomrule
 \end{tabular}
 \end{table}
+
+\subsection{Spatial extension: defect transport and composition}\label{sec:spatial}
+
+Veile et al.'s line scans resolve full composition-versus-depth
+profiles that the zero-dimensional fit never uses. We therefore extend
+the model spatially (resolving oxygen- and cation-vacancy transport
+across the barrier layer under the already-identified kinetics), and
+use the resulting composition predictions as an independent cross-check
+against data the fit never saw. The transport problem admits no
+differentiable-integrator shortcut of the kind the zero-dimensional
+kinetics allow, so the spatial solves use the soft-mode field
+representation; it is verified against an independent Newton solve on
+the same node set, which for this steady problem is both cheaper and
+more accurate, so the comparison below grades the neural solver rather
+than relying on it. Every kinetic parameter entering this section is
+frozen at its zero-dimensional value.
+
+That cross-check is only worth running on quantities the measurement
+could resolve, so before any spatial inversion a synthetic
+identifiability gate asks which spatial quantities the dataset could
+constrain at all, using an
+instrument model with position jitter, compositional noise, and,
+critically, the scan-to-scan physical heterogeneity Veile et al.'s
+replicate scans exhibit (SI, Section~S2.5; omitting the heterogeneity
+term produces a spuriously optimistic verdict for every parameter).
+Twenty replicate synthetic experiments (SI, Table~S10) show that
+the barrier-layer thickness, interfacial transition widths, nickel-zone
+amplitude and width, and in-layer chromium fraction are identifiable
+(replicate relative standard deviations 2--19\%), while the in-layer
+defect-transport composition gradient, the one quantity the spatial
+extension uniquely adds, is weak (47\%, with a minimum statistically
+detectable gradient of 0.93 absolute weight percent across the layer).
+The spatial model's inverse scope is restricted accordingly, and the
+defect-transport gradient is treated as a forward prediction, not a
+fitting target.
+
+The steady-state transport problem, solved by Newton iteration on a
+spectral collocation grid and by an NSEM forward solve, agrees with its
+analytic reference to $8.9\times10^{-16}$ (oxygen vacancies) and
+$2.2\times10^{-13}$ (cation vacancies); the NSEM solve agrees with the
+Newton reference to $2.5\times10^{-4}$ and $5.4\times10^{-5}$ relative
+error (SI, Fig.~S7). The verification also establishes a
+structural identifiability result: the steady nondimensional profile
+shape depends only on the P\'eclet-type group
+$\mathrm{Pe} = |z|\gamma \varepsilon_f L$ (in which $z$ is the charge
+number of the migrating defect, $L$ the barrier-layer thickness, and
+$\gamma$ and $\varepsilon_f$ are as above), which the zero-dimensional
+fit already fixes, and not on the defect diffusivity. This was confirmed numerically,
+not only by inspection of the equations: solving the identical problem
+with the diffusivity varied over four orders of magnitude leaves the
+profile shape unchanged to machine precision, while the absolute
+concentration scale, invisible to a composition measurement such as
+EDX, scales inversely with diffusivity exactly as the equations
+predict. Quasi-steady composition measurements therefore cannot
+constrain the defect diffusivity; only genuinely transient early-time
+composition data would carry diffusivity sensitivity, through the
+migration transit times quantified below. This structural argument
+independently corroborates the statistical gate above.
+
+Everything above treats the defect profile as quasi-steady, which is an
+approximation every zero-dimensional PDM application makes implicitly
+and none, as far as we are aware, has quantified: the profile is assumed
+to equilibrate instantaneously to its steady shape as the layer grows.
+The transient extension, solved on a moving Landau-transformed domain
+tracking the growing layer, measures the error that assumption incurs.
+At the end of the 480-h window the fast oxygen-vacancy species
+(migration transit time of order 5~h) lags its quasi-steady shape by
+0.69\%, and the slower cation-vacancy species (transit time of order
+36~h) by 5.79\% (SI, Fig.~S2), both errors scaling with the ratio of
+transit time to growth timescale as the physics predicts. Both are
+inside the acceptance tolerances used here, so the quasi-steady
+treatment of the composition prediction below is licensed rather than
+assumed.
+
+The composition-map prediction uses no free parameters, and its two
+components test different things. The predicted chromium plateau inside
+the barrier layer, 46.7 weight percent against a measured plateau of
+approximately 45 weight percent, follows from spinel stoichiometry alone, using the FeCr$_2$O$_4$ assignment~\citep{ziemniak2003spinel} Veile et
+al.\ report as one of several candidate chromium-rich spinels (alongside
+Cr$_2$O$_3$, Fe$_2$CrO$_4$, and NiCr$_2$O$_4$) consistent with their
+X-ray photoelectron spectroscopy results, and therefore validates a
+plausible phase assignment, not the kinetics. The kinetic content is in
+the layer widths, which the frozen kinetics match to within $+22\%$,
+$-20\%$, and $+3\%$ at the three exposure times
+(Fig.~\ref{fig:composition}), agreement at the tens-of-percent level
+from a zero-free-parameter prediction, not a quantitative
+reproduction, with widths extracted from prediction and measurement by the same
+criterion Veile et al.\ use (chromium trace exceeding its far-field
+baseline by three weight percent). The predicted in-layer defect
+gradient (1.45, 0.96, and 0.46 absolute weight percent at 72, 168, and
+480~h) straddles the 0.93 weight percent detection floor from the
+identifiability gate: marginally detectable at the earliest exposure,
+undetectable by the latest.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/fig10_composition_edx.png}
+\caption{Zero-free-parameter composition-map prediction against Veile
+et al.'s measured EDX features at (a)~72, (b)~168, and (c)~480~h.
+Curves are predicted composition profiles (O, Cr, Fe, Ni; weight
+percent) versus depth from the metal/barrier-layer interface; overlays
+mark the measured features compared: Cr-layer width (shaded band), Cr
+plateau level ($\sim$45~wt\%, dotted), and the 72-h Ni-peak amplitude
+($23.7\pm7.0$~wt\%, error bar). Full digitized EDX traces are not
+available, so the comparison is feature-based.}
+\label{fig:composition}
+\end{figure}
+
+\subsection{The nickel enrichment zone}\label{sec:nickel}
+
+The nickel zone is the one feature of the duplex scale that the
+identified kinetics do not describe, and the reason is instructive. An
+exact moving-frame nickel-transport model with a constant effective
+mobility (SI, Section~S3), fitted to the measured zone widths and the
+72-h peak amplitude, is \emph{rejected} by the data: $\chi^2 = 25.7$ on
+one degree of freedom. The rejection is one of shape, not scale: the
+model predicts a zone width growing monotonically with exposure, while
+the measured widths are approximately flat (31, 43, 36~nm at 72, 168 and
+480~h; Fig.~\ref{fig:fits}g). Because parameter values and nested-model $\Delta\chi^2$
+comparisons obtained under a structurally rejected model are not
+interpretable as estimates or as evidence, the fitted values and the
+nested-model comparison are reported in the SI (Section~S3.1,
+Table~S6) and are not carried into the Discussion as findings.
+
+Two statements about the nickel zone do survive independently of that
+fit, and they are the section's result. First, the measured widths are
+flat within scatter across a factor of 6.7 in exposure time, which no
+constant-mobility transport model of this class can produce: any such
+model predicts a width growing as the square root of time or faster.
+Second, any effective mobility consistent with the observed zone
+scale (a zone tens of nanometers wide developing over hundreds of
+hours) is of order $10^{-17}$~cm$^2$/s, which exceeds extrapolated
+lattice self-diffusion of nickel in austenite at 513~K by many orders of
+magnitude. This is a scale argument, independent of the fitted value: the
+zone-forming transport must be short-circuit or defect-flux mediated
+rather than lattice-diffusive. Taken together, the two point to a
+time-decaying or interface-coupled mobility.
+
+That mechanism is exactly what three exposure times cannot resolve. Two
+physically motivated one-parameter extensions were tested, a
+defect-flux-coupled effective mobility tied to the identified growth
+kinetics and a finite-capacity interfacial trapping closure, and both
+fail a twenty-replicate synthetic identifiability gate before touching
+real data (SI, Table~S7): the flux-coupled closure's new parameter is
+recoverable but destabilizes the already-identified transport parameters
+past threshold, and the finite-capacity closure's parameter is not
+recoverable at all (SI, Section~S3.2). A forward-only scan across the
+flux-coupled closure's plausible range confirms no single value is
+simultaneously shape-correct
+and a quantitative improvement. Resolving the nickel zone is therefore
+left as a target for denser exposure-time data, and is one more instance
+of the exposure-time limitation that recurs throughout this paper.
+
+\subsection{Grading the inversion framework, and a failure mode specific
+to sparse data}\label{sec:pinn}
+
+Every verdict above was read off a single converged optimum, which
+raises the question of how far that optimum depends on the machinery
+that produced it. Because the reduced kinetics have a closed-form
+solution, this problem
+admits something that most physics-informed inverse problems do not: an
+exact reference against which the neural inversion can be graded rather
+than merely trusted. This section uses that reference twice: once to
+establish that the hard-mode inversion is interchangeable with a
+classical fitter, and once to expose a soft-mode failure that the
+training loss does not reveal.
+
+Applied to the real dataset, the hard-mode neural inversion recovers the
+deterministic M4 optimum to within 0.6\% on every parameter, and its
+trajectory $\chi^2$ of 5.79 matches the classical baseline exactly
+(SI, Table~S9). Its recovery behavior was first validated on
+synthetic data generated from known ground-truth kinetics with 2\%
+relative noise at the same exposure times: recovery deviations are
+1.37\% (growth prefactor), 3.39\% (field exponent), 0.59\%
+(Pilling--Bedworth ratio), 11.06\% (initial barrier-layer thickness),
+and 0.16\% (initial outer-layer thickness). The one large deviation
+lands on exactly the parameter the profile-likelihood analysis flags as
+unidentifiable, a direct cross-validation of the identifiability
+finding by an independent method. A 50-member subset of the bootstrap
+re-solved through the hard-mode inversion gives spreads statistically
+consistent with the 1000-member deterministic ensemble (growth
+prefactor $0.74 \pm 0.12$ deterministic, $0.76 \pm 0.14$
+physics-informed), confirming the two fitters are interchangeable. Both neural backbones
+also pass the 0.5\% forward acceptance criterion under identical
+settings (relative $L^\infty$ errors 0.14\% and 0.12\% for the two
+thickness fields with the multilayer-perceptron backbone, 0.11\% and
+0.04\% with the Kolmogorov--Arnold-network backbone), a parity result:
+on this problem, backbone choice does not materially change forward
+accuracy.
+
+The soft-mode inversion behaves differently. Trained on the same data,
+the joint field-and-parameter optimization settles into an equilibrium
+at which the data loss is essentially zero while the governing equation
+along the recovered trajectory is not satisfied to the precision the
+low data loss suggests. Re-solving the recovered parameters through the
+exact forward solution exposes the inconsistency directly: the
+trajectory's own $\chi^2$ is 0.21, but the same parameters evaluated
+through the exact solution give $\chi^2 = 16.6$
+(SI, Fig.~S6 and Table~S9), a factor of roughly 80
+apart.
+Increasing the fixed weight on the physics residual does not resolve
+this, because the adaptive loss aggregator renormalizes relative term
+weights during training; an independent reweighting toward the data
+term reproduces the same signature (trajectory 0.67 versus closed-form
+15.6). The specific values vary from training run to run, but the
+one-to-two-orders-of-magnitude signature is stable (SI, Section~S4.4). We term
+this failure mode F-1 and attribute it to the gradient geometry near
+the data manifold: once the data loss is near zero, the physics-residual
+gradient is too small to pull the trajectory off that manifold. This
+mechanism, and the expectation that dense data would prevent the
+imbalance, are offered as a working explanation consistent with the
+observations rather than as a demonstrated result.
+
+The practical fix is the hard-mode construction, available for the
+zero-dimensional kinetics but not, in general, for the spatial
+extension. For soft-mode inversions we therefore apply, and propose for
+reporting alongside any physics-informed inverse result, a
+self-consistency check: re-solve the recovered parameters through an
+independent physics-exact forward solve (closed form, Runge--Kutta, or
+Newton iteration) and report the resulting $\chi^2$ next to the
+trajectory $\chi^2$. In our experience this is the only test among
+those we tried that reliably distinguishes a trustworthy soft-mode fit
+from an F-1 failure without requiring a hard-mode alternative to exist;
+its acceptance rule is a stated heuristic (SI, Section~S4.4).
 
 
 \section{Discussion}\label{sec:discussion}
@@ -1802,10 +1858,13 @@ Every identifiability limitation encountered here (the zero-dimensional
 profile analysis, the residual-leverage imbalance, the spatial gate and
 the nickel-closure gate) traces to too few independent exposure times.
 The convergence of four unrelated analyses on one cause is the
-methodological result, and the remedy it implies is concrete: a designed
-exposure near 3000~h would separate the mechanistic prediction from the
-power-law extrapolation at 2$\sigma$ against the full error budget, and
-would sharpen every weakly constrained parameter at the same time.
+methodological result, and the remedy it implies is concrete enough to
+cost: a designed exposure near 3000~h would separate the mechanistic
+prediction from the power-law extrapolation at 2$\sigma$ against the full
+error budget, and would sharpen every weakly constrained parameter at the
+same time. For service-life assessment that is the one statement
+this dataset supports that can be acted on, and it calls for an
+experiment rather than a reanalysis.
 Neither the cause nor the remedy is specific to this alloy or to the
 point defect model; both apply to any sparse-data mechanistic
 identification in which extrapolation beyond the calibration window is
