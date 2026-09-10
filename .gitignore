@@ -68,3 +68,7 @@ paper/arxiv.zip
 # Generated arXiv upload package (rebuild: python scripts/make_arxiv_package.py)
 paper/arxiv-submission/
 paper/arxiv-submission.tar.gz
+
+# Generated npj submission package (rebuild: python scripts/make_npj_package.py)
+paper/npj-submission/
+paper/npj-submission.zip
