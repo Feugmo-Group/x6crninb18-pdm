@@ -16,12 +16,27 @@ Run:  python scripts/make_reproduce_doc.py
 import ast
 import pathlib
 import re
+import subprocess
 
 from htw_pdm.paths import ROOT
 
 OUT = ROOT / "outputs"
-srcs = sorted(pathlib.Path(ROOT/"src/htw_pdm").glob("*.py")) + \
-       sorted(pathlib.Path(ROOT/"scripts").glob("*.py"))
+# Only tracked files. This document describes the published repository, so a
+# script or artefact that is present locally but deliberately not committed --
+# the manuscript tooling, say -- must not appear as a command a reader can run.
+_TRACKED = {
+    (ROOT / line).resolve()
+    for line in subprocess.run(["git", "ls-files"], cwd=ROOT, check=True,
+                               capture_output=True, text=True).stdout.split()
+}
+
+
+def tracked(p: pathlib.Path) -> bool:
+    return p.resolve() in _TRACKED
+
+
+srcs = [p for p in sorted(pathlib.Path(ROOT/"src/htw_pdm").glob("*.py")) if tracked(p)] + \
+       [p for p in sorted(pathlib.Path(ROOT/"scripts").glob("*.py")) if tracked(p)]
 # This script names every artefact in its own FIG table, so it would match
 # all of them; exclude it from the scan.
 srcs = [s for s in srcs if s.name != "make_reproduce_doc.py"]
@@ -51,7 +66,7 @@ def top_level_imports(path: pathlib.Path) -> set[str]:
     return names
 
 
-_HTW = {p.stem: p for p in pathlib.Path(ROOT / "src/htw_pdm").glob("*.py")}
+_HTW = {p.stem: p for p in pathlib.Path(ROOT / "src/htw_pdm").glob("*.py") if tracked(p)}
 
 
 def needs_neural(path: pathlib.Path, _seen: frozenset[str] = frozenset()) -> bool:
@@ -88,7 +103,8 @@ def env_cell(cmds, artefact: str | None = None) -> str:
     kinds = {ENV.get(c, "classical") for c in cmds}
     return "neural" if "neural" in kinds else "classical"
 
-arts = sorted(p.relative_to(OUT).as_posix() for p in OUT.rglob("*") if p.is_file())
+arts = sorted(p.relative_to(OUT).as_posix() for p in OUT.rglob("*")
+              if p.is_file() and tracked(p))
 owner = {}
 for s in srcs:
     t = s.read_text()

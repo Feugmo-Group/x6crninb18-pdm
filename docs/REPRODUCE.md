@@ -92,7 +92,6 @@ The manuscript, and that test runs in the classical tier.
 | `outputs/forward/checkpoint.0.2000.pt` | classical | `python scripts/make_paper_tables.py` |
 | `outputs/forward_kan/checkpoint.0.2000.pt` | classical | `python scripts/make_paper_tables.py` |
 | `outputs/inverse/kinetics_hard.pt` | neural | `python -m htw_pdm.inverse_trainer`<br>`python scripts/make_paper_tables.py` |
-| `outputs/inverse_hard/kinetics_hard.pt` | neural | `python -m htw_pdm.inverse_trainer`<br>`python scripts/make_paper_tables.py` |
 | `outputs/inverse_hard_synth/kinetics_hard.pt` | neural | `python -m htw_pdm.inverse_trainer`<br>`python scripts/make_paper_tables.py` |
 | `outputs/nickel_forward_envelope.csv` | classical | `python -m htw_pdm.nickel_forward_envelope` |
 | `outputs/nickel_identifiability.csv` | classical | `python -m htw_pdm.nickel_identifiability` |
@@ -103,8 +102,6 @@ The manuscript, and that test runs in the classical tier.
 | `outputs/paper/fig1_model_schematic.pdf` | classical | `python scripts/make_paper_figs.py` |
 | `outputs/paper/fig6_band.npz` | classical | `python scripts/plot_results.py` |
 | `outputs/paper/fig_nsem_workflow.pdf` | classical | `python scripts/make_paper_fig_nsem.py` |
-| `outputs/paper/fig_toc.pdf` | classical | `python scripts/make_toc_figure.py` |
-| `outputs/paper/fig_toc.svg` | classical | `python scripts/make_toc_figure.py` |
 | `outputs/paper/ni_zone_curve.npz` | classical | `python scripts/make_ni_curve.py` |
 | `outputs/paper/nickel_mobility_closure.json` | neural | `python -m htw_pdm.nickel_mobility_closure` |
 | `outputs/paper/pbr_closure.json` | classical | `python -m htw_pdm.pbr_closure` |
@@ -136,15 +133,7 @@ run time, so they are listed by the command that produces the directory.
 
 | Path | Command |
 |---|---|
-| `outputs/2026-08-07/` | `python -m htw_pdm.inverse_trainer` |
-| `outputs/2026-08-20/` | `python -m htw_pdm.inverse_trainer` |
 | `outputs/forward/` | `python -m htw_pdm.trainer` |
 | `outputs/forward_kan/` | `python -m htw_pdm.trainer` |
-| `outputs/inverse/` | `python -m htw_pdm.inverse_trainer` |
-| `outputs/inverse_ld10/` | `python -m htw_pdm.inverse_trainer` |
-| `outputs/nsem_real/` | `python -m htw_pdm.inverse_trainer` |
-| `outputs/nsem_soft_data/` | `python -m htw_pdm.inverse_trainer` |
-| `outputs/nsem_soft_phys/` | `python -m htw_pdm.inverse_trainer` |
-| `outputs/nsem_synth/` | `python -m htw_pdm.inverse_trainer` |
 | `outputs/paper/` | — |
 | `outputs/spatial/` | `python -m htw_pdm.spatial_identifiability` |
