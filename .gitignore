@@ -99,3 +99,16 @@ scripts/make_corrosion_science_version.py
 scripts/make_npj_package.py
 scripts/make_cover_letter_docx.py
 scripts/make_toc_figure.py
+
+# Development run log, superseded training checkpoints, the table-of-contents
+# graphic whose script is unpublished, and Hydra configs nothing reads.
+docs/IMPL_REPORT.md
+outputs/inverse/*
+!outputs/inverse/kinetics_hard.pt
+outputs/inverse_ld10/
+outputs/nsem_real/
+outputs/nsem_soft_data/
+outputs/nsem_soft_phys/
+outputs/nsem_synth/
+outputs/paper/fig_toc.*
+outputs/inverse_hard/

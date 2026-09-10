@@ -66,11 +66,11 @@ Everything the manuscript's headline claims rest on:
 - the profile likelihoods, the 1000-member bootstrap, the prior-relaxation test
   and the residual-leverage decomposition;
 - the mass balance, the `PBR_eff` closure and the long-time predictions;
-- the Wagner/Tier-3 solves and the composition map;
+- the Wagner/the nickel-zone closure solves and the composition map;
 - **every figure in the paper**, the F-1 exhibit and the constant-field closure
   exhibit included. Those two report neural results, but the figures are drawn
   from committed artefacts (`outputs/paper/f1_trajectory.npz` and
-  `outputs/paper/tier4_pnp.json`) rather than from checkpoints, so producing them
+  `outputs/paper/field_closure.json`) rather than from checkpoints, so producing them
   needs this dependency and *plotting* them does not.
 
 Table 3 is the exception: it is read out of training checkpoints, so
@@ -92,11 +92,11 @@ PyTorch.
 Absent PyTorch or PhysicsNeMo, the neural modules raise an `ImportError` naming
 this document rather than a bare `ModuleNotFoundError`, and the neural tests skip
 rather than fail. Run `python -m htw_pdm.check_environment` to see which half of
-the pipeline the current environment can run.
+The pipeline the current environment can run.
 
 ## Updating the pin
 
 Change `rev`, run `uv lock`, and re-run the acceptance checks in
 `docs/IMPL_REPORT.md`. The forward-solve parity tests (`tests/test_ode_parity.py`,
-`tests/test_tier4.py`) are what would catch a behavioural change in the solver;
+`tests/test_field_closure.py`) are what would catch a behavioural change in the solver;
 `tests/test_paper_numbers.py` is what would catch it reaching the manuscript.

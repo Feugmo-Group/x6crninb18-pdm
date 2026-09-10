@@ -7,7 +7,7 @@ with BRDR loss balancing and TwoPhaseOptimizer (Adam -> L-BFGS).
 Stage 1 pretrains both networks to the constant initial-condition shape
 (lam = lam0 / lamol0 everywhere), same discipline as rpdm_nsem. Stage 2 runs
 physics training. Verification against the Radau/closed-form baseline runs at
-the end and reports the relative L-inf error (acceptance: <= 0.5 %).
+The end and reports the relative L-inf error (acceptance: <= 0.5 %).
 
 Run:
     python -m htw_pdm.trainer

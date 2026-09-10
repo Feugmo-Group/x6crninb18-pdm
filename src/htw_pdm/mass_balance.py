@@ -6,9 +6,9 @@ PBR_eff is defined by the outer-layer equation of the reduced model,
 
 so it is the ratio at which barrier-layer growth *produces* outer-layer oxide.
 This module computes that ratio from stoichiometry and molar volumes, which is
-the only quantity the fitted PBR_eff may legitimately be compared against.
+The only quantity the fitted PBR_eff may legitimately be compared against.
 
-A caution that motivated writing this down.  `tier2_composition.PBR_BL = 2.05`
+A caution that motivated writing this down.  `composition_map.PBR_BL = 2.05`
 is the barrier layer's *classical* Pilling-Bedworth ratio -- oxide volume per
 unit volume of metal consumed -- and for an FeCr2O4 barrier on this alloy it
 happens to come out at 2.05, within a few percent of the production ratio
@@ -26,7 +26,7 @@ formula unit and molar volume V_bl; outer layer Fe3O4 with molar volume V_ol):
   barrier, so all chromium dissolved at the metal interface reports there.
   Supplying n_Cr*dn mol Cr therefore dissolves n_Cr*dn/x_Cr mol of alloy, which
   liberates (x_Fe/x_Cr)*n_Cr*dn mol Fe.  Of that, n_Fe*dn is taken back up by
-  the barrier and the remainder is ejected:
+  The barrier and the remainder is ejected:
 
       n_Fe,excess = dn * (n_Cr * x_Fe/x_Cr - n_Fe)
 
@@ -117,7 +117,7 @@ def production_ratio(barrier: Phase, x: dict[str, float] | None = None,
     """R_prod = dL_ol/dL_bl from stoichiometry, for one barrier phase.
 
     `r_Ni` is the fraction of liberated nickel that reports to the oxide rather
-    than remaining in the metallic enrichment zone (Tier 2 fits 0.295).  Nickel
+    than remaining in the metallic enrichment zone (the spatial model fits 0.295).  Nickel
     routed to the oxide precipitates in the outer layer and adds volume there;
     nickel consumed by the barrier itself is debited first.  Setting r_Ni = 0
     recovers the iron-only balance.
@@ -157,12 +157,12 @@ def barrier_pbr(barrier: Phase, x: dict[str, float] | None = None,
 
     The standard definition, counting only the metal atoms that end up *in* the
     oxide (its cations).  For FeCr2O4 this reproduces the 2.05 hardcoded in
-    `tier2_composition.PBR_BL`.
+    `composition_map.PBR_BL`.
 
     Included only so it can be told apart from `production_ratio`; it is NOT the
     quantity the fitted PBR_eff should be compared against.  The distinction is
     easy to lose because a duplex film has a second, different "metal consumed":
-    the alloy dissolved to *supply* the barrier's chromium, most of whose iron
+    The alloy dissolved to *supply* the barrier's chromium, most of whose iron
     never joins the barrier at all (see `metal_recession_ratio`).
     """
     v_metal = alloy_volume_per_mol_atoms(x, rho_alloy)
@@ -175,7 +175,7 @@ def metal_recession_ratio(barrier: Phase, x: dict[str, float] | None = None,
 
     Differs from `barrier_pbr` whenever the barrier rejects a cation: supplying
     n_Cr chromium dissolves n_Cr/x_Cr alloy atoms, not n_cation of them.  This is
-    the ratio that converts a measured barrier thickness into metal loss.
+    The ratio that converts a measured barrier thickness into metal loss.
     """
     x = atom_fractions() if x is None else x
     v_metal = alloy_volume_per_mol_atoms(x, rho_alloy)
@@ -229,7 +229,7 @@ def main():
     for r_ni in (0.0, 0.2954):
         s = summary(r_Ni=r_ni)
         print(f"\n=== r_Ni = {r_ni:.4f} "
-              f"({'iron-only balance' if r_ni == 0 else 'Tier-2 fitted Ni routing'})")
+              f"({'iron-only balance' if r_ni == 0 else 'the spatial model fitted Ni routing'})")
         print(f"{'barrier':10s} {'V (cm3/mol)':>12s} {'R_prod':>9s} "
               f"{'PBR_barrier':>12s} {'recession':>10s}")
         for row in s["phases"]:

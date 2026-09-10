@@ -3,7 +3,7 @@
 The figure is drawn in TikZ, not matplotlib. ``paper/figures/fig_nsem_workflow.tex``
 is a standalone document and is the master source; this script compiles it to PDF
 (the form the manuscript includes) and rasterizes a PNG copy into outputs/paper so
-the figure appears in the same place as every other generated display item.
+The figure appears in the same place as every other generated display item.
 
 Run:  python scripts/make_paper_fig_nsem.py
 Needs: pdflatex with tikz, and pdftoppm (poppler-utils) for the raster copy.

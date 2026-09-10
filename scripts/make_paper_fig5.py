@@ -79,7 +79,7 @@ for k, (ax, name) in enumerate(zip(axes, names)):
                 bbox=dict(boxstyle="round,pad=0.25", fc="w", ec="0.7", lw=0.6))
     if name == "L0":
         # The one place bootstrap and profile disagree, and the disagreement is
-        # the finding: perturbing the data cannot explore a direction the data
+        # The finding: perturbing the data cannot explore a direction the data
         # do not constrain, so the narrow histogram is not a tight constraint.
         ax.text(0.5, 0.55,
                 "prior-set, not data-set:\nbootstrap $\\ll$ profile band",

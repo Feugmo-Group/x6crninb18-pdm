@@ -34,14 +34,14 @@ class TestMassBalance:
         chromite = next(p for p in mb.BARRIER_CANDIDATES if p.name == "FeCr2O4")
         assert mb.production_ratio(chromite) == pytest.approx(2.09, rel=0.05)
 
-    def test_barrier_pbr_matches_tier2_constant(self):
-        """barrier_pbr must reproduce the 2.05 hardcoded in tier2_composition.
+    def test_barrier_pbr_matches_spatial_constant(self):
+        """barrier_pbr must reproduce the 2.05 hardcoded in composition_map.
 
         These are different quantities from production_ratio and the whole point
         of computing both is that they must not be conflated; this pins the one
         that already had a value elsewhere in the codebase.
         """
-        from htw_pdm.tier2_composition import PBR_BL
+        from htw_pdm.composition_map import PBR_BL
 
         chromite = next(p for p in mb.BARRIER_CANDIDATES if p.name == "FeCr2O4")
         assert mb.barrier_pbr(chromite) == pytest.approx(PBR_BL, rel=0.05)

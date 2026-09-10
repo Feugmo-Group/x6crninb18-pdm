@@ -118,9 +118,9 @@ VARIANTS = {
 # A chromium mass balance fixes the ratio at which the barrier layer *produces*
 # outer-layer oxide.  M4 pins C_x = 0, so its PBR_eff is forced to describe net
 # *accumulation* instead, and the two numbers are then compared as if they meant
-# the same thing.  They do not: any oxide lost to the coolant appears as a
+# The same thing.  They do not: any oxide lost to the coolant appears as a
 # deficit in accumulation while leaving production untouched.  M6 frees C_x so
-# the two can be separated -- or, as it turns out, so their inseparability can
+# The two can be separated -- or, as it turns out, so their inseparability can
 # be demonstrated.  Given L_bl(t), the outer-layer solution is
 #
 #     L_ol(t) = L_ol0 + PBR_eff * (L_bl(t) - L0) + C_x * t
@@ -129,7 +129,7 @@ VARIANTS = {
 # It is therefore saturated, and PBR_eff is unconstrained in it: see
 # htw_pdm.pbr_closure, which profiles PBR_eff from 0.5 to 8 at a total
 # chi2 cost of 0.89.  M3 already had C_x free but also freed C_bl, which sends
-# the fit to a degenerate ridge and hides this; M6 isolates the effect.
+# The fit to a degenerate ridge and hides this; M6 isolates the effect.
 
 
 def _exp(v):

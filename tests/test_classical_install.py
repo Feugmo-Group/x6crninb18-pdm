@@ -7,7 +7,7 @@ docs/REPRODUCE.md labels every command `classical` or `neural`, derived from a
 module-level import graph rather than a hand-kept list. The derivation can still
 be wrong -- a lazily-imported dependency that turns out not to be lazy, a new
 module that pulls torch in through a helper -- and the failure would be silent:
-the doc keeps saying `classical` while a reader on `uv sync` hits an
+The doc keeps saying `classical` while a reader on `uv sync` hits an
 ImportError.
 
 These tests are the ground truth behind that label. They only mean anything
@@ -100,9 +100,9 @@ def test_the_artefact_producers_that_do_need_it_are_the_expected_ones():
     README are both written against this set.
     """
     expected = {
-        "inverse_trainer", "parametric_trainer", "tier2_steady_trainer",
-        "tier2_transient_trainer", "tier4_ni_closure", "tier4_pnp",
-        "tier4_pnp_solve", "tier4_transient_inverse", "trainer",
+        "inverse_trainer", "parametric_trainer", "spatial_steady_trainer",
+        "spatial_transient_trainer", "nickel_mobility_closure", "field_closure",
+        "field_closure_solve", "transient_inverse", "trainer",
         "uncertainty_ensemble",
     }
     actual = {stem for stem, p in _HTW.items()

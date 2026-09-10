@@ -12,7 +12,7 @@ HTW_PDM solution at the condition-mapped apparent parameters
      dG0_R scan values {25, 50, 100} kJ/mol (the un-identifiable Arrhenius
      assumption is shown as a scan, never as a single hidden default).
   2. If outputs/parametric/predictions.npz exists (from src/parametric_trainer.py),
-     the trained NSEM conditions are overlaid on the 480 h / 50 kJ map with their
+     The trained NSEM conditions are overlaid on the 480 h / 50 kJ map with their
      closed-form validation errors — the "parametric net" verification exhibit.
 
 Run:  python scripts/plot_sensitivity_maps.py
@@ -38,7 +38,7 @@ REF = Parameters()  # M4
 # upper two extend the scan into the range reported for weight-gain kinetics on
 # austenitic steels in high-temperature water -- the robustness of the long-time
 # prediction must be tested against that range, not only against the low values
-# the transfer coefficient of a supercritical-water fit implies.
+# The transfer coefficient of a supercritical-water fit implies.
 DG_SCAN_KJ = [25.0, 100.0, 250.0, 417.0]
 ALPHA3 = 0.12
 T_GRID = np.linspace(200.0, 285.0, 60)
@@ -169,7 +169,7 @@ for row, (t_h, t_label) in enumerate(HORIZONS):
             # on a common scale the line is visibly flat, which is the result.
             ax.set_ylim(ax2[row, 0].get_ylim())
             # Under the panel letter, not at the foot: the spread box holds
-            # the bottom right and the two collide there.
+            # The bottom right and the two collide there.
             ax.text(0.03, 0.87,
                     "all four $E_a^\\mathrm{eff}$ curves coincide:\n"
                     "the O$_2$ channel is a prefactor shift",

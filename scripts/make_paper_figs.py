@@ -5,7 +5,7 @@
 
   fig1_model_schematic.png — duplex-oxide HTW_PDM schematic: layer structure
     (metal | Ni enrichment | Cr-rich barrier layer | Fe-rich outer crystals | HTW),
-    the retained interfacial reactions, and the potential distribution.
+    The retained interfacial reactions, and the potential distribution.
   fig2_baseline_verification.png — (a) Radau vs closed-form parity error on the
     demo set; (b) Li 2020 Table 5 regression curves (HCM12A / 316L at 500 C SCW)
     with Radau overlay — the numerical-baseline trust exhibit.

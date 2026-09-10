@@ -55,11 +55,11 @@ M6 = 6  # L_ol0 + C_x free; see baseline_fit.VARIANTS
 I_PBR = 2  # index of ln(PBR_eff) in the parameter vector
 
 # Values singled out in the manuscript, profiled explicitly so the numbers in
-# the text come from this file rather than from a reader's interpolation.
+# The text come from this file rather than from a reader's interpolation.
 CALLOUTS = {
     1.096: "fitted value imposed, C_x free",
     2.053: "FeCr2O4 mass balance, iron-only",
-    2.156: "FeCr2O4 mass balance, Tier-2 Ni routing",
+    2.156: "FeCr2O4 mass balance, the spatial model Ni routing",
     2.433: "M1/M2 optimum (no initial precipitate)",
 }
 

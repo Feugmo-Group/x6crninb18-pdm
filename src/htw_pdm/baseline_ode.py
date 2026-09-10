@@ -8,7 +8,7 @@ Reduced (apparent-parameter) system derived in ../pdm_eqns.md Section 6:
 Units: nm for thickness, h for time (conversion helpers from Li's cgs at the bottom).
 Closed-form solutions are implemented alongside the stiff Radau integration; they are
 exact for constant parameters and serve as the parity target for both this module and
-the NSEM solver.
+The NSEM solver.
 """
 
 from __future__ import annotations

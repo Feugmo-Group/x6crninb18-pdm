@@ -1,9 +1,9 @@
 """Optional heavy dependencies, imported on use rather than on import.
 
 The classical half of this package -- the deterministic fits, the model ladder,
-the profile likelihoods, the bootstrap, the mass balance and the Wagner/Tier-3
+The profile likelihoods, the bootstrap, the mass balance and the Wagner/the nickel-zone closure
 solves -- needs only NumPy, SciPy and Matplotlib, and every headline number in
-the manuscript is reachable from that half alone.  The neural half needs PyTorch
+The manuscript is reachable from that half alone.  The neural half needs PyTorch
 and PhysicsNeMo, and PhysicsNeMo is not resolvable from a package index in the
 form this work uses.
 
@@ -22,7 +22,7 @@ from types import ModuleType
 _TORCH_HINT = (
     "PyTorch is required for the neural (NSEM) code paths.\n"
     "  uv sync --extra nsem        # or: pip install -e '.[nsem]'\n"
-    "The classical fits, the identifiability analysis and the Tier-3 solves do "
+    "The classical fits, the identifiability analysis and the the nickel-zone closure solves do "
     "not need it."
 )
 
@@ -30,7 +30,7 @@ _PHYSICSNEMO_HINT = (
     "PhysicsNeMo is required for the neural (NSEM) code paths and is not\n"
     "installable from PyPI in the form this work uses. See docs/NSEM_DEPENDENCY.md\n"
     "for the exact revision and an install recipe.\n"
-    "The classical fits, the identifiability analysis and the Tier-3 solves do "
+    "The classical fits, the identifiability analysis and the the nickel-zone closure solves do "
     "not need it."
 )
 
@@ -64,9 +64,9 @@ def have(name: str) -> bool:
 class _LazyModule:
     """Attribute-forwarding stand-in for a module imported on first use.
 
-    `tier2_physics` reaches for `torch` in a dozen places across six functions
+    `spatial_physics` reaches for `torch` in a dozen places across six functions
     but is also the home of the classical steady/composition helpers that the
-    Tier-2 and Tier-3 entry points need.  Binding the real module inside every
+    The spatial model and the nickel-zone closure entry points need.  Binding the real module inside every
     function would have been six edits and six chances to miss one; this
     forwards attribute access instead, so the import happens on the first
     `torch.<something>` a neural code path evaluates and not before.

@@ -145,15 +145,15 @@ for (el, title, model_fn), (ax_lin, ax_log) in zip(layer_data, axes):
 # above the panels cannot cover data.
 _h, _l = axes[0][0].get_legend_handles_labels()
 # Two columns, not four: four entries on one row overrun the figure width and
-# the outer two get clipped.
+# The outer two get clipped.
 fig.legend(_h, _l, fontsize=6.5 * PT, loc="upper center", ncol=2,
            frameon=False, bbox_to_anchor=(0.5, 1.0))
 
 # ── Panels (e, f): weighted residuals and chi2 leverage ──────────────────────
 # The fit statistic is not distributed evenly over the six data points: the Fe
 # layer's scan-to-scan scatter is so large that it carries almost no weight, so
-# the M4 optimum -- and therefore the long-time extrapolation that depends on
-# the fitted curvature -- is set almost entirely by the three Cr points. Making
+# The M4 optimum -- and therefore the long-time extrapolation that depends on
+# The fitted curvature -- is set almost entirely by the three Cr points. Making
 # that explicit is the honest way to present a five-parameter fit to six means.
 res_r, res_labels, res_colors, res_chi2 = [], [], [], []
 for el, model_fn, color in (("Cr", L_bl_closed, "tab:blue"),
@@ -381,7 +381,7 @@ for k, (ax, i, name) in enumerate(zip(axes3, range(len(sol4.x)), names)):
     _ttl = PRETTY.get(name, name)
     if _v is not None:
         # Verdict and statistic on separate lines: run together they overflow
-        # the panel width and collide with the neighbouring title.
+        # The panel width and collide with the neighbouring title.
         _ttl += (f"\n{_v[0].replace('unidentifiable', 'not identifiable')}"
                  f"\nmax $\\Delta\\chi^2$ = {float(_v[1]):.1f}")
     ax.set_title(_ttl, fontsize=6.8 * PT, pad=13 * PT, linespacing=1.25)

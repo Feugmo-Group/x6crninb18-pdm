@@ -39,7 +39,7 @@ class Parameters:
     Defaults are the deterministic fit (model M4) to the Veile 2024
     layer-thickness data - see IMPL_REPORT.md.  Refreshed after the PBR_eff
     prior was removed from baseline_fit.PRIORS: PBR_eff 1.051 -> 1.096 and
-    L_ol0 118.7 -> 115.6 nm.  Tier 2/3/4 read these defaults, so they must be
+    L_ol0 118.7 -> 115.6 nm.  the spatial model/3/4 read these defaults, so they must be
     regenerated whenever the M4 fit changes.
     """
 

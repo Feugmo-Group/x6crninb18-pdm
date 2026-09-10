@@ -10,15 +10,15 @@ gap as bare numbers. Both are distances and both have obvious yardsticks, which
 is exactly the case where a figure beats a sentence.
 
   (a) How far the self-consistently solved field departs from uniform, against
-      the defect diffusivity that would be needed to hold it there. The 1, 5 and
+      The defect diffusivity that would be needed to hold it there. The 1, 5 and
       10 % deviation thresholds are marked; the diffusivity actually assumed in
-      the spatial model sits six orders of magnitude to the left of all three.
+      The spatial model sits six orders of magnitude to the left of all three.
   (b) The Debye length against its two natural yardsticks: the barrier layer it
       is supposed to be screening across, and an interatomic spacing. At 0.06 nm
       it falls several times below the smaller of the two, which is what makes
-      the closure untenable rather than merely approximate.
+      The closure untenable rather than merely approximate.
 
-Reads outputs/paper/tier4_pnp.json (written by `python -m htw_pdm.tier4_pnp_solve`).
+Reads outputs/paper/field_closure.json (written by `python -m htw_pdm.field_closure_solve`).
 
 Run:  uv run python scripts/make_paper_fig_closure.py
 """
@@ -34,12 +34,12 @@ import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 
 from htw_pdm.paths import OUTPUTS  # noqa: E402
-from htw_pdm.tier2_physics import D_OV_CM2_S  # noqa: E402
+from htw_pdm.spatial_physics import D_OV_CM2_S  # noqa: E402
 
 OUT = OUTPUTS / "paper"
-SRC = OUT / "tier4_pnp.json"
+SRC = OUT / "field_closure.json"
 if not SRC.exists():
-    raise SystemExit(f"{SRC} missing — run `python -m htw_pdm.tier4_pnp_solve`")
+    raise SystemExit(f"{SRC} missing — run `python -m htw_pdm.field_closure_solve`")
 res = json.loads(SRC.read_text())
 
 # An interatomic spacing in austenite: a/sqrt(2) for the fcc nearest neighbour

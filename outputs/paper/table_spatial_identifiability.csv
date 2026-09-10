@@ -1,0 +1,8 @@
+shape_param,physics_mapping,truth,replicate_mean,replicate_sd,rel_sd,verdict
+L_bl,the zero-dimensional fit output (known),134.0,133,3.25,2%,IDENTIFIABLE
+w_int,solid-state interdiffusion D_s,5.0,4.8,0.838,17%,IDENTIFIABLE
+w_out,outer-interface kinetics,8.0,8.09,1.54,19%,IDENTIFIABLE
+A_Ni,k_Ni exclusion ratio,25.0,24.5,1.71,7%,IDENTIFIABLE
+w_Ni,k_Ni ratio + D_Ni,35.0,35,2.69,8%,IDENTIFIABLE
+f_Cr_bl,interfacial flux ratios,45.0,45.6,1.02,2%,IDENTIFIABLE
+g_bl,defect (cation-vacancy) transport gradient,1.0,0.819,0.466,47%,WEAK

@@ -26,7 +26,7 @@ import numpy as np
 from htw_pdm.baseline_fit import load_data
 from htw_pdm.paths import OUTPUTS
 from htw_pdm.physics import Parameters
-from htw_pdm.tier2_inverse import (
+from htw_pdm.spatial_inverse import (
     A72_MEAN,
     A72_SIG,
     NI_M,
@@ -40,7 +40,7 @@ OUT = OUTPUTS / "paper"
 OUT.mkdir(parents=True, exist_ok=True)
 
 theta = np.array([
-    json.loads((OUT.parent / "tier2_inverse_fit.json").read_text())[k]
+    json.loads((OUT.parent / "spatial_inverse_fit.json").read_text())[k]
     for k in ("D_Ni_eff_nm2_h", "r_Ni", "phi_ol_supply")
 ])
 p1 = Parameters()
@@ -73,7 +73,7 @@ W = np.array([_width(row) for row in c])
 means, _ = load_data()
 ni = {r[0]: (r[1], r[2], r[3]) for r in means["Ni"]}
 W_obs = np.array([ni[t][0] for t in T_OBS])
-W_sig = np.array([ni[t][1] for t in T_OBS])  # population SD, as in the T2-E fit
+W_sig = np.array([ni[t][1] for t in T_OBS])  # population SD, as in the the spatial inverse fit
 chi2 = float(np.sum(residuals(theta, p1, W_obs, W_sig) ** 2))
 
 np.savez(OUT / "ni_zone_curve.npz", t_h=t_dense, W_nm=W,

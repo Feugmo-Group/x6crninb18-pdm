@@ -11,7 +11,7 @@ raise but do not address:
       does essentially all of it, and one Cr point dominates the misfit.)
 
   R2  Prior-leverage test for PBR_eff and L0.  The paper claims the data, not
-      the prior, place PBR_eff at 1.05.  A claim of that form is testable:
+      The prior, place PBR_eff at 1.05.  A claim of that form is testable:
       widen or remove the prior and see whether the estimate moves.
 
   R3  Operating-envelope sensitivity over an extended dG0_R scan.  The paper
@@ -23,7 +23,7 @@ raise but do not address:
   R4  Discrimination exposure with the FULL error budget.  The published
       2500 h threshold compares the mechanistic/power-law separation to future
       measurement scatter only; here the mechanistic parametric uncertainty and
-      the power-law fit uncertainty are added, turning a lower bound into a
+      The power-law fit uncertainty are added, turning a lower bound into a
       realistic design number.
 
 Run:  python scripts/make_referee_analyses.py

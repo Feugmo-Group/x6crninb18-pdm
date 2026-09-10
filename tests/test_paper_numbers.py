@@ -99,7 +99,7 @@ class TestAcceptedModel:
         assert p.C_x == 0.0
 
     def test_physics_defaults_match_the_fit(self, fit):
-        """physics.Parameters is read by Tiers 2-4; it must not go stale."""
+        """physics.Parameters is read by the spatial and closure solves; it must not go stale."""
         _d, _scans, _sol, p, *_ = fit
         ref = Parameters()
         for name in ("A_bl", "b3", "PBR_eff", "L0", "L_ol0"):
@@ -176,7 +176,7 @@ class TestOneWayCoupling:
     """README: the barrier layer never reads PBR_eff, C_x or L_ol0.
 
     This is the structural fact that makes every barrier-layer result immune to
-    the outer-layer degeneracy, so it is asserted rather than trusted.
+    The outer-layer degeneracy, so it is asserted rather than trusted.
     """
 
     def test_barrier_layer_ignores_outer_layer_parameters(self, fit):
@@ -261,9 +261,9 @@ class TestNeuralArtefacts:
     @pytest.fixture(scope="class")
     def pnp(self):
         import json
-        path = PAPER_OUT / "tier4_pnp.json"
+        path = PAPER_OUT / "field_closure.json"
         if not path.exists():
-            pytest.skip("tier4_pnp.json not present; run htw_pdm.tier4_pnp_solve")
+            pytest.skip("field_closure.json not present; run htw_pdm.field_closure_solve")
         return json.loads(path.read_text())
 
     def test_debye_length_matches_the_abstract(self, pnp):
@@ -276,7 +276,7 @@ class TestNeuralArtefacts:
 
     def test_the_diffusivity_gap_is_six_orders(self, pnp):
         """Section 3.5: uniformity would need D six orders above the assumed value."""
-        from htw_pdm.tier2_physics import D_OV_CM2_S
+        from htw_pdm.spatial_physics import D_OV_CM2_S
         d10 = pnp["A3_validity"]["thresholds"]["0.10"]["D_required_cm2_s"]["OV"]
         assert np.log10(d10 / D_OV_CM2_S) == pytest.approx(6.0, abs=0.3)
 

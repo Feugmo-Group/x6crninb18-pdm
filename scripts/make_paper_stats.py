@@ -252,7 +252,7 @@ def main():
     # elsewhere, on individual scans in unweighted linear space, and no
     # covariance for them is published.  The published-coefficient budget
     # therefore carries the scatter and mechanistic terms only, which makes it
-    # the more conservative (later-crossing) of the two by construction.
+    # The more conservative (later-crossing) of the two by construction.
     pl_members, pl_fail = powerlaw_bootstrap(d)
     pl_boot = np.array([k * t_scan ** n for k, n in pl_members])
     var_pl_refit = pl_boot.std(axis=0) ** 2

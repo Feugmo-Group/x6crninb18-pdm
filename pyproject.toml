@@ -21,7 +21,7 @@ classifiers = [
 ]
 
 # The classical fits, the mass balance, the profile likelihoods, the bootstrap
-# and the Wagner/Tier-3 solves need only these three.  Every number in the
+# and the Wagner/the nickel-zone closure solves need only these three.  Every number in the
 # manuscript's headline claims is reachable from this set alone; see the
 # `nsem` extra for what the neural inversions additionally require.
 dependencies = [
@@ -79,7 +79,7 @@ filterwarnings = [
     "ignore::DeprecationWarning",
 ]
 markers = [
-    "slow: takes more than a few seconds (tier-3 and tier-4 regression solves)",
+    "slow: takes more than a few seconds (nickel-closure and field-closure solves)",
     "nsem: requires PhysicsNeMo; skipped automatically when it is absent",
 ]
 
@@ -97,7 +97,7 @@ ignore = [
     "E501",   # long lines are mostly derivation comments quoting the equations
     "B008",   # function call in a default argument: not used in a stateful way here
     "B023",   # loop variable in a closure: all 21 sites call the closure inside
-              # the same iteration (least_squares/jacobian), several already bind
+              # The same iteration (least_squares/jacobian), several already bind
               # defaults explicitly. Checked individually; none defer the call.
     "B905",   # zip(strict=): the zipped sequences are same-length by construction
               # (parameter names against their own grids); strict= would add noise

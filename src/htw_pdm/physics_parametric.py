@@ -3,7 +3,7 @@
 Maps an operating condition (temperature T, dissolved oxygen [O2]) to the apparent
 parameters {A_bl, b3, C_bl} of the reduced HTW_PDM, anchored at the Phase-B3 M4 fit
 (T0 = 240 C, [O2]0 = 0.4 ppm, 7 MPa). Every channel is a documented consequence of
-the Li 2020 rate-constant structure (see ../pdm_eqns.md and the extraction's Eq. 9 /
+The Li 2020 rate-constant structure (see ../pdm_eqns.md and the extraction's Eq. 9 /
 Table 1 / Table 4); the ONE quantity that cannot be sourced from the single-temperature
 Veile data is the standard reaction Gibbs energy dG0_R of the growth reaction R3 —
 it is therefore an explicit scan parameter, never a hidden default.
@@ -14,7 +14,7 @@ Channels:
        k3^00(T) = k3^00(T0) * exp[-(alpha3*dG0_R/R) * (1/T - 1/T0)]
    plus the pH channel exp(c3(T)*pH(T)) with c3 = -alpha3*chi*gamma(T)*beta and
    pH(T) = pKw(T)/2 (neutral ultrapure water at temperature) — a ~2 % effect across
-   the range, included for completeness.
+   The range, included for completeness.
 
 2. A_bl([O2]) — optional ECP channel: at open circuit exp(a3*V) is absorbed into
    A_bl at the reference condition; changing [O2] shifts the corrosion potential.

@@ -1,7 +1,7 @@
 """Project paths, resolved once.
 
 Every module and script imports its directories from here.  This exists because
-the same directory used to be computed three different ways -- `__file__.parent`
+The same directory used to be computed three different ways -- `__file__.parent`
 in root scripts, `__file__.parent.parent` inside the package, and a separate
 `ROOT / "outputs" / "paper"` elsewhere -- so moving a file silently changed
 where its results landed.  It is the same rule already applied to fitted values

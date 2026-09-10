@@ -6,7 +6,7 @@
 F-1 is the paper's methodological contribution, and until now it was carried
 entirely by two numbers in a table: a trajectory chi2 of 0.21 against a
 closed-form chi2 of 16.6 at the same recovered parameters. Those numbers state
-the result; they do not show why it is dangerous. What makes the failure worth
+The result; they do not show why it is dangerous. What makes the failure worth
 documenting is that the trained trajectory looks like an excellent fit -- better
 than the accepted model's -- while the parameters it reports are wrong. Two
 panels put those side by side:

@@ -122,9 +122,9 @@ print(f"  chi2 trajectory = {result['chi2']:.2f}, "
 # ── The self-consistency exhibit itself ──────────────────────────────────────
 # The table that accompanies the figure used to be assembled from whatever .pt
 # checkpoints happened to be lying in outputs/, which silently went stale when
-# the training schedule changed and left the artefact disagreeing with the
+# The training schedule changed and left the artefact disagreeing with the
 # manuscript.  Both remaining runs are re-run here instead, so the exhibit and
-# the figure come from one execution of one script.
+# The figure come from one execution of one script.
 RUNS = (
     ("hard (real data)", "physics exact by construction",
      ["inverse.mode=hard"]),

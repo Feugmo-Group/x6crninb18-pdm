@@ -1,0 +1,13 @@
+t_h,feature,predicted,measured_mean,measured_sd,rel_dev
+72,Cr,45.5,37.3,7.7,+21.9%
+72,Ni,23.5,31.3,3.4,-25.0%
+72,Ni_peak_wt%,27.7,23.7,7.0,+16.9%
+72,g_bl_pred_abs%,1.45,min detectable 0.93 (the spatial identifiability gate),,
+168,Cr,79.0,98.2,21.6,-19.6%
+168,Ni,39.0,43.0,11.1,-9.3%
+168,Ni_peak_wt%,31.5,,,
+168,g_bl_pred_abs%,0.96,min detectable 0.93 (the spatial identifiability gate),,
+480,Cr,138.5,134.3,5.4,+3.1%
+480,Ni,77.5,36.0,5.0,+115.3%
+480,Ni_peak_wt%,28.6,,,
+480,g_bl_pred_abs%,0.46,min detectable 0.93 (the spatial identifiability gate),,

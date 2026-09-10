@@ -5,7 +5,7 @@ sampling distribution implied by the data), refit the hard-mode NSEM inverse (fa
 kinetics-only differentiable RK4, no field networks) from each resampled draw, and
 report the ensemble spread of the recovered M4 parameters. This is the "posterior/
 ensemble spread" the plan (PLAN_PDM_X6CrNiNb18.md Phase D2/D3) asks to compare against
-the B3 deterministic profile-likelihood intervals (baseline_fit.py).
+The B3 deterministic profile-likelihood intervals (baseline_fit.py).
 
 Run:  python -m htw_pdm.uncertainty_ensemble [n_ensemble]
 """

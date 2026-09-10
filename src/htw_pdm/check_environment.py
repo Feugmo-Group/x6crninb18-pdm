@@ -23,19 +23,19 @@ CLASSICAL_ENTRY_POINTS = (
     "htw_pdm.baseline_fit",
     "htw_pdm.mass_balance",
     "htw_pdm.pbr_closure",
-    "htw_pdm.tier2_identifiability",
-    "htw_pdm.tier2_composition",
-    "htw_pdm.tier3_identifiability",
-    "htw_pdm.tier3_forward_envelope",
+    "htw_pdm.spatial_identifiability",
+    "htw_pdm.composition_map",
+    "htw_pdm.nickel_identifiability",
+    "htw_pdm.nickel_forward_envelope",
 )
 NEURAL_ENTRY_POINTS = (
     "htw_pdm.trainer",
     "htw_pdm.inverse_trainer",
     "htw_pdm.uncertainty_ensemble",
     "htw_pdm.parametric_trainer",
-    "htw_pdm.tier4_pnp_solve",
-    "htw_pdm.tier4_transient_inverse",
-    "htw_pdm.tier4_ni_closure",
+    "htw_pdm.field_closure_solve",
+    "htw_pdm.transient_inverse",
+    "htw_pdm.nickel_mobility_closure",
 )
 
 

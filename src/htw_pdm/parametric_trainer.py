@@ -4,7 +4,7 @@ Trains the forward HTW_PDM at Nc Sobol-sampled conditions in
 T in [200, 285] C x [O2] in [0.01, 8] ppm (log-uniform) simultaneously: each
 condition gets its own pair of SCEN time networks (same recipe as src/trainer.py),
 all optimized jointly by one TwoPhaseOptimizer with a shared BRDR aggregator —
-the rpdm_nsem parametric-trainer discipline (cross-condition loss-scale sharing).
+The rpdm_nsem parametric-trainer discipline (cross-condition loss-scale sharing).
 
 The condition -> apparent-parameter map is src/physics_parametric.py (Arrhenius +
 1/T field + Nernstian ECP channels, anchored at the M4 fit; dG0_R is the explicit

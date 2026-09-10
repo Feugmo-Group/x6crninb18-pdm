@@ -130,7 +130,7 @@ class TestTier2Spatial:
         from physicsnemo.experimental.models.scen import DVRMapper
 
         from htw_pdm.physics import Parameters
-        from htw_pdm.tier2_physics import analytic_steady, newton_steady, species_groups
+        from htw_pdm.spatial_physics import analytic_steady, newton_steady, species_groups
 
         mapper = DVRMapper(24, 0.0, 1.0, 0.0, dtype=torch.float64)
         for g in species_groups(Parameters(), 134.0).values():
@@ -144,7 +144,7 @@ class TestTier2Spatial:
         from physicsnemo.experimental.models.scen import DVRMapper
 
         from htw_pdm.physics import Parameters
-        from htw_pdm.tier2_physics import analytic_steady, flux_hat, species_groups
+        from htw_pdm.spatial_physics import analytic_steady, flux_hat, species_groups
 
         mapper = DVRMapper(32, 0.0, 1.0, 0.0, dtype=torch.float64)
         for g in species_groups(Parameters(), 134.0).values():
@@ -158,7 +158,7 @@ class TestTier2Spatial:
         import numpy as np
 
         from htw_pdm.physics import Parameters
-        from htw_pdm.tier2_physics import species_groups, transient_groups
+        from htw_pdm.spatial_physics import species_groups, transient_groups
 
         p1 = Parameters()
         tau = np.linspace(0.05, 1.0, 8)
@@ -179,7 +179,7 @@ class TestTier2Spatial:
         import numpy as np
 
         from htw_pdm.physics import Parameters
-        from htw_pdm.tier2_inverse import NI_M, wagner_solve
+        from htw_pdm.spatial_inverse import NI_M, wagner_solve
 
         c, _ = wagner_solve(np.array([2.0, 0.999, 0.0]), Parameters())
         assert float(np.abs(c - NI_M).max()) < 0.05

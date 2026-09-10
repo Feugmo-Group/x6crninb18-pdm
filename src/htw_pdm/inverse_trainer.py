@@ -4,7 +4,7 @@ Learns the apparent PDM parameters {Ahat, bhat, PBReff, lam0, lamol0} (optionall
 Chat) jointly with the two thickness networks, from layer-thickness data:
 
 * synthetic mode (data.synthetic=true): data generated from the closed form at
-  the physics.* ground truth + Gaussian noise — the recovery test that must pass
+  The physics.* ground truth + Gaussian noise — the recovery test that must pass
   before the real-data inversion is trusted;
 * real mode: the Veile 2024 Cr (barrier layer) and Fe (outer layer) means.
 
@@ -182,7 +182,7 @@ def main(cfg: DictConfig) -> dict:
 
     mode = str(cfg.inverse.get("mode", "hard"))
     # Only L0 carries a prior; this must mirror baseline_fit.PRIORS exactly, or
-    # the neural inversion and the classical fitter stop minimizing the same
+    # The neural inversion and the classical fitter stop minimizing the same
     # objective and their agreement becomes meaningless. The PBR_eff prior that
     # used to sit here was removed with it (its 1.05 center fails a chromium
     # mass balance -- see the comment in baseline_fit.PRIORS).
@@ -194,7 +194,7 @@ def main(cfg: DictConfig) -> dict:
         # kinetics; only the kinetic parameters are optimized. This is the
         # reference inverse mode for the 0-D model (no ODE-slack leakage; see
         # IMPL_REPORT Phase D). The soft mode below is the joint field+parameter
-        # PINN needed once no integrator shortcut exists (spatial Tier-2 model).
+        # PINN needed once no integrator shortcut exists (spatial the spatial model model).
         logger.info("Inverse mode: HARD (differentiable RK4, kinetics-only)")
 
         def hard_loss():

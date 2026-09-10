@@ -141,7 +141,7 @@
       "b3": -0.012484998894655094,
       "oxide_ug_dm2_h": 13.731127505301169,
       "Fe_ug_dm2_h": 9.935794544145843,
-      "note": "FeCr2O4 mass balance, Tier-2 Ni routing"
+      "note": "FeCr2O4 mass balance, the spatial model Ni routing"
     },
     {
       "PBR_eff": 2.433,

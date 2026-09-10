@@ -10,7 +10,7 @@ validation record.  Submodules are imported directly, e.g.
     from htw_pdm.baseline_fit import fit_pdm, load_data
     from htw_pdm.paths import OUTPUTS
 
-Modules with a `main()` are runnable: `python -m htw_pdm.tier2_inverse`.
+Modules with a `main()` are runnable: `python -m htw_pdm.spatial_inverse`.
 Nothing is imported eagerly here -- several submodules pull in torch and
 physicsnemo, which is slow and unnecessary for the classical fits.
 """
