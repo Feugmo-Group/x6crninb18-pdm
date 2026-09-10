@@ -1,8 +1,19 @@
 """Deterministic fits of the Veile 2024 layer-thickness data.
 
 Stage 1 (validation of the digitized data): least-squares refit of the empirical power
-law L = k * t^n, scan-level and linear-space as in the source paper; must recover
-Cr (k = 6.521 nm, n = 0.4964) and Fe (k = 64.51 nm, n = 0.2209) within digitization error.
+law L = k * t^n, scan-level and linear-space as in the source paper.
+
+This validates the CHROMIUM digitization and only that: the refit returns
+k = 6.522 nm, n = 0.4964 against the published 6.521 / 0.4964, four significant
+figures, which bounds the read-off error well below the scan-to-scan scatter.
+It does NOT reproduce the published iron fit (refit 54.6 / 0.249 against 64.51 /
+0.2209, ~15%).  That is expected rather than a defect: the outer layer is
+discrete magnetite crystals whose scan-to-scan physical scatter exceeds
+digitization precision, and the individual Fe scan positions here are figure
+read-offs.  The iron *means* are transcribed from the source text and are the
+authoritative data; the Fe scan-level file is retained only for Veile-style
+scan-level fits, and no result in the manuscript rests on the Fe refit.
+See tests/test_paper_numbers.py, which pins both halves of this.
 
 Stage 2 (the theoretical model): weighted least-squares fit of the reduced HTW_PDM
 (closed-form solutions from baseline_ode) to the Cr (barrier layer) and Fe (outer layer)
@@ -22,9 +33,7 @@ Run:  python -m htw_pdm.baseline_fit
 from __future__ import annotations
 
 import csv
-import sys
 from dataclasses import dataclass
-from pathlib import Path
 
 import numpy as np
 from scipy.optimize import curve_fit, least_squares
@@ -35,8 +44,8 @@ from htw_pdm.baseline_ode import (  # noqa: E402
     L_bl_steady_state,
     L_ol_closed,
 )
-
 from htw_pdm.paths import DATA  # noqa: E402
+
 F_OVER_RT = 96485.332 / (8.314462 * 513.15)  # 1/V at 240 C
 CHI = 8.0 / 3.0  # spinel-averaged cation valence in the barrier layer
 ALPHA3_PRIOR = 0.12  # Li 2020 Table 4 (HCM12A), used only to convert b3 -> field strength
@@ -147,12 +156,12 @@ def unpack(x, variant):
 # checked against a chromium mass balance and found to be unsupportable: the
 # constant-volume closure that yields 1.05 requires the barrier layer to draw
 # ~30 at% Cr from an 18.8 at% alloy.  A Cr mass balance on X6CrNiNb18-10 with
-# an FeCr2O4 barrier gives PBR_eff = 2.09 when all non-Ni iron reports to the
+# an FeCr2O4 barrier gives PBR_eff = 2.05 when all non-Ni iron reports to the
 # outer layer, so 1.05 is not the stoichiometric value and the prior was
 # pulling the estimate toward a number with no derivation behind it.  The
-# likelihood alone puts PBR_eff at 1.10 for M4, and the apparent gap to 2.09
+# likelihood alone puts PBR_eff at 1.10 for M4, and the apparent gap to 2.05
 # turned out not to be one: the stoichiometric ratio is phase-dependent and
-# spans [0.52, 3.79], which contains 1.10, and freeing C_x reaches 2.09 at no
+# spans [0.52, 3.79], which contains 1.10, and freeing C_x reaches 2.05 at no
 # cost in chi2 (see htw_pdm.mass_balance and htw_pdm.pbr_closure).  L0 keeps its
 # prior: the exposure-time data give it no interior optimum at all (it runs to
 # zero).
@@ -186,8 +195,11 @@ def fit_pdm(d: FitData, variant: int, x0=None):
     r_data = residuals(sol.x, d, variant, use_priors=False)
     chi2 = float(np.sum(r_data**2))
     total = float(np.sum(residuals(sol.x, d, variant) ** 2))
+    # Reported as-is: the saturated variants (M3, M5) genuinely have dof = 0
+    # against six observations, and clamping that to 1 hid the saturation.
+    # Callers that divide by dof only ever do so for M4, which has dof = 1.
     dof = len(r_data) - n_free
-    return sol, unpack(sol.x, variant), chi2, max(dof, 1), total
+    return sol, unpack(sol.x, variant), chi2, dof, total
 
 
 def power_law_chi2(d: FitData, k, n, layer: str):

@@ -239,7 +239,7 @@ def main():
         lo, hi = s["R_prod_range"]
         print(f"  stoichiometric range for PBR_eff: [{lo:.2f}, {hi:.2f}]")
 
-    print("\nImplied release at the C_x that buys PBR_eff = 2.09 "
+    print("\nImplied release at the C_x that buys PBR_eff = 2.05 "
           "(see scripts/analyse_pbr_closure.py):")
     for cx in (-0.0249, -0.2493, -0.9409):
         f = release_flux(cx)

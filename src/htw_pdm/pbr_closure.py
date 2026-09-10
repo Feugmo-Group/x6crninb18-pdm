@@ -2,7 +2,7 @@
 
 Earlier revisions reported a factor-1.9 discrepancy: the likelihood puts
 PBR_eff at 1.096 (model M4) while a chromium mass balance with an FeCr2O4
-barrier gives about 2.09.  The discrepancy is not real, for two independent
+barrier gives about 2.05.  The discrepancy is not real, for two independent
 reasons, and this script computes both.
 
 (1) The bound is not a single number.  `src/mass_balance.py` derives the
@@ -45,7 +45,6 @@ from scipy.optimize import least_squares  # noqa: E402
 import htw_pdm.baseline_fit as bf  # noqa: E402
 import htw_pdm.mass_balance as mb  # noqa: E402
 from htw_pdm.baseline_fit import build_fit_data, fit_pdm, load_data, unpack  # noqa: E402
-
 from htw_pdm.paths import OUTPUTS as OUT  # noqa: E402
 from htw_pdm.paths import PAPER_OUT as PAPER  # noqa: E402
 from htw_pdm.paths import ensure_outputs  # noqa: E402
@@ -58,7 +57,7 @@ I_PBR = 2  # index of ln(PBR_eff) in the parameter vector
 # Values singled out in the manuscript, profiled explicitly so the numbers in
 # the text come from this file rather than from a reader's interpolation.
 CALLOUTS = {
-    1.096: "M4 optimum (C_x pinned to zero)",
+    1.096: "fitted value imposed, C_x free",
     2.053: "FeCr2O4 mass balance, iron-only",
     2.156: "FeCr2O4 mass balance, Tier-2 Ni routing",
     2.433: "M1/M2 optimum (no initial precipitate)",
