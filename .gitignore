@@ -17,6 +17,11 @@ veile2024investigation.pdf
 !paper/pdf/*.pdf
 !paper-corrosion-science/*.pdf
 !talk/*.pdf
+# Vector figures built from TikZ sources: the manuscript includes these, so they
+# are tracked alongside the .tex that generates them.
+!paper/figures/*.pdf
+!paper-corrosion-science/figures/*.pdf
+!outputs/paper/*.pdf
 
 # LaTeX build artifacts
 *.aux
@@ -48,3 +53,8 @@ venv/
 # Pre-edit snapshots
 *.bak
 *.prefix.bak
+
+# Hydra writes a timestamped run directory beside outputs/ on every training
+# run. The results that matter are copied into outputs/paper/; the run logs
+# and resolved configs are not inputs to anything.
+outputs/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/
