@@ -72,3 +72,9 @@ paper/arxiv-submission.tar.gz
 # Generated npj submission package (rebuild: python scripts/make_npj_package.py)
 paper/npj-submission/
 paper/npj-submission.zip
+
+# Manuscript sources are kept out of the published repository. The analysis
+# code, the configuration and every artifact behind a reported number are
+# tracked; the .tex, the class files and the built PDFs are not.
+paper/
+paper-corrosion-science/
