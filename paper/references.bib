@@ -1,10 +1,10 @@
-% references.bib -- built from paper/literature_review.md's verified reference list.
+% references.bib -- built from docs/internal/literature_review.md's verified reference list.
 % All entries below have been independently confirmed against primary
 % sources: Crossref API metadata resolved from each DOI (title, author
 % list, journal, volume, issue/article-number, and page range all
 % cross-checked against the registered publisher record), plus one
 % Zenodo record (conference paper) confirmed via the Zenodo REST API.
-% Verification performed 2026-07-12; see paper/literature_review.md for
+% Verification performed 2026-07-12; see docs/internal/literature_review.md for
 % the original discovery notes.
 % NOTE: BibTeX does not support inline "%" comments inside an @entry{...}
 % block -- an earlier version of this file put VERIFY notes there, which
@@ -235,17 +235,6 @@
   archivePrefix = {arXiv}
 }
 
-@article{lu2021deepxde,
-  author  = {Lu, Lu and Meng, Xuhui and Mao, Zhiping and Karniadakis, George Em},
-  title   = {{DeepXDE}: A Deep Learning Library for Solving Differential Equations},
-  journal = {SIAM Review},
-  year    = {2021},
-  volume  = {63},
-  number  = {1},
-  pages   = {208--228},
-  doi     = {10.1137/19M1274067}
-}
-
 @article{raue2009identifiability,
   author  = {Raue, A. and Kreutz, C. and Maiwald, T. and Bachmann, J. and Schilling, M. and Klingm{\"u}ller, U. and Timmer, J.},
   title   = {Structural and practical identifiability analysis of partially observed dynamical models by exploiting the profile likelihood},
@@ -339,39 +328,6 @@
   doi     = {10.1016/j.corsci.2019.108280}
 }
 
-@article{scw_kinetic_params,
-  author  = {Penttil{\"a}, Sami and Betova, Iva and Bojinov, Martin and Kinnunen, Petri and Toivonen, Aki},
-  title   = {Estimation of kinetic parameters of the corrosion layer constituents on steels in supercritical water coolant conditions},
-  journal = {Corrosion Science},
-  year    = {2011},
-  volume  = {53},
-  number  = {12},
-  pages   = {4193--4203},
-  doi     = {10.1016/j.corsci.2011.08.029}
-}
-
-% Journal corrected 2026-07-12: ISSN 0009-2614 belongs to Chemical Physics
-% Letters, not Corrosion Science (original entry had the wrong venue).
-@article{scw_atomic_kinetic2023,
-  author  = {Ding, Shaoming and Li, Yanhui and Bai, Zhouyang and Wang, Shuzhong and Zhang, Yinan and Gao, Pengfei and Yu, Zhihong and Xing, Limei},
-  title   = {Fundamental atomic-scale kinetic models for the oxidation of iron/nickel-based alloys in low-density supercritical water},
-  journal = {Chemical Physics Letters},
-  year    = {2023},
-  volume  = {825},
-  pages   = {140631},
-  doi     = {10.1016/j.cplett.2023.140631}
-}
-
-@article{scw_electrochem_review,
-  author  = {Li, Yanhui and Bai, Zhouyang and Ding, Shaoming and Macdonald, Digby D. and Qiu, Jie and Wang, Kai and Jiang, Zhuohang and Wang, Shuzhong},
-  title   = {Electrochemical techniques and mechanisms for the corrosion of metals and alloys in sub- and supercritical aqueous systems},
-  journal = {The Journal of Supercritical Fluids},
-  year    = {2023},
-  volume  = {194},
-  pages   = {105835},
-  doi     = {10.1016/j.supflu.2022.105835}
-}
-
 @article{veile2024,
   author  = {Veile, G. and Hirpara, R. and Lackmann, S. and Weihe, S.},
   title   = {Investigation of Oxide Layer Development of {X6CrNiNb18-10} Stainless Steel Exposed to High-Temperature Water},
@@ -381,25 +337,6 @@
   number  = {18},
   pages   = {4500},
   doi     = {10.3390/ma17184500}
-}
-
-@inproceedings{veile_304_347_htw,
-  author    = {Veile, Georg and Weihe, Stefan},
-  title     = {Influence of high temperature water on {AISI}~304, {AISI}~347 and {ER}~347 regarding their threshold value and surface oxidation},
-  booktitle = {Proceedings of the 27th International Conference on Structural Mechanics in Reactor Technology (SMiRT-27)},
-  year      = {2024},
-  address   = {Yokohama, Japan},
-  doi       = {10.5281/zenodo.10044238}
-}
-
-@article{o2_304_htw,
-  author  = {Kuang, Wenjun and Wu, Xinqiang and Han, En-Hou},
-  title   = {Influence of dissolved oxygen concentration on the oxide film formed on 304 stainless steel in high temperature water},
-  journal = {Corrosion Science},
-  year    = {2012},
-  volume  = {63},
-  pages   = {259--266},
-  doi     = {10.1016/j.corsci.2012.06.007}
 }
 
 @article{surface_treatment_304l,
@@ -412,17 +349,6 @@
   doi     = {10.1016/j.jnucmat.2021.153258}
 }
 
-@article{ss_pwr_coolant2024,
-  author  = {Bojinov, Martin and Betova, Iva and Karastoyanov, Vasil and Avdeev, Georgi},
-  title   = {Corrosion of Stainless Steel in Simulated Nuclear Reactor Primary Coolant---Experiments and Modeling},
-  journal = {Materials},
-  year    = {2024},
-  volume  = {17},
-  number  = {5},
-  pages   = {1148},
-  doi     = {10.3390/ma17051148}
-}
-
 @article{igscc_ml_uq2025,
   author  = {Falaakh, Dayu Fajrul and Bahn, Chi Bum},
   title   = {Machine learning for modeling intergranular stress corrosion cracking of stainless steels in light water reactors with uncertainty quantification and explainability},
@@ -433,35 +359,25 @@
   doi     = {10.1038/s41529-025-00717-0}
 }
 
+@article{feugmo2026nsem,
+  author  = {Tetsassi Feugmo, Conrard Giresse and Pankaczy, David},
+  title   = {Neural spectral element methods for stiff multiphysics {PDEs} with electrochemical transport benchmarks},
+  journal = {Machine Learning: Science and Technology},
+  year    = {2026},
+  volume  = {7},
+  number  = {4},
+  pages   = {045053},
+  doi     = {10.1088/2632-2153/ae8e2f}
+}
+
 @article{farooqi2025pinnpdm,
   author  = {Farooqi, M. and B{\"o}sing, I. and Tetsassi Feugmo, C. G.},
   title   = {A physics-informed neural network approach to the point defect model for electrochemical oxide film growth},
-  journal = {\textup{[journal --- to be added]}},
+  journal = {arXiv preprint arXiv:2510.02872},
   year    = {2025},
-  note    = {in press},
-  doi     = {10.XXXX/XXXXXX},
   eprint  = {2510.02872},
-  archivePrefix = {arXiv}
-}
-
-@article{pinn_liion_p2d2024,
-  author  = {Wang, Jingrong and Peng, Qiao and Meng, Jinhao and Liu, Tianqi and Peng, Jichang and Teodorescu, Remus},
-  title   = {A physics-informed neural network approach to parameter estimation of lithium-ion battery electrochemical model},
-  journal = {Journal of Power Sources},
-  year    = {2024},
-  volume  = {621},
-  pages   = {235271},
-  doi     = {10.1016/j.jpowsour.2024.235271}
-}
-
-@article{pinn_liion_eis2025,
-  author  = {Chen, Shiqin and Zhang, Qi and Wang, Dafang and Hao, Ziwei and Liang, Xuan and Hu, Bingbing},
-  title   = {Physics-informed neural networks for degradation diagnosis of lithium-ion batteries via electrochemical impedance spectroscopy},
-  journal = {Journal of Energy Storage},
-  year    = {2025},
-  volume  = {140},
-  pages   = {119127},
-  doi     = {10.1016/j.est.2025.119127}
+  archivePrefix = {arXiv},
+  primaryClass = {physics.chem-ph}
 }
 
 @misc{pinnverse2025,
@@ -471,20 +387,6 @@
   eprint = {2504.05248},
   archivePrefix = {arXiv},
   doi    = {10.48550/arXiv.2504.05248}
-}
-
-% Replaced 2026-07-12: original pann_corrosion_inhibitor entry (Karkadakattil,
-% non-indexed venue) swapped for this Nature-Portfolio, Scopus/WoS-indexed
-% paper making the same point (PINNs applied to a corrosion-adjacent problem).
-@article{pinn_corrosion_md2025,
-  author  = {Venkatraman, Aditya and Wilson, Mark A. and Montes de Oca Zapiain, David},
-  title   = {Accelerating charge estimation in molecular dynamics simulations using physics-informed neural networks: corrosion applications},
-  journal = {npj Computational Materials},
-  year    = {2025},
-  volume  = {11},
-  number  = {1},
-  pages   = {24},
-  doi     = {10.1038/s41524-024-01495-0}
 }
 
 @article{identifiability_electrochem1996,

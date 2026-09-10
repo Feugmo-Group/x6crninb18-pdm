@@ -261,14 +261,20 @@
   \textbf{\bibinfo{volume}{3}}, \bibinfo{pages}{422--440}
   (\bibinfo{year}{2021}).
 
+\bibitem{feugmo2026nsem}
+\bibinfo{author}{Tetsassi~Feugmo, C.~G.} \& \bibinfo{author}{Pankaczy, D.}
+\newblock \bibinfo{title}{Neural spectral element methods for stiff
+  multiphysics {PDEs} with electrochemical transport benchmarks}.
+\newblock \emph{\bibinfo{journal}{Machine Learning: Science and Technology}}
+  \textbf{\bibinfo{volume}{7}}, \bibinfo{pages}{045053} (\bibinfo{year}{2026}).
+
 \bibitem{farooqi2025pinnpdm}
 \bibinfo{author}{Farooqi, M.}, \bibinfo{author}{B{\"o}sing, I.} \&
   \bibinfo{author}{Tetsassi~Feugmo, C.~G.}
 \newblock \bibinfo{title}{A physics-informed neural network approach to the
   point defect model for electrochemical oxide film growth}.
-\newblock \emph{\bibinfo{journal}{\textup{[journal --- to be added]}}}
+\newblock \emph{\bibinfo{journal}{arXiv preprint arXiv:2510.02872}}
   (\bibinfo{year}{2025}).
-\newblock \bibinfo{note}{In press}.
 
 \bibitem{wang2022ntk}
 \bibinfo{author}{Wang, S.}, \bibinfo{author}{Yu, X.} \&
@@ -289,11 +295,20 @@
   \bibinfo{eprint}{{\href{https://arxiv.org/abs/2109.01050}{{arXiv:2109.01050}}}}.
 
 \bibitem{pinnverse2025}
-\bibinfo{title}{Pinnverse: Accurate parameter estimation in differential
-  equations from noisy data with constrained physics-informed neural networks}
-  (\bibinfo{year}{2025}).
+\bibinfo{author}{Almanst{\"o}tter, M.}, \bibinfo{author}{Vetter, R.} \&
+  \bibinfo{author}{Iber, D.}
+\newblock \bibinfo{title}{{PINNverse}: Accurate parameter estimation in
+  differential equations from noisy data with constrained physics-informed
+  neural networks} (\bibinfo{year}{2025}).
 \newblock
   \bibinfo{eprint}{{\href{https://arxiv.org/abs/2504.05248}{{arXiv:2504.05248}}}}.
+
+\bibitem{liu2024kan}
+\bibinfo{author}{Liu, Z.} \emph{et~al.}
+\newblock \bibinfo{title}{{KAN}: Kolmogorov-arnold networks}
+  (\bibinfo{year}{2024}).
+\newblock
+  \bibinfo{eprint}{{\href{https://arxiv.org/abs/2404.19756}{{arXiv:2404.19756}}}}.
 
 \bibitem{ziemniak2003spinel}
 \bibinfo{author}{Ziemniak, S.~E.} \& \bibinfo{author}{Castelli, R.~A.}
@@ -321,12 +336,5 @@
 \newblock \emph{\bibinfo{journal}{Journal of Nuclear Materials}}
   \textbf{\bibinfo{volume}{556}}, \bibinfo{pages}{153258}
   (\bibinfo{year}{2021}).
-
-\bibitem{liu2024kan}
-\bibinfo{author}{Liu, Z.} \emph{et~al.}
-\newblock \bibinfo{title}{{KAN}: Kolmogorov-arnold networks}
-  (\bibinfo{year}{2024}).
-\newblock
-  \bibinfo{eprint}{{\href{https://arxiv.org/abs/2404.19756}{{arXiv:2404.19756}}}}.
 
 \end{thebibliography}

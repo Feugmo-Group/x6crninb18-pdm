@@ -1,6 +1,6 @@
 %% Shared body of the Supplementary Information.
 %% Included by paper/supplementary.tex (npj Materials Degradation) and
-%% paper-corrosion-science/supplementary.tex (Corrosion Science).  The two
+%% paper-corrosion-science/supplementary.tex (Corrosion Science). The two
 %% wrappers differ only in the title; the content lives here so it cannot go
 %% stale in one venue's copy.
 \section{Model derivation}
@@ -69,7 +69,7 @@ $\mathrm{PBR} = \Omega_{\mathrm{bl}}/\Omega_m$ is the Pilling--Bedworth ratio.
 
 The environment corresponds to the conditions of Veile et al.\ (2024):
 \begin{itemize}
-\item $T = 513.15$~K (240~$^\circ$C), $P = 7$~MPa, i.e.\ liquid water with density
+\item $T = 513.15$~K (240$^\circ$C), $P = 7$~MPa, i.e.\ liquid water with density
 $\rho \approx 0.8137$~kg/L (IAPWS-97).
 \item Since $\rho \gg 0.1$~g/cm$^3$, the electrochemical-oxidation
 (high-density) branch of the supercritical-water PDM formulation applies: this
@@ -229,7 +229,7 @@ Table~\ref{tab:coeffs}.
 \begin{table}[htbp]
 \centering
 \caption{Exponential coefficients of the interfacial rate constants,
-Eq.~(\ref{eq:rateconstant}).}
+Eq.~\eqref{eq:rateconstant}.}
 \label{tab:coeffs}
 \begin{tabular}{llll}
 \toprule
@@ -333,7 +333,7 @@ L_{\mathrm{bl,ss}} = \frac{1-\alpha}{\varepsilon_f}\, V
 \ln\!\left[ \frac{ k_{10} C_{\mathrm{O}}^{\,q}
 + k_{10'} \left( C_{\mathrm{H^+}}/C^0_{\mathrm{H^+}} \right)^{s} }{ k_3^{0} } \right] .
 \end{equation}
-$L_{\mathrm{bl,ss}}$ is linear in $V$ and pH --- the PDM signature. In
+$L_{\mathrm{bl,ss}}$ is linear in $V$ and pH, the PDM signature. In
 ultrapure hydrothermal water (0.055~$\mu$S/cm, $\mathrm{pH} \approx 5.6$,
 $C_{\mathrm{O}} \approx 10^{-5}$) the destruction terms are very small:
 $C_{\mathrm{bl}} \to 0$, the steady state moves to very large $L$, and over a
@@ -385,7 +385,9 @@ consumption rate equals the rate of barrier-layer advance into the metal
 &&k_d := k_{10} C_{\mathrm{O}}^{\,q}
 + k_{10'} \left( C_{\mathrm{H^+}}/C^0_{\mathrm{H^+}} \right)^{s} ,
 \end{align}
-and setting $\mathrm{d}L_m/\mathrm{d}t = \mathrm{d}L_{\mathrm{bl}}/\mathrm{d}t$
+where the metal, being dense, carries no porosity correction and the
+barrier-layer rate is written with $\rho^0_{\mathrm{bl}}/\rho_{\mathrm{bl}}
+= 1$; setting $\mathrm{d}L_m/\mathrm{d}t = \mathrm{d}L_{\mathrm{bl}}/\mathrm{d}t$
 gives
 \begin{equation}
 \boxed{\;
@@ -402,8 +404,8 @@ $k_1 C_{V_M}^{L} \ll k_2$) and $k_d \approx 0$
 k_2 = (\mathrm{PBR} - 1)\, k_3 .
 \end{equation}
 
-Substituting Eq.~(\ref{eq:cv}) into the outer-layer equation
-(\ref{eq:olode-full}), the $k_d$ terms combine exactly,
+Substituting Eq.~\eqref{eq:cv} into the outer-layer equation
+\eqref{eq:olode-full}, the $k_d$ terms combine exactly,
 $(\mathrm{PBR}-1) k_3 - \mathrm{PBR}\, k_d + k_d
 = (\mathrm{PBR}-1)(k_3 - k_d)$, giving
 (Eq.~(41) of the supercritical-water formulation)
@@ -421,7 +423,14 @@ $(\mathrm{PBR}-1) k_3 - \mathrm{PBR}\, k_d + k_d
 \;}
 \label{eq:olode}
 \end{equation}
-so that with negligible barrier-layer destruction the thickness ratio is fixed
+Retaining both porosity corrections instead would give the coefficient
+$(\Omega_{\mathrm{ol}}/\Omega_{\mathrm{bl}})
+(\rho^0_{\mathrm{ol}}/\rho_{\mathrm{ol}})
+(\mathrm{PBR} - \rho_{\mathrm{bl}}/\rho^0_{\mathrm{bl}})$, so the dense-oxide
+convention, and not merely equal porosity between the layers, is what
+reduces it to the form above. The convention affects the physical
+quantities recovered from the fit, not the fitted parameters themselves.
+With negligible barrier-layer destruction the thickness ratio is then fixed
 by stoichiometry alone (Eqs.~(36) and (37) of the supercritical-water
 formulation):
 \begin{equation}
@@ -459,7 +468,7 @@ L_{\mathrm{ol}}(t) = \mathrm{PBR}_{\mathrm{eff}}
 \qquad
 C_x := -\Omega_{\mathrm{ol}}\, k_{11} C_{\mathrm{O}}^{\,r} \;(\le 0) \notag
 \end{gather}
---- an independent verification target alongside Eq.~(\ref{eq:olclosed}).
+--- an independent verification target alongside Eq.~\eqref{eq:olclosed}.
 
 The total scale thickness is
 $L_{\mathrm{tot}} = L_{\mathrm{bl}} + L_{\mathrm{ol}}$. The weight gain (not
@@ -501,7 +510,7 @@ structure to Table~5 of Li et al.\ (2020)):
 \frac{\mathrm{d}L_{\mathrm{ol}}}{\mathrm{d}t}
 &= \mathrm{PBR}_{\mathrm{eff}}
 \left( A_{\mathrm{bl}}\, \exp(b_3 L_{\mathrm{bl}}) - C_{\mathrm{bl}} \right) + C_x ,
-& L_{\mathrm{ol}}(0) &= 0 ,
+& L_{\mathrm{ol}}(0) &= L_{\mathrm{ol},0} ,
 \label{eq:app-ol}
 \end{align}
 with $C_x := -\Omega_{\mathrm{ol}} k_{11} C_{\mathrm{O}}^{\,r} \le 0$
@@ -514,12 +523,16 @@ A_{\mathrm{bl}}~\mathrm{[nm/h]},\;
 b_3~\mathrm{[1/nm]}\ (<0),\;
 C_{\mathrm{bl}}~\mathrm{[nm/h]}\ (\ge 0),\\
 \mathrm{PBR}_{\mathrm{eff}}~\mathrm{[-]}\ (>0),\;
-C_x~\mathrm{[nm/h]},\;
-L_0~\mathrm{[nm]}\ (>0)
+C_x~\mathrm{[nm/h]}\ (\le 0),\\
+L_0~\mathrm{[nm]}\ (>0),\;
+L_{\mathrm{ol},0}~\mathrm{[nm]}\ (\ge 0)
 \big\}
 \end{multline}
---- 6 parameters, 2 ODEs, data at 3 times for 2 layers (plus a Ni consistency
-check).
+--- 7 parameters, 2 ODEs, data at 3 times for 2 layers (plus a Ni consistency
+check). The accepted model M4 fixes $C_{\mathrm{bl}} = C_x = 0$ and fits the
+remaining five; the initial outer-layer thickness $L_{\mathrm{ol},0}$ is the
+parameter whose addition resolves the degenerate ridge of M3 (main text,
+Section~3.1).
 
 Physical quantities are recovered after fitting via
 \begin{align}
@@ -532,7 +545,7 @@ k_3^{0} &= \frac{A_{\mathrm{bl}}}{\Omega_{\mathrm{bl}}\, \exp(a_3 V + c_3\,\math
 k_d &= \frac{C_{\mathrm{bl}}}{\Omega_{\mathrm{bl}}} ,
 \end{align}
 with $\alpha_3 \in [0.1, 0.5]$ (Li et al.\ (2020) fit $\alpha_3 = 0.12$ for
-HCM12A) and $\chi = 8/3$, $\gamma = F/RT = 22.63$~V$^{-1}$ at 513.15~K. Molar
+HCM12A) and $\chi = 8/3$, $\gamma = F/RT = 22.6$~V$^{-1}$ at 513.15~K. Molar
 volumes per cation:
 $\Omega_{\mathrm{bl}} = 46.7/3 = 15.6$~cm$^3$/mol for $\mathrm{FeCr_2O_4}$
 (3 cations);
@@ -550,7 +563,7 @@ PBR through the equation above.
 
 Priors/constraints (3 time points cannot determine 7 parameters freely).
 The only prior applied in every fit is the Gaussian log-space prior of
-Eq.~(3) of the main text: $\ln L_0 \sim
+Eq.~(16) of the main text: $\ln L_0 \sim
 \mathcal{N}(\ln 2~\mathrm{nm},\, 0.60^2)$, whose $\pm2\sigma$ range is
 0.6--6.6~nm, matching the air-formed-film range below.
 
@@ -559,10 +572,10 @@ $\ln \mathrm{PBR}_{\mathrm{eff}} \sim \mathcal{N}(\ln 1.05,\, 0.20^2)$,
 on the grounds that 1.05 was the stoichiometric value. It is not: the
 constant-volume closure giving 1.05 requires the barrier layer to draw
 $\approx 30$~at\% Cr from an 18.8~at\% alloy, and a chromium mass balance
-with an $\mathrm{FeCr_2O_4}$ barrier gives 2.09 when all non-Ni iron
+with an $\mathrm{FeCr_2O_4}$ barrier gives 2.05 when all non-Ni iron
 reports to the outer layer. That prior has been removed;
 $\mathrm{PBR}_{\mathrm{eff}}$ is now determined by the likelihood alone
-(1.096 for M4). The apparent gap between 1.096 and 2.09 is examined in
+(1.096 for M4). The apparent gap between 1.096 and 2.05 is examined in
 the main text and does not survive: the mass-balance figure is
 phase-dependent and spans $[0.52, 3.79]$ over the candidate barrier
 spinels, and once an outer-layer loss term is admitted the FeCr$_2$O$_4$
@@ -579,9 +592,8 @@ $C_{\mathrm{bl}} = 0$ (five-parameter model) and free $C_{\mathrm{bl}}$ are
 tested.
 \item $b_3$: strictly $< 0$. $|b_3| \sim \alpha_3 \chi \gamma \varepsilon_f$;
 with $\varepsilon_f \in [10^2, 10^6]$~V/cm this spans
-$|b_3| \in [\sim 7 \times 10^{-5}, \sim 0.7]$~nm$^{-1}$ --- the data must
-localize it.
-\item $C_x$: free sign, small.
+$|b_3| \in [\sim 7 \times 10^{-5}, \sim 0.7]$~nm$^{-1}$: the data must localize it.
+\item $C_x$: $\le 0$ by construction, and small.
 \end{itemize}
 
 The units convention for the implementation is thickness in nm and time in h.
@@ -589,6 +601,35 @@ Conversions from the cgs units (cm, s) of Li et al.\ (2020):
 1~cm/s $= 3.6 \times 10^{10}$~nm/h; 1~cm$^{-1}$ $= 10^{-7}$~nm$^{-1}$.
 Sign conventions respected throughout: $b_3 < 0$, $C_{\mathrm{bl}} \ge 0$,
 $\beta < 0$, $D_{\mathrm{ol}} < 0$.
+
+\subsection{Numerically stable evaluation of the closed forms}
+\label{sec:logspace}
+
+Equation~\eqref{eq:blclosed} is not evaluated as written. For
+$C_{\mathrm{bl}} \to 0$ the ratio $A_{\mathrm{bl}}/C_{\mathrm{bl}}$ diverges
+while the bracket it multiplies vanishes, and in the fitted regime
+($C_{\mathrm{bl}}$ driven to zero by the data) a direct evaluation loses all
+significance. The implementation therefore takes the $C_{\mathrm{bl}} = 0$
+branch analytically,
+\begin{equation}
+L_{\mathrm{bl}}(t) = L_0 - \frac{1}{b_3}
+\operatorname{log1p}\!\left(-b_3 A_{\mathrm{bl}} e^{\,b_3 L_0}\, t\right) ,
+\end{equation}
+and for $C_{\mathrm{bl}} > 0$ forms the logarithm of the bracket in log space.
+Writing $z = -b_3 C_{\mathrm{bl}} t \ge 0$ and $u = 1 + (A_{\mathrm{bl}} /
+C_{\mathrm{bl}})e^{\,b_3 L_0}(e^{z}-1)$, the identity
+$e^{z} - 1 = e^{z}(1 - e^{-z})$ gives
+\begin{equation}
+\ln(u-1) = \ln A_{\mathrm{bl}} - \ln C_{\mathrm{bl}} + b_3 L_0 + z
++ \operatorname{log1p}\!\left(-e^{-z}\right) ,
+\qquad
+\ln u = \operatorname{logaddexp}(0, \ln(u-1)) ,
+\end{equation}
+in which every term is evaluated by a library routine that is exact in its own
+small-argument limit. The result is accurate in both the $|b_3| L \ll 1$ and
+the $|b_3| L = O(1)$ regimes, which is what the parity check of
+Section~\ref{sec:verification} confirms and what makes a 1000-member bootstrap
+over the closed form affordable.
 
 \subsection{Nondimensionalization for the neural spectral-element solver}
 \label{sec:nondim}
@@ -616,9 +657,7 @@ with
 For the expected regime ($L_{\mathrm{bl}}$: 37 $\to$ 134~nm over 72 $\to$
 480~h with near-parabolic shape) these groups are $O(0.1$--$10)$: e.g.\ a
 pure-logarithmic fit gives $\hat{b} \approx -2 \ldots -4$,
-$\hat{A} \approx O(10)$, $\hat{C} \approx 0$. All learnable parameters are
-$O(1)$ --- a badly scaled parameter is an unlearnable parameter, so this
-scaling is applied from the start.
+$\hat{A} \approx O(10)$, $\hat{C} \approx 0$. All learnable parameters are $O(1)$; a badly scaled parameter is an unlearnable parameter, so this scaling is applied from the start.
 
 The residuals are enforced in Crank--Nicolson integral form on the
 Gauss--Lobatto--Legendre time grid (otherwise the conditioning of the spectral
@@ -632,6 +671,7 @@ plus the initial-condition residuals $\lambda_{\mathrm{bl}}(0) - \lambda_0$
 and $\lambda_{\mathrm{ol}}(0)$.
 
 \subsection{Verification targets}
+\label{sec:verification}
 \label{sec:vtargets}
 
 Four verification targets follow from the derivation (results in
@@ -639,7 +679,7 @@ Sections~\ref{sec:baseline} and \ref{sec:qs} below):
 \begin{enumerate}
 \item \textbf{Closed-form parity}: Radau integration of the apparent-parameter
 system of Section~\ref{sec:reduction} must match
-Eqs.~(\ref{eq:blclosed}) and (\ref{eq:olclosed})--(\ref{eq:olaffine}) to at
+Eqs.~\eqref{eq:blclosed} and \eqref{eq:olclosed}--\eqref{eq:olaffine} to at
 least 10 significant digits for generic parameter sets
 $(A_{\mathrm{bl}}, b_3, C_{\mathrm{bl}},$
 $\mathrm{PBR}_{\mathrm{eff}}, C_x, L_0)$.
@@ -668,7 +708,7 @@ Documented here so they are not propagated:
 (consistency with Eqs.~(16), (17), and (44) of that work).
 \item Veile et al.\ (2024): the exposure times are 72/168/480~h (``78~h'' and
 ``178~h'' in the Results are typographical errors); the legend of their Fig.~9
-swaps the $n$ values between Fe and Cr --- the body text is authoritative
+swaps the $n$ values between Fe and Cr, and the body text is authoritative
 (Fe: $n = 0.2209$; Cr: $n = 0.4964$).
 \end{itemize}
 
@@ -676,7 +716,7 @@ swaps the $n$ values between Fe and Cr --- the body text is authoritative
 \label{sec:spatial-derivation}
 
 This section gives the complete governing equations, boundary conditions,
-and initial condition for the spatial extension of Section~2.5 of the main
+and initial condition for the spatial extension of Section~3.4 of the main
 text, which resolves oxygen- and cation-vacancy transport across the
 barrier layer under the field strength identified in
 Section~\ref{sec:derivation}. Nothing here is fit to the spatial data;
@@ -733,18 +773,17 @@ The generation flux at the opposite interface is anchored to the
 zero-dimensional growth kinetics rather than independently fit: the
 oxygen-vacancy generation flux is $J_\text{OV} = (\chi/2)\,k_3(L)$ with
 $k_3(L)$ the barrier-layer growth rate constant at thickness $L$
-(mol\,cm$^{-2}$\,s$^{-1}$, converted from the fitted $dL_\text{bl}/dt$),
+(mol\,cm$^{-2}$\,s$^{-1}$, converted from the fitted $dL_\mathrm{bl}/dt$),
 and the cation-vacancy generation flux is anchored to it by an assumed
 ratio, $|J_\text{CV}| = r_\text{CV} J_\text{OV}$.
 
 The parameters $\kappa_a$, $\kappa_1$, $r_\text{CV}$, and the two
 diffusivities $D_\text{OV}$, $D_\text{CV}$ are \emph{assumed}, not
-identified: per the synthetic identifiability gate of Section~2.5 of the
-main text, three exposure times cannot constrain interfacial transport
+identified: per the synthetic identifiability gate of Section~3.4 of the main text, three exposure times cannot constrain interfacial transport
 rate constants, so these are treated as forward-only inputs, documented
 here for reproducibility rather than reported as findings. The values
 used throughout are $\varepsilon_f = 1.73\times10^4$~V/cm (the
-zero-dimensional fit), $\Omega_\text{bl} = 15.6$~cm$^3$/mol,
+zero-dimensional fit), $\Omega_\mathrm{bl} = 15.6$~cm$^3$/mol,
 $D_\text{OV} = 10^{-15}$~cm$^2$/s, $D_\text{CV} = 10^{-16}$~cm$^2$/s,
 $\kappa_a = \kappa_1 = 1.25$, and $r_\text{CV} = 0.5$.
 
@@ -811,13 +850,14 @@ $\sigma = 2/2.355 \approx 0.85$~nm (2~nm full width at half maximum).
 \item \textbf{Per-scan position jitter:} each scan is rigidly shifted
 by a Gaussian offset with $\sigma = 0.945$~nm.
 \item \textbf{Compositional noise:} independent Gaussian noise per
-point, standard deviation $\max(0.02\,|v|,\ 0.2)$ weight percent (2\%
-relative, floored at 0.2 absolute weight percent).
+point, with standard deviation $\max(0.02\,|v|,\ 0.2)$ weight
+percent, that is 2\% relative, floored at 0.2 absolute weight
+percent.
 \item \textbf{Scan-to-scan physical heterogeneity:} each scan draws its
 own realization of the shape parameters from log-normal distributions
-with per-parameter coefficients of variation $L_\text{bl}$: 0.04,
+with per-parameter coefficients of variation $L_\mathrm{bl}$: 0.04,
 $w_\text{int}$: 0.30, $w_\text{out}$: 0.30, $A_\text{Ni}$: 0.15,
-$w_\text{Ni}$: 0.14, $f_\text{Cr,bl}$: 0.05, $g_\text{bl}$: 0.30,
+$w_\text{Ni}$: 0.14, $f_\text{Cr,bl}$: 0.05, $g_\mathrm{bl}$: 0.30,
 calibrated to the replicate-scan scatter of Veile et al.'s Fig.~9.
 Omitting this heterogeneity term (treating instrument noise as the only
 uncertainty source) produces a spuriously optimistic identifiability
@@ -835,7 +875,7 @@ $A_\text{Ni}$ independently of the statistical verdict.
 \label{sec:ni-model}
 
 The nickel enrichment zone at the receding metal/barrier-layer interface
-(Section~2.6 of the main text) is modeled as Wagner-type solute
+(Section~3.5 of the main text) is modeled as Wagner-type solute
 enrichment ahead of a moving boundary, in the interface-attached frame
 $\xi$ (depth into the metal ahead of the interface, $\xi \ge 0$):
 \begin{equation}
@@ -846,18 +886,18 @@ $\xi$ (depth into the metal ahead of the interface, $\xi \ge 0$):
 where the metal streams toward $\xi=0$ at the combined interface
 recession speed
 \begin{equation}
-v_m(t) = \frac{1}{\mathrm{PBR}_\text{bl}}\frac{dL_\text{bl}}{dt}
-+ \phi_\text{ol,supply}\,\frac{1}{\mathrm{PBR}_\text{ol}}\frac{dL_\text{ol}}{dt},
+v_m(t) = \frac{1}{\mathrm{PBR}_\mathrm{bl}}\frac{dL_\mathrm{bl}}{dt}
++ \phi_\text{ol,supply}\,\frac{1}{\mathrm{PBR}_\mathrm{ol}}\frac{dL_\mathrm{ol}}{dt},
 \label{eq:vm}
 \end{equation}
-where $\mathrm{PBR}_\text{bl} := \Omega_\text{bl}/\Omega_m$ and
-$\mathrm{PBR}_\text{ol} := \Omega_\text{ol}/\Omega_m$ are the
+where $\mathrm{PBR}_\mathrm{bl} := \Omega_\mathrm{bl}/\Omega_m$ and
+$\mathrm{PBR}_\mathrm{ol} := \Omega_\mathrm{ol}/\Omega_m$ are the
 phase-specific Pilling--Bedworth ratios of the barrier and outer
 layers against the metal (distinct from the single unsubscripted
 $\mathrm{PBR}$ of Section~\ref{sec:derivation}, which refers to the
-barrier layer only). Numerically $\mathrm{PBR}_\text{bl} = 2.05$ and
-$\mathrm{PBR}_\text{ol} = 2.10$ (FeCr$_2$O$_4$ and Fe$_3$O$_4$
-molar-volume ratios, Li et al.\ 2020 Table~3) and both layer growth
+barrier layer only). Numerically $\mathrm{PBR}_\mathrm{bl} = 2.05$ and
+$\mathrm{PBR}_\mathrm{ol} = 2.10$ (FeCr$_2$O$_4$ and Fe$_3$O$_4$
+molar-volume ratios, Li et al.\ (2020), Table~3) and both layer growth
 rates are taken from the frozen zero-dimensional kinetics. The free parameter $\phi_\text{ol,supply}$ is
 the fraction of the outer layer's cation supply drawn from the matrix
 through the barrier layer (as opposed to re-precipitation of
@@ -927,7 +967,7 @@ $\phi_\text{ol,supply}$ & 0.5708 & [0.579, 0.895] & 3.6 & weak \\
 
 Two one-parameter extensions were tested against the shape failure: a
 defect-flux-coupled effective mobility, $D_\text{Ni,eff} \propto
-(\mathrm{d}L_\text{bl}/\mathrm{d}t)^{n_\text{flux}}$, tied to the
+(\mathrm{d}L_\mathrm{bl}/\mathrm{d}t)^{n_\text{flux}}$, tied to the
 identified growth kinetics; and a finite-capacity interfacial trapping
 closure with saturable trap density $S_\text{cap}$. Each was subjected
 to the same twenty-replicate synthetic recovery gate used for the
@@ -967,7 +1007,7 @@ independently of the released code.
 
 \subsection{Shared representation}
 
-Every configuration represents its field(s) on a discrete-variational-
+Every configuration represents its field(s) on a discrete-variational-%
 representation (DVR) collocation node set (Gauss--Lobatto--Legendre
 nodes, optionally log-clustered toward one end via a compression
 parameter $\alpha$) using an element network with hidden width 32 and 3
@@ -980,14 +1020,14 @@ arithmetic.
 \subsection{Configuration 1: zero-dimensional forward solve}
 \label{sec:config-forward}
 
-Two time-only element networks, $\lambda_\text{bl}(\tau)$ and
-$\lambda_\text{ol}(\tau)$ (nondimensional barrier- and outer-layer
+Two time-only element networks, $\lambda_\mathrm{bl}(\tau)$ and
+$\lambda_\mathrm{ol}(\tau)$ (nondimensional barrier- and outer-layer
 thickness), on $N_t = 24$ DVR nodes over $\tau \in [0, 1]$
 (log-clustered, compression $\alpha_t = 1.5$, mapping toward $\tau=0$).
 Training proceeds in two stages: (1) an initial-condition pretrain
 (800 Adam steps at learning rate $10^{-2}$ plus an L-BFGS polish) that
 drives both networks to their constant initial-condition values,
-$\lambda_\text{bl} = \lambda_0$ and $\lambda_\text{ol} = \lambda_{\text{ol},0}$
+$\lambda_\mathrm{bl} = \lambda_0$ and $\lambda_\mathrm{ol} = \lambda_{\mathrm{ol},0}$
 everywhere; (2) physics training against the Crank--Nicolson residuals
 of the nondimensional ODE system of Section~\ref{sec:derivation}, with
 three loss terms (\texttt{ode\_bl}, \texttt{ode\_ol}, \texttt{ic})
@@ -1004,8 +1044,8 @@ $\le 0.5\%$.
 \label{sec:config-hard}
 
 The kinetic parameters
-$\{A_\text{bl}, b_3, \mathrm{PBR}_\text{eff}, L_0, L_{\text{ol},0}\}$
-(optionally $C_\text{bl}$) are the only learnable quantities,
+$\{A_\mathrm{bl}, b_3, \mathrm{PBR}_\text{eff}, L_0, L_{\mathrm{ol},0}\}$
+(optionally $C_\mathrm{bl}$) are the only learnable quantities,
 parameterized in log space (negative-log for $b_3$) to guarantee sign
 and positivity by construction. The thickness trajectories are
 generated by differentiable fourth-order Runge--Kutta integration of
@@ -1015,8 +1055,8 @@ equations are satisfied exactly and only a data-plus-prior loss is
 minimized:
 \begin{equation}
 \mathcal{L}_\text{hard} =
-\ell_\text{data}(\lambda_\text{bl}; t_\text{Cr}, \bar{L}_\text{Cr}, \sigma_\text{Cr})\, n_\text{Cr}
-+ \ell_\text{data}(\lambda_\text{ol}; t_\text{Fe}, \bar{L}_\text{Fe}, \sigma_\text{Fe})\, n_\text{Fe}
+\ell_\text{data}(\lambda_\mathrm{bl}; t_\text{Cr}, \bar{L}_\text{Cr}, \sigma_\text{Cr})\, n_\text{Cr}
++ \ell_\text{data}(\lambda_\mathrm{ol}; t_\text{Fe}, \bar{L}_\text{Fe}, \sigma_\text{Fe})\, n_\text{Fe}
 + \lambda_\text{prior}\Big(\tfrac{\ln L_0-\ln(2/L_c)}{0.60}\Big)^{\!2},
 \label{eq:hardloss}
 \end{equation}
@@ -1051,8 +1091,7 @@ loss terms combined by BRDR:
 \end{equation}
 with $\lambda_\text{phys} = 1000$ (fixed multiplier on the ODE
 residual terms; without it the joint optimum leaves residual slack
-that is absorbed into the trajectory instead of the kinetics ---
-the origin of failure mode F-1), $\lambda_\text{ic} = 10$,
+that is absorbed into the trajectory instead of the kinetics, the origin of failure mode F-1), $\lambda_\text{ic} = 10$,
 $\lambda_\text{data} = 100$, and $\lambda_\text{prior} = 1$. The two
 exhibits reported in the main text (Table~6) use
 $\lambda_\text{data}=10$ as an independent reweighting check. Optimized
@@ -1077,21 +1116,19 @@ main text quotes single-seed (seed~0) values.
 \subsection{Configuration 4: spatial extension (steady and transient)}
 \label{sec:config-spatial}
 
-\textbf{Steady} (Section~\ref{sec:spatial-derivation}): a single
-field network on $N_x = 24$ DVR nodes, uniformly spaced on
-$\xi \in [0,1]$ ($\alpha_x = 0$; the P\'eclet numbers in this problem,
-10--14, produce only mild boundary layers, so uniform spacing suffices).
-The barrier-layer thickness is fixed at its 480-h value from the
-zero-dimensional fit. The loss is the first-integral form of the
-steady equation --- $(\hat{J}-s)^2$ averaged over all nodes, which
-penalizes flux non-conservation directly rather than differentiating a
-second-derivative residual --- plus the squared Robin-boundary
-violation at the annihilation node, trained for 2000 Adam steps
-(learning rate $10^{-3}$) after a 500-step pretrain to the boundary
-value, then L-BFGS polish. The independent Newton reference solves the
-same first-integral system on the identical node set by Newton
-iteration (converges in one step, since the discrete system is linear;
-verified to residual $<10^{-13}$).
+\textbf{Steady} (Section~\ref{sec:spatial-derivation}): a single field network
+on $N_x = 24$ DVR nodes, uniformly spaced on $\xi \in [0,1]$ ($\alpha_x = 0$;
+the P\'eclet numbers in this problem, 10--14, produce only mild boundary layers,
+so uniform spacing suffices). The barrier-layer thickness is fixed at its 480-h
+value from the zero-dimensional fit. The loss adds the first-integral form of
+the steady equation, $(\hat{J}-s)^2$ averaged over all nodes, which penalizes
+flux non-conservation directly rather than differentiating a second-derivative
+residual, to the squared Robin-boundary violation at the annihilation node,
+trained for 2000 Adam steps (learning rate $10^{-3}$) after a 500-step pretrain
+to the boundary value, then L-BFGS polish. The independent Newton reference
+solves the same first-integral system on the identical node set by Newton
+iteration (converges in one step, since the discrete system is linear; verified
+to residual $<10^{-13}$).
 
 \textbf{Transient}: field network on the tensor-product grid of the
 same $N_x=24$ spatial DVR nodes and $N_t=16$ temporal DVR nodes
@@ -1099,7 +1136,7 @@ same $N_x=24$ spatial DVR nodes and $N_t=16$ temporal DVR nodes
 $\tau_0=0.05$). Crank--Nicolson residuals of
 Eq.~\eqref{eq:transientpde} are combined with the two per-time-node
 boundary residuals and the initial-condition residual (four loss terms:
-\texttt{pde}, \texttt{bc\_gen}, \texttt{bc\_ann}, \texttt{ic}), BRDR-
+\texttt{pde}, \texttt{bc\_gen}, \texttt{bc\_ann}, \texttt{ic}), BRDR-%
 aggregated and optimized identically to the steady case.
 
 \subsection{Hyperparameter summary}
@@ -1111,6 +1148,8 @@ referenced above for exact reproduction.
 \centering
 \caption{NSEM hyperparameters by configuration.}
 \label{tab:hyperparams}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
 \begin{tabular}{lcccc}
 \toprule
 Parameter & Forward & Inverse (hard) & Inverse (soft) & Spatial (steady/transient) \\
@@ -1140,15 +1179,15 @@ Random seed & 0 & 0 & 0 & 0 \\
 \label{sec:baseline}
 
 Figure~\ref{fig:baseline} summarizes the baseline verification of the forward
-model. The closed-form solutions, Eqs.~(\ref{eq:blclosed}) and
-(\ref{eq:olclosed}), agree with a stiff Radau integration of the
+model. The closed-form solutions, Eqs.~\eqref{eq:blclosed} and
+\eqref{eq:olclosed}, agree with a stiff Radau integration of the
 apparent-parameter ODE system to better than
 $6 \times 10^{-11}$~nm on the demonstration parameter set
 (maximum absolute deviation $4.63 \times 10^{-11}$~nm for the barrier layer
 and $5.07 \times 10^{-11}$~nm for the outer layer), i.e.\ machine-level parity.
 In addition, the implementation reproduces the published
 thickness-versus-time behavior when driven by the Table-5 apparent parameters
-of Li et al.\ (2020) for HCM12A and 316L at 500~$^\circ$C in supercritical
+of Li et al.\ (2020) for HCM12A and 316L at 500$^\circ$C in supercritical
 water, confirming that the adapted model regresses exactly to the
 supercritical-water formulation in its original regime.
 
@@ -1158,7 +1197,7 @@ supercritical-water formulation in its original regime.
 \caption{Baseline numerical verification. Closed-form solutions versus Radau
 integration for the barrier and outer layers (parity better than
 $6 \times 10^{-11}$~nm), and regression against the Table-5 apparent
-parameters of Li et al.\ (2020) for HCM12A and 316L at 500~$^\circ$C in
+parameters of Li et al.\ (2020) for HCM12A and 316L at 500$^\circ$C in
 supercritical water.}
 \label{fig:baseline}
 \end{figure}
@@ -1170,12 +1209,12 @@ The interface-reaction-controlled model of Section~\ref{sec:derivation} treats
 the defect concentration profiles inside the barrier layer as quasi-steady.
 Figure~\ref{fig:transient} quantifies the error incurred by this assumption
 using a full moving-boundary transport solve. At the end of the 480~h exposure
-window, the oxygen-vacancy species --- whose migration transit time across the
-film is approximately 5~h --- lags its quasi-steady profile shape by only
-0.69\%, while the slower cation-vacancy species (transit time approximately
-36~h) lags by 5.79\%. The quasi-steady closure is therefore an excellent
-approximation for the species that controls film growth, and an acceptable one
-for the slowest defect over the experimental window.
+window, the oxygen-vacancy species (whose migration transit time across the film
+is approximately 5~h) lags its quasi-steady profile shape by only 0.69\%, while
+the slower cation-vacancy species (transit time approximately 36~h) lags by
+5.79\%. The quasi-steady closure is therefore an excellent approximation for the
+species that controls film growth, and an acceptable one for the slowest defect
+over the experimental window.
 
 \begin{figure}[htbp]
 \centering
@@ -1185,6 +1224,31 @@ solve. At $t = 480$~h the oxygen-vacancy profile (migration transit time
 $\approx 5$~h) deviates from its quasi-steady shape by 0.69\%; the
 cation-vacancy profile ($\approx 36$~h) by 5.79\%.}
 \label{fig:transient}
+\end{figure}
+
+\section{Operating-envelope contour maps}
+\label{sec:envelope-maps}
+
+Figure~10 of the main text presents the operating-envelope sensitivity as line
+sweeps, which is the form in which the two findings are legible: temperature
+carries the sensitivity, and it grows with the scanned effective activation
+energy, while three decades of dissolved oxygen move the prediction by under six percent at 480~h and under two percent at ten years. Figure~\ref{fig:maps} gives the same calculation as contour maps
+over the full $(T, [\mathrm{O}_2])$ box, for readers who want the joint
+dependence rather than the two sections through it. The near-vertical contours
+are the same result seen a second way: at fixed temperature, the whole oxygen
+range spans less than one contour interval.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/figS3_sensitivity_maps.png}
+\caption{Operating-envelope sensitivity maps: predicted $L_\mathrm{bl}$ at
+(a--d)~480~h and (e--h)~ten years over the scanned envelope
+(200--285$^\circ$C, 0.01--8~ppm O$_2$), for $\Delta G^0_R = 25$, 100, 250 and
+417~kJ/mol, that is effective activation energies $\alpha_3 \Delta G^0_R$ of 3,
+12, 30 and 50~kJ/mol. The marker locates the Veile et al.\ calibration
+condition. Each row shares one color scale, so the widening spread from left to
+right is the sensitivity increasing with activation energy.}
+\label{fig:maps}
 \end{figure}
 
 \section{Neural-backbone parity}
@@ -1199,3 +1263,209 @@ Kolmogorov--Arnold backbone achieves 0.11\% and 0.04\%, respectively. Both
 backbones are well inside the 0.5\% acceptance bar, so the parameter estimates
 and uncertainty statements reported in the main text do not depend on the
 backbone architecture.
+
+\section{Inversion workflow}
+\label{sec:workflow}
+
+Fig.~\ref{fig:nsem_workflow} summarizes how the reduced model is inverted. It
+restates in one picture the procedure described in Section~2.4 of the main text
+and specified in full in Section~\ref{sec:nsem-details}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_nsem_workflow}
+\caption{How the reduced model is inverted. Exposure time, and for the
+spatial extension depth, enters an element network whose field values
+are evaluated at Legendre--Gauss--Lobatto collocation nodes; the
+network returns the two layer thicknesses and the five kinetic
+parameters $\theta$. Spectral differentiation on the same node set
+gives the residuals of Eqs.~(10)--(11) of the main text, which
+are enforced at every node and combined with the data misfit of
+Eq.~(16) of the main text by a balanced-residual dynamic reweighting of
+the two terms; a two-phase schedule, Adam then L-BFGS, drives the total
+loss to convergence. The identified kinetics are graded against the
+exact closed form of Eqs.~(13)--(14) of the main text
+before they are used for profile likelihood, the bootstrap, and the
+long-time prediction. The solver is the neural spectral-element method
+(NSEM) of Tetsassi Feugmo and Pankaczy; architecture and hyperparameters for
+each configuration are tabulated in Section~\ref{sec:nsem-details}.}
+\label{fig:nsem_workflow}
+\end{figure}
+
+\section{Bootstrap ensembles}
+\label{sec:ensembles}
+
+The 1000-member parametric bootstrap summarized in Table~4 of the main text is
+shown here parameter by parameter against the profile-likelihood band, which is
+where the two weakly constrained parameters fail in opposite directions.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/fig5_uncertainty_ensemble.png}
+\caption{Bootstrap ensemble versus profile likelihood: 1000-member
+parametric bootstrap distribution for each M4 parameter, compared
+against the profile-likelihood 1$\sigma$ band. Panels follow the order
+of Table~4 of the main text: (a)~$A_\text{bl}$, (b)~$b_3$,
+(c)~$\mathrm{PBR}_\text{eff}$, (d)~$L_0$, (e)~$L_\text{ol,0}$. In each,
+the blue histogram is the distribution of the 1000 refitted values
+(plotted as a probability density, so panel heights are not comparable
+across parameters), the red shaded band is the profile-likelihood
+1$\sigma$ interval of Table~4 of the main text, and the dashed vertical
+line is the M4 point estimate. Two annotated features
+are results rather than plotting artifacts. The spike at the lower bound
+in (c) and (e) is the fraction of resampled datasets for which the
+parameter is driven to zero, which is what weak identifiability looks
+like in a resampling ensemble. In (d) the bootstrap is far narrower than
+the profile band: resampling the data cannot explore a direction the
+data do not constrain, so the narrow histogram is not a tighter
+constraint but the signature of a prior-set parameter.}
+\label{fig:ensemble}
+\end{figure}
+
+\section{The F-1 failure mode of soft-mode inversion}
+\label{sec:f1}
+
+Section~3.3 of the main text reports a failure mode specific to sparse-data
+physics-informed inversion: a soft-mode solve whose trajectory passes through
+every measurement while the parameters it reports do not satisfy the governing
+equation. The exhibit is reproduced here.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/fig11_f1_failure.png}
+\caption{The F-1 failure mode. Both panels use the same six measurements
+and the same recovered parameters; in both, blue denotes the barrier
+layer and orange the outer layer, and the points are the measured means
+with their standard errors. (a)~The trained soft-mode trajectory (solid
+curves), which is what the data loss sees: it passes through every
+point, at a
+$\chi^2$ of 0.21 that is lower than the accepted model's 5.79.
+(b)~The exact forward solution (dashed curves) evaluated at exactly the
+parameters that trajectory reports, against the same data, with the
+hard-mode M4 solution (gray dotted) for reference: $\chi^2 = 16.6$. The trajectory absorbed the
+misfit as slack in the governing equation, so the apparent quality of
+the fit in (a) is not a property of the recovered parameters. The
+factor of roughly 80 between the two is the diagnostic; the hard mode
+returns 5.79 by either route and passes by construction.}
+\label{fig:f1}
+\end{figure}
+
+\begin{table}[htbp]
+\centering
+\caption{F-1 self-consistency exhibit: trajectory $\chi^2$ versus
+closed-form $\chi^2$ at the recovered parameters (seed-0 runs; see
+Section~\ref{sec:nsem-details} for run-to-run variability).}
+\label{tab:f1}
+\begin{tabular}{llccc}
+\toprule
+Inverse mode & Note & $\chi^2$ traj. & $\chi^2$ closed-form & Self-consistent \\
+\midrule
+Hard (real data) & physics exact by construction & 5.793 & 5.79 & yes \\
+Soft, $\lambda_\text{phys}=10^3$ & joint field+parameter & 0.21 & 16.64 & no \\
+Soft, $\lambda_\text{data}=10$ & joint field+parameter & 0.67 & 15.57 & no \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Synthetic identifiability gate for the spatial shape parameters}
+\label{sec:gate}
+
+Before the spatial extension of Section~3.4 of the main text is fitted to the
+measured composition maps, its shape parameters are put through a synthetic
+recovery gate under the instrument and heterogeneity model of
+Section~\ref{sec:instrument}.
+
+\begin{table}[htbp]
+\centering
+\caption{Synthetic identifiability gate for the spatial shape
+parameters: 20-replicate recovery under the instrument and
+heterogeneity model of Section~\ref{sec:instrument}. RSD is the replicate relative
+standard deviation of the recovered parameter; the verdict thresholds
+are 25\% (identifiable) and 50\% (weak). The $L_\text{bl}$ truth value is a round 134.0~nm,
+set from the 480-h kinetic-fit output of Table~3 of the main text
+(134.8~nm).}
+\label{tab:t2a}
+\begin{tabular}{llcccl}
+\toprule
+Shape param. & Physics mapping & Truth & Unit & RSD & Verdict \\
+\midrule
+$L_\text{bl}$ & kinetic-fit output & 134.0 & nm & 2\% & identifiable \\
+$w_\text{int}$ & solid-state interdiffusion & 5.0 & nm & 17\% & identifiable \\
+$w_\text{out}$ & outer-interface kinetics & 8.0 & nm & 19\% & identifiable \\
+$A_\text{Ni}$ & Ni exclusion ratio & 25.0 & wt\% & 7\% & identifiable \\
+$w_\text{Ni}$ & Ni exclusion + transport & 35.0 & nm & 8\% & identifiable \\
+$f_\text{Cr,bl}$ & interfacial flux ratios & 45.0 & wt\% & 2\% & identifiable \\
+$g_\text{bl}$ & defect-transport gradient & 1.0 & wt\% & 47\% & weak \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Steady spatial solve}
+\label{sec:steadysolve}
+
+The steady defect-transport solve underlying Section~3.4 of the main text,
+verified against the analytic solution of Section~\ref{sec:spatial-derivation}
+and against an independent Newton solve on the same node set.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/fig8_steady_spatial.png}
+\caption{Steady spatial solve. (a)~Steady-state nondimensional profile shape (nondimensional concentration $\hat{c}$ against nondimensional depth $\xi$ across the barrier layer) with the diffusivity scaled by
+$0.01\times$ to $100\times$. Blue curves are oxygen vacancies (OV) and
+red curves cation vacancies (CV); the three diffusivity scalings are
+distinguished by marker symbol and coincide to machine precision, which
+is the diffusivity-cancellation result. (b)~Verification ladder for the
+same two species (same colors): dashed curves are the absolute
+Newton-versus-analytic error and solid curves the NSEM-versus-Newton
+error relative to the peak Newton value, both against depth on a
+logarithmic ordinate; the dotted horizontal lines mark the $10^{-10}$
+and 0.5\% acceptance bounds.}
+\label{fig:steady}
+\end{figure}
+
+\section{Operating-envelope line sweeps}
+\label{sec:sweeps}
+
+Table~6 of the main text gives the envelope spreads; the sweeps behind them are
+shown here, with temperature and dissolved oxygen varied one at a time on a
+common vertical scale.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/fig7_envelope_lines.png}
+\caption{Operating-envelope sensitivity of the predicted barrier-layer
+thickness, at (a,~b)~480~h and (c,~d)~ten years. Left panels sweep
+temperature at the calibration oxygen level; right panels sweep
+dissolved oxygen across three decades at the calibration temperature,
+on the same vertical scale. Each curve is one scanned value of the
+effective activation energy $\alpha_3\Delta G^0_R$, spanning
+3--50~kJ/mol; the dotted line marks the Veile et al.\ calibration
+condition, through which every curve passes by construction. Temperature
+carries the sensitivity and it grows with activation energy, while three decades of dissolved oxygen shift the prediction by under six percent at 480~h and under two percent at ten years, and do so identically at every activation energy, the oxygen channel being a prefactor shift. Boxed factors are the full-envelope spreads of the four plotted activation energies, from Table~6 of the main text. Contour maps over the full
+$(T, [\mathrm{O}_2])$ box are given in Fig.~\ref{fig:maps}.}
+\label{fig:sensitivity}
+\end{figure}
+
+\section{The identified kinetics in context}
+\label{sec:context}
+
+\begin{table}[htbp]
+\centering
+\caption{The identified kinetics in the context of related systems.
+Literature thickness entries are indicative orders of magnitude for the
+Cr-rich inner layer; field strengths are apparent values as reported by
+the cited analyses.}
+\label{tab:context}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lllll}
+\toprule
+System & Environment & $T$ ($^\circ$C) & Inner layer & $\varepsilon_f$ (V/cm) \\
+\midrule
+AISI~347 (this work) & simulated BWR HTW & 240 & 41--135~nm (72--480~h) & $4\times10^3$--$2\times10^4$ \\
+304/316 SS & oxygenated HTW (Kuang et al.\ 2010; Kim 1999) & 288 & tens--hundreds nm & not reported \\
+HCM12A, 316L & supercritical water (Li et al.\ 2020) & 500 & $\mu$m scale & $\sim10^2$ \\
+Passive metals & ambient aqueous (Cabrera and Mott 1949) & 25 & 1--5~nm & $\sim10^6$ \\
+\bottomrule
+\end{tabular}
+\end{table}
