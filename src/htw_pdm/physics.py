@@ -16,8 +16,12 @@ by construction of the characteristic scales.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
-import torch
+from htw_pdm._optional import require_torch
+
+if TYPE_CHECKING:  # annotations are strings under `from __future__ import annotations`
+    import torch
 
 # Characteristic scales: exposure window and observed Cr-layer thickness scale.
 T_C_H = 480.0  # h
@@ -59,7 +63,7 @@ class NondimGroups:
     lamol0: float
 
     @classmethod
-    def from_parameters(cls, p: Parameters) -> "NondimGroups":
+    def from_parameters(cls, p: Parameters) -> NondimGroups:
         return cls(
             Ahat=p.A_bl * T_C_H / L_C_NM,
             bhat=p.b3 * L_C_NM,
@@ -95,6 +99,7 @@ def growth_rate(lam_bl: torch.Tensor, g: NondimGroups, kinetics: dict | None = N
     "lam0", "lamol0"} as scalar tensors (inverse problem). Missing keys fall
     back to the fixed NondimGroups values.
     """
+    torch = require_torch()
     k = kinetics or {}
     Ahat = k.get("Ahat", g.Ahat)
     bhat = k.get("bhat", g.bhat)
@@ -146,6 +151,7 @@ def data_loss(
 
     Linear interpolation of lam onto the (dimensional, hours) data times.
     """
+    torch = require_torch()
     tau_data = t_data / T_C_H
     idx = torch.searchsorted(t_grid, tau_data).clamp(1, t_grid.numel() - 1)
     t0, t1 = t_grid[idx - 1], t_grid[idx]

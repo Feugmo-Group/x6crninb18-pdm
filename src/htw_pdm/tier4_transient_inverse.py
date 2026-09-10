@@ -50,7 +50,10 @@ warnings.filterwarnings("ignore")
 import numpy as np  # noqa: E402
 import torch  # noqa: E402
 import torch.nn as nn  # noqa: E402
+from physicsnemo.experimental.models.scen import DVRMapper  # noqa: E402
+from physicsnemo.optim import TwoPhaseOptimizer, build_aggregator  # noqa: E402
 
+from htw_pdm.paths import PAPER_OUT  # noqa: E402
 from htw_pdm.physics import Parameters  # noqa: E402
 from htw_pdm.tier2_physics import (  # noqa: E402
     TransientGroups,
@@ -58,10 +61,6 @@ from htw_pdm.tier2_physics import (  # noqa: E402
     transient_groups,
     transient_residuals,
 )
-
-from physicsnemo.experimental.models.scen import DVRMapper  # noqa: E402
-from physicsnemo.optim import TwoPhaseOptimizer, build_aggregator  # noqa: E402
-from htw_pdm.paths import PAPER_OUT  # noqa: E402
 
 T_C_H = 480.0
 NX, NT = 24, 16

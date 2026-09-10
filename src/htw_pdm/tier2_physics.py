@@ -51,10 +51,14 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import numpy as np
-import torch
 
+from htw_pdm._optional import lazy_torch
 from htw_pdm.baseline_ode import HTWPDMParams, L_bl_closed
 from htw_pdm.physics import CHI, F_OVER_RT, Parameters
+
+# Imported on first `torch.<attr>`, so the classical Tier-2/Tier-3 entry points
+# that only need the numpy helpers above can run without PyTorch installed.
+torch = lazy_torch()
 
 # Tier-1 anchors and assumed transport constants (documented above).
 EPS_F_V_CM = 1.73e4  # V/cm — Tier-1 recovered field strength
@@ -193,7 +197,10 @@ class TransientGroups:
 
 
 def transient_groups(p1: Parameters, name: str, tau: np.ndarray, t_c_h: float,
-                     dtype=torch.float64) -> TransientGroups:
+                     dtype=None) -> TransientGroups:
+    # Resolved here rather than as a default, which would evaluate torch at
+    # import time and take the dependency for every classical caller too.
+    dtype = torch.float64 if dtype is None else dtype
     L, dlnL = tier1_L_of_tau(p1, tau, t_c_h)
     L_ref = float(L[-1])
     g_ref = species_groups(p1, L_ref)[name]

@@ -17,23 +17,11 @@ Run:
 from __future__ import annotations
 
 import os
-import sys
-
 
 import hydra  # noqa: E402
 import numpy as np  # noqa: E402
 import torch  # noqa: E402
 from omegaconf import DictConfig, OmegaConf  # noqa: E402
-
-from htw_pdm.baseline_ode import HTWPDMParams, L_bl_closed, L_ol_closed  # noqa: E402
-from htw_pdm.physics import (  # noqa: E402
-    L_C_NM,
-    T_C_H,
-    NondimGroups,
-    Parameters,
-    pdm_residuals,
-)
-
 from physicsnemo.experimental.models.scen import (  # noqa: E402
     DVRMapper,
     SCENElementNetwork,
@@ -41,7 +29,16 @@ from physicsnemo.experimental.models.scen import (  # noqa: E402
 from physicsnemo.optim import TwoPhaseOptimizer, build_aggregator  # noqa: E402
 from physicsnemo.utils import save_checkpoint, set_default_dtype  # noqa: E402
 from physicsnemo.utils.logging import PythonLogger  # noqa: E402
+
+from htw_pdm.baseline_ode import HTWPDMParams, L_bl_closed, L_ol_closed  # noqa: E402
 from htw_pdm.paths import CONF  # noqa: E402
+from htw_pdm.physics import (  # noqa: E402
+    L_C_NM,
+    T_C_H,
+    NondimGroups,
+    Parameters,
+    pdm_residuals,
+)
 
 
 def build_time_grid(dom: DictConfig, dtype: torch.dtype):

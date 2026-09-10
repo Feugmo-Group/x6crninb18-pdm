@@ -24,16 +24,18 @@ from __future__ import annotations
 
 import math
 import os
-import sys
-
 
 import hydra  # noqa: E402
 import numpy as np  # noqa: E402
 import torch  # noqa: E402
 from omegaconf import DictConfig, OmegaConf  # noqa: E402
+from physicsnemo.optim import TwoPhaseOptimizer, build_aggregator  # noqa: E402
+from physicsnemo.utils import set_default_dtype  # noqa: E402
+from physicsnemo.utils.logging import PythonLogger  # noqa: E402
 from torch.quasirandom import SobolEngine  # noqa: E402
 
 from htw_pdm.baseline_ode import HTWPDMParams, L_bl_closed, L_ol_closed  # noqa: E402
+from htw_pdm.paths import CONF  # noqa: E402
 from htw_pdm.physics import (  # noqa: E402
     L_C_NM,
     T_C_H,
@@ -43,11 +45,6 @@ from htw_pdm.physics import (  # noqa: E402
 )
 from htw_pdm.physics_parametric import ConditionScan, apparent_parameters  # noqa: E402
 from htw_pdm.trainer import build_nets, build_time_grid, make_fields, pretrain_ic  # noqa: E402
-
-from physicsnemo.optim import TwoPhaseOptimizer, build_aggregator  # noqa: E402
-from physicsnemo.utils import set_default_dtype  # noqa: E402
-from physicsnemo.utils.logging import PythonLogger  # noqa: E402
-from htw_pdm.paths import CONF  # noqa: E402
 
 
 def sample_conditions(n: int, seed: int) -> np.ndarray:

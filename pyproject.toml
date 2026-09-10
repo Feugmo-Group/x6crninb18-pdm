@@ -7,9 +7,9 @@ name = "htw-pdm"
 version = "1.0.0"
 description = "Point Defect Model identification of oxide growth on X6CrNiNb18-10 (AISI 347) in boiling-water-reactor hydrothermal water"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11,<3.15"
 license = { text = "Apache-2.0" }
-authors = [{ name = "Conrard Giresse Tetsassi Feugmo" }]
+authors = [{ name = "Conrard Giresse Tetsassi Feugmo", email = "cgtetsas@uwaterloo.ca" }]
 keywords = ["corrosion", "point defect model", "physics-informed", "identifiability",
             "stainless steel", "hydrothermal water"]
 classifiers = [
@@ -20,9 +20,10 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Physics",
 ]
 
-# The classical fits, the mass balance and the Wagner/Tier-3 solves need only
-# these. The neural (NSEM) inversions additionally need PhysicsNeMo -- see the
-# `nsem` extra below and the note in README.md.
+# The classical fits, the mass balance, the profile likelihoods, the bootstrap
+# and the Wagner/Tier-3 solves need only these three.  Every number in the
+# manuscript's headline claims is reachable from this set alone; see the
+# `nsem` extra for what the neural inversions additionally require.
 dependencies = [
     "numpy>=1.24",
     "scipy>=1.10",
@@ -30,27 +31,84 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# PhysicsNeMo is not on PyPI in the form this work needs: the NSEM solver uses
-# `physicsnemo.experimental.models.scen` (DVRMapper), `physicsnemo.optim`
-# (TwoPhaseOptimizer, build_aggregator) and `physicsnemo.utils`. Install the
-# fork this package was developed against, then `pip install -e .[nsem]`.
+# The NSEM solver additionally needs PhysicsNeMo. The spectral-element-network
+# module it uses (experimental.models.scen) and the two-phase optimizer are not
+# in the NVIDIA upstream, so the dependency is pinned to an immutable revision
+# of the fork that carries them -- see [tool.uv.sources] and
+# docs/NSEM_DEPENDENCY.md.
 nsem = [
     "torch>=2.1",
     "hydra-core>=1.3",
     "omegaconf>=2.3",
+    "nvidia-physicsnemo",
 ]
+
+[dependency-groups]
+# uv installs these by default with `uv sync`; they are not published metadata.
 dev = [
     "pytest>=7.4",
+    "ruff>=0.6",
 ]
 
 [project.urls]
 Repository = "https://github.com/Feugmo-Group/x6crninb18-pdm"
+Issues = "https://github.com/Feugmo-Group/x6crninb18-pdm/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.uv]
+# `uv sync` installs the classical path plus the dev group. The neural half is
+# opt-in via `uv sync --extra nsem`, so a reader reproducing the manuscript's
+# headline numbers never pays for a PyTorch download.
+default-groups = ["dev"]
+
+[tool.uv.sources]
+# Pinned to a commit, deliberately, not to a branch: a branch can move after
+# publication and the revision behind a paper's results must not. This commit
+# carries the `experimental.models.scen` spectral-element networks and the
+# `optim` two-phase optimizer/aggregator that the NSEM solver imports; both are
+# absent from NVIDIA upstream, which is the only reason a fork is involved.
+# This package is otherwise standalone and is not a fork of anything.
+nvidia-physicsnemo = { git = "https://github.com/Feugmo-Group/physicsnemo.git", rev = "a76d11b06ff89bdaff510722af0364824f744ea5" }
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 filterwarnings = [
     "ignore::UserWarning",
+    "ignore::DeprecationWarning",
 ]
+markers = [
+    "slow: takes more than a few seconds (tier-3 and tier-4 regression solves)",
+    "nsem: requires PhysicsNeMo; skipped automatically when it is absent",
+]
+
+[tool.ruff]
+line-length = 100
+src = ["src", "scripts", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+
+# Lint here is for defects, not for house style. Every rule below was reviewed
+# against the actual occurrences before being switched off, and the reason is
+# recorded so a future reader does not have to redo that review.
+ignore = [
+    "E501",   # long lines are mostly derivation comments quoting the equations
+    "B008",   # function call in a default argument: not used in a stateful way here
+    "B023",   # loop variable in a closure: all 21 sites call the closure inside
+              # the same iteration (least_squares/jacobian), several already bind
+              # defaults explicitly. Checked individually; none defer the call.
+    "B905",   # zip(strict=): the zipped sequences are same-length by construction
+              # (parameter names against their own grids); strict= would add noise
+              # without catching anything reachable.
+    "B007",   # unused loop variable, all in plotting loops iterating a grid
+    "UP031",  # printf-style formatting in one table generator, left as written
+    "E741",   # `l` as a length/thickness variable, which is the notation the
+              # manuscript and the derivation use
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Assembles the Corrosion Science manuscript by string surgery; the block
+# structure mirrors the document it builds rather than import conventions.
+"scripts/make_corrosion_science_version.py" = ["E402", "E702"]

@@ -24,18 +24,19 @@ from __future__ import annotations
 import csv
 import math
 import os
-import sys
-
 
 import hydra  # noqa: E402
 import numpy as np  # noqa: E402
 import torch  # noqa: E402
 from omegaconf import DictConfig, OmegaConf  # noqa: E402
+from physicsnemo.optim import TwoPhaseOptimizer, build_aggregator  # noqa: E402
+from physicsnemo.utils import save_checkpoint, set_default_dtype  # noqa: E402
+from physicsnemo.utils.logging import PythonLogger  # noqa: E402
 
 from htw_pdm.baseline_ode import HTWPDMParams, L_bl_closed, L_ol_closed  # noqa: E402
+from htw_pdm.paths import CONF, ROOT  # noqa: E402
 from htw_pdm.physics import (  # noqa: E402
     L_C_NM,
-    T_C_H,
     NondimGroups,
     Parameters,
     data_loss,
@@ -44,13 +45,8 @@ from htw_pdm.physics import (  # noqa: E402
 )
 from htw_pdm.trainer import build_nets, build_time_grid, make_fields, pretrain_ic  # noqa: E402
 
-from physicsnemo.optim import TwoPhaseOptimizer, build_aggregator  # noqa: E402
-from physicsnemo.utils import save_checkpoint, set_default_dtype  # noqa: E402
-from physicsnemo.utils.logging import PythonLogger  # noqa: E402
-from htw_pdm.paths import CONF, ROOT  # noqa: E402
 
-
-def integrate_hard(kin: "KineticParams", g0: NondimGroups, t_grid: torch.Tensor,
+def integrate_hard(kin: KineticParams, g0: NondimGroups, t_grid: torch.Tensor,
                    n_sub: int = 8):
     """Differentiable RK4 integration of the film-growth ODE (physics exact by
     construction — no residual slack). Returns (lam_bl, lam_ol) on t_grid.

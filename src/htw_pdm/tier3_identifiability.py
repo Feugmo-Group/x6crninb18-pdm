@@ -29,7 +29,7 @@ IMPL_REPORT.md T2-E profile-likelihood scan). If BOTH closures fail -> re-scope
 Tier 3 to forward predict-and-compare (a valid, documented outcome, not a bug
 to route around).
 
-Run:  python -m htw_pdm.tier3_identifiability 
+Run:  python -m htw_pdm.tier3_identifiability
 """
 
 from __future__ import annotations
@@ -49,9 +49,7 @@ os.environ.setdefault("NUMEXPR_NUM_THREADS", "1")
 
 import csv
 import json
-import sys
 from multiprocessing import Pool
-from pathlib import Path
 
 import matplotlib
 
@@ -61,6 +59,7 @@ import numpy as np
 from scipy.optimize import least_squares
 
 from htw_pdm.baseline_fit import load_data  # noqa: E402
+from htw_pdm.paths import OUTPUTS as OUT  # noqa: E402
 from htw_pdm.physics import Parameters  # noqa: E402
 from htw_pdm.tier3_wagner import (  # noqa: E402
     A72_SIG,
@@ -70,7 +69,6 @@ from htw_pdm.tier3_wagner import (  # noqa: E402
     model,
 )
 
-from htw_pdm.paths import OUTPUTS as OUT  # noqa: E402
 OUT.mkdir(exist_ok=True)
 
 # T2-E fitted optimum (D_Ni_eff, r_Ni, phi_ol_supply) -- IMPL_REPORT.md T2-E.

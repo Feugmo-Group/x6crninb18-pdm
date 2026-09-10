@@ -19,7 +19,7 @@ The profiles reuse the T2-A shape builder (tier2_identifiability.profiles) with 
 2 nm EDX convolution, then layer widths are extracted with Veile's own convention
 (rise off the matrix baseline) and compared against the Fig. 9 means.
 
-Run:  python -m htw_pdm.tier2_composition [--fitted]  
+Run:  python -m htw_pdm.tier2_composition [--fitted]
 """
 
 from __future__ import annotations
@@ -27,7 +27,6 @@ from __future__ import annotations
 import csv
 import json
 import sys
-from pathlib import Path
 
 import matplotlib
 
@@ -37,11 +36,11 @@ import numpy as np
 
 from htw_pdm.baseline_fit import load_data  # noqa: E402
 from htw_pdm.baseline_ode import HTWPDMParams, L_bl_closed  # noqa: E402
+from htw_pdm.paths import OUTPUTS as OUT  # noqa: E402
 from htw_pdm.physics import Parameters  # noqa: E402
 from htw_pdm.tier2_identifiability import NI_M, profiles  # noqa: E402
 from htw_pdm.tier2_physics import analytic_steady, species_groups  # noqa: E402
 
-from htw_pdm.paths import OUTPUTS as OUT  # noqa: E402
 OUT.mkdir(exist_ok=True)
 
 PBR_BL = 2.05  # FeCr2O4 (Li Table 3) — metal depth consumed = L_bl / PBR

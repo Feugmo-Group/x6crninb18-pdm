@@ -21,15 +21,13 @@ frozen at their T2-E fitted values, never re-opened) and reports:
      point estimate or an uncertainty interval (T3-A showed neither is
      defensible for this parameter given the current data).
 
-Run:  python -m htw_pdm.tier3_forward_envelope 
+Run:  python -m htw_pdm.tier3_forward_envelope
 """
 
 from __future__ import annotations
 
 import csv
 import json
-import sys
-from pathlib import Path
 
 import matplotlib
 
@@ -38,10 +36,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from htw_pdm.baseline_fit import load_data  # noqa: E402
+from htw_pdm.paths import OUTPUTS as OUT  # noqa: E402
 from htw_pdm.physics import Parameters  # noqa: E402
 from htw_pdm.tier3_wagner import A72_MEAN, A72_SIG, T_OBS, model  # noqa: E402
 
-from htw_pdm.paths import OUTPUTS as OUT  # noqa: E402
 OUT.mkdir(exist_ok=True)
 
 # T2-E fitted optimum (D_Ni_eff, r_Ni, phi_ol_supply) -- frozen for this scan,

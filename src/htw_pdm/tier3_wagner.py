@@ -37,9 +37,6 @@ artifact stays untouched while all three closures share one integrator.
 
 from __future__ import annotations
 
-import sys
-from pathlib import Path
-
 import numpy as np
 from scipy.integrate import solve_ivp
 

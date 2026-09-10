@@ -30,7 +30,6 @@ from __future__ import annotations
 
 import json
 import os
-import sys
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -38,8 +37,11 @@ warnings.filterwarnings("ignore")
 import numpy as np  # noqa: E402
 import torch  # noqa: E402
 import torch.nn as nn  # noqa: E402
+from physicsnemo.experimental.models.scen import DVRMapper  # noqa: E402
+from physicsnemo.optim import TwoPhaseOptimizer, build_aggregator  # noqa: E402
 
 from htw_pdm.baseline_ode import HTWPDMParams, L_bl_closed  # noqa: E402
+from htw_pdm.paths import PAPER_OUT  # noqa: E402
 from htw_pdm.physics import F_OVER_RT, Parameters  # noqa: E402
 from htw_pdm.tier2_physics import (  # noqa: E402
     D_CV_CM2_S,
@@ -50,19 +52,14 @@ from htw_pdm.tier2_physics import (  # noqa: E402
     analytic_steady,
 )
 from htw_pdm.tier4_pnp import (  # noqa: E402
-    EPS_0_F_CM,
     E_CHARGE_C,
+    EPS_0_F_CM,
     EPS_R,
     EPS_R_SCAN,
-    field_diagnostics,
     newton_pnp,
     pnp_residuals,
     pnp_species,
 )
-
-from physicsnemo.experimental.models.scen import DVRMapper  # noqa: E402
-from physicsnemo.optim import TwoPhaseOptimizer, build_aggregator  # noqa: E402
-from htw_pdm.paths import PAPER_OUT  # noqa: E402
 
 N_NODES = 48
 T_EVAL_H = 480.0

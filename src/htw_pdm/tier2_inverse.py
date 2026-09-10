@@ -49,8 +49,6 @@ from __future__ import annotations
 
 import csv
 import json
-import sys
-from pathlib import Path
 
 import matplotlib
 
@@ -62,9 +60,9 @@ from scipy.optimize import least_squares
 
 from htw_pdm.baseline_fit import load_data  # noqa: E402
 from htw_pdm.baseline_ode import HTWPDMParams, L_bl_closed  # noqa: E402
+from htw_pdm.paths import OUTPUTS as OUT  # noqa: E402
 from htw_pdm.physics import Parameters  # noqa: E402
 
-from htw_pdm.paths import OUTPUTS as OUT  # noqa: E402
 OUT.mkdir(exist_ok=True)
 
 NI_M = 10.0  # wt% matrix baseline (T2-A/T2-D convention)

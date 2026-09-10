@@ -60,6 +60,7 @@ import torch  # noqa: E402
 import torch.nn as nn  # noqa: E402
 
 from htw_pdm.baseline_fit import load_data  # noqa: E402
+from htw_pdm.paths import PAPER_OUT  # noqa: E402
 from htw_pdm.physics import Parameters  # noqa: E402
 from htw_pdm.tier3_wagner import (  # noqa: E402
     A72_MEAN,
@@ -73,9 +74,10 @@ from htw_pdm.tier3_wagner import (  # noqa: E402
     T_REF,
     XI_MAX,
     dL_bl_dt,
+)
+from htw_pdm.tier3_wagner import (  # noqa: E402
     model as wagner_model_scipy,
 )
-from htw_pdm.paths import PAPER_OUT  # noqa: E402
 
 N_STEPS = 200  # CN steps over the 480 h window (A72 converged to 1e-4 relative)
 T_START = 1e-3

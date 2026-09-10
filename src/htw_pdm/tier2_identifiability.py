@@ -48,7 +48,6 @@ Run:  python -m htw_pdm.tier2_identifiability   (~1 min)
 from __future__ import annotations
 
 import csv
-from pathlib import Path
 
 import matplotlib
 
@@ -60,6 +59,7 @@ from scipy.optimize import least_squares
 from scipy.special import erf
 
 from htw_pdm.paths import OUTPUTS as OUT  # noqa: E402
+
 OUT.mkdir(exist_ok=True)
 
 # Matrix baselines (wt.%, Veile Table 1) and geometry (480 h exposure).
