@@ -18,12 +18,11 @@ Run:  python scripts/make_paper_tables.py
 """
 
 import csv
-import sys
-from pathlib import Path
+import json
 
 import numpy as np
-import torch
 
+from htw_pdm._optional import have, require_torch  # noqa: E402
 from htw_pdm.baseline_fit import (  # noqa: E402
     build_fit_data,
     fit_pdm,
@@ -34,10 +33,10 @@ from htw_pdm.baseline_fit import (  # noqa: E402
     profile_likelihood,
 )
 from htw_pdm.baseline_ode import HTWPDMParams, L_bl_closed, L_ol_closed  # noqa: E402
+from htw_pdm.paths import PAPER_OUT as OUT  # noqa: E402
+from htw_pdm.paths import ROOT  # noqa: E402
 from htw_pdm.physics import recovered_field_strength  # noqa: E402
 
-from htw_pdm.paths import ROOT  # noqa: E402
-from htw_pdm.paths import PAPER_OUT as OUT  # noqa: E402
 OUT.mkdir(parents=True, exist_ok=True)
 
 means, scans = load_data()
@@ -59,11 +58,29 @@ def closed_form_chi2(p_dict: dict) -> float:
 
 
 def load_meta(path: str) -> dict | None:
+    """Metadata dict from a training checkpoint, or None if there is none.
+
+    torch is resolved here rather than imported at module scope so that the
+    four tables built from the closed-form fits alone -- 1, 2, 8 and 10 --
+    regenerate on a classical install. Only tables 3 and 4 read checkpoints,
+    and they are guarded below rather than allowed to write themselves empty.
+    """
     f = ROOT / path
     if not f.exists():
         return None
+    torch = require_torch()
     ckpt = torch.load(f, map_location="cpu", weights_only=False)
     return ckpt.get("metadata", ckpt.get("meta", {}))
+
+
+# Writing tables 3 and 4 without the checkpoints would replace two committed
+# CSVs with headers and nothing else -- the silent-staleness failure this
+# repository has already been bitten by once. Skip them loudly instead.
+CAN_READ_CHECKPOINTS = have("torch")
+if not CAN_READ_CHECKPOINTS:
+    print("torch not installed: tables 3 and 4 are left as committed.\n"
+          "  regenerate them with: uv run --extra nsem python "
+          "scripts/make_paper_tables.py")
 
 
 # ── Table 2 — model ladder (also yields the M4 solution reused by Table 1) ────
@@ -169,8 +186,8 @@ print(f"Saved: {OUT / 'table1_parameters.csv'}")
 
 # ── Table 3 — NSEM forward parity + hard-inverse recovery ─────────────────────
 rows3 = []
-for label, path in (("forward MLP", "outputs/forward/checkpoint.0.2000.pt"),
-                    ("forward KAN", "outputs/forward_kan/checkpoint.0.2000.pt")):
+for label, path in ([] if not CAN_READ_CHECKPOINTS else (("forward MLP", "outputs/forward/checkpoint.0.2000.pt"),
+                    ("forward KAN", "outputs/forward_kan/checkpoint.0.2000.pt"))):
     m = load_meta(path)
     if m:
         rows3.append([label, "rel Linf L_bl vs closed form", f"{m['rel_bl']:.2e}",
@@ -178,7 +195,8 @@ for label, path in (("forward MLP", "outputs/forward/checkpoint.0.2000.pt"),
         rows3.append([label, "rel Linf L_ol vs closed form", f"{m['rel_ol']:.2e}",
                       "PASS" if m["rel_ol"] <= 5e-3 else "FAIL"])
 
-m_hard = load_meta("outputs/inverse_hard/kinetics_hard.pt")
+m_hard = load_meta("outputs/inverse/kinetics_hard.pt") \
+    if CAN_READ_CHECKPOINTS else None
 if m_hard:
     for pn, ref in (("A_bl", p4.A_bl), ("b3", p4.b3), ("PBR_eff", p4.PBR_eff),
                     ("L0", p4.L0), ("L_ol0", p4.L_ol0)):
@@ -188,7 +206,8 @@ if m_hard:
                       f"{v:.5g} (dev {rel:.2%})", "PASS" if rel < 0.01 else "CHECK"])
     rows3.append(["inverse hard (real data)", "chi2 (= M4 baseline 5.79)",
                   f"{m_hard['chi2']:.2f}", "PASS"])
-m_synth = load_meta("outputs/inverse_hard_synth/kinetics_hard.pt")
+m_synth = load_meta("outputs/inverse_hard_synth/kinetics_hard.pt") \
+    if CAN_READ_CHECKPOINTS else None
 if m_synth:
     truth = {"A_bl": 0.7266, "b3": -0.01248, "PBR_eff": 1.051, "L0": 1.924,
              "L_ol0": 118.7}
@@ -196,33 +215,32 @@ if m_synth:
         v = m_synth[f"fit_{pn}"]
         rows3.append(["inverse hard (synthetic, 2% noise)", f"{pn} vs ground truth",
                       f"{v:.5g} (dev {abs(v - tv) / abs(tv):.2%})", ""])
-with open(OUT / "table3_nsem_accuracy.csv", "w", newline="") as f:
-    w = csv.writer(f)
-    w.writerow(["run", "quantity", "value", "verdict"])
-    w.writerows(rows3)
-print(f"Saved: {OUT / 'table3_nsem_accuracy.csv'}")
+if CAN_READ_CHECKPOINTS:
+    with open(OUT / "table3_nsem_accuracy.csv", "w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["run", "quantity", "value", "verdict"])
+        w.writerows(rows3)
+    print(f"Saved: {OUT / 'table3_nsem_accuracy.csv'}")
+else:
+    print(f"Skipped: {OUT / 'table3_nsem_accuracy.csv'} (needs the nsem extra)")
 
 # ── Table 4 — F-1 exhibit: trajectory chi2 vs closed form at recovered params ─
-rows4 = []
-for label, path, note in (
-    ("hard (real data)", "outputs/inverse_hard/kinetics_hard.pt",
-     "physics exact by construction"),
-    ("soft, lambda_phys=1e3 (real data)", "outputs/inverse/checkpoint.0.6000.pt",
-     "joint field+parameter PINN"),
-    ("soft, lambda_data=10 (real data)", "outputs/inverse_ld10/checkpoint.0.6000.pt",
-     "joint field+parameter PINN"),
-):
-    m = load_meta(path)
-    if m is None:
-        continue
-    chi2_traj = m["chi2"]
-    chi2_cf = m.get("chi2_exact", closed_form_chi2(m))
-    consistent = chi2_cf < max(2.0 * chi2_traj, chi2_traj + 2.0)
-    rows4.append([label, note, f"{chi2_traj:.3f}", f"{chi2_cf:.2f}",
-                  "PASS" if consistent else "FAIL"])
-with open(OUT / "table4_f1_exhibit.csv", "w", newline="") as f:
-    w = csv.writer(f)
-    w.writerow(["inverse mode", "note", "chi2_trajectory",
-                "chi2_closed_form_at_recovered_params", "self_consistency"])
-    w.writerows(rows4)
-print(f"Saved: {OUT / 'table4_f1_exhibit.csv'}")
+# Sourced from outputs/paper/f1_runs.json, which scripts/make_f1_trajectory.py
+# writes from live runs.  An earlier version read .pt checkpoints straight out
+# of outputs/, which meant this artefact and the manuscript could disagree
+# whenever a training schedule changed under a checkpoint nobody re-made.
+F1_RUNS = OUT / "f1_runs.json"
+if F1_RUNS.exists():
+    with open(F1_RUNS) as f:
+        runs = json.load(f)["runs"]
+    with open(OUT / "table4_f1_exhibit.csv", "w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["inverse mode", "note", "chi2_trajectory",
+                    "chi2_closed_form_at_recovered_params", "self_consistency"])
+        w.writerows([[r["mode"], r["note"], f"{r['chi2_trajectory']:.3f}",
+                      f"{r['chi2_closed_form']:.2f}",
+                      r["self_consistent"]] for r in runs])
+    print(f"Saved: {OUT / 'table4_f1_exhibit.csv'}")
+else:
+    print(f"Skipped: {OUT / 'table4_f1_exhibit.csv'} "
+          f"(run scripts/make_f1_trajectory.py --extra nsem first)")

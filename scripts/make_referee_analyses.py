@@ -33,8 +33,6 @@ Run:  python scripts/make_referee_analyses.py
 from __future__ import annotations
 
 import json
-import sys
-from pathlib import Path
 
 import numpy as np
 from scipy import stats
@@ -49,10 +47,10 @@ from htw_pdm.baseline_fit import (  # noqa: E402
     unpack,
 )
 from htw_pdm.baseline_ode import HTWPDMParams, L_bl_closed, L_ol_closed  # noqa: E402
+from htw_pdm.paths import OUTPUTS as OUT  # noqa: E402
 from htw_pdm.physics import Parameters  # noqa: E402
 from htw_pdm.physics_parametric import ConditionScan, apparent_parameters  # noqa: E402
 
-from htw_pdm.paths import OUTPUTS as OUT  # noqa: E402
 PAPER = OUT / "paper"
 PAPER.mkdir(parents=True, exist_ok=True)
 

@@ -12,12 +12,15 @@
    propagated through the long-time extrapolation: percentile bands for
    L_bl(t) out to 1e5 years, the 10-year prediction interval, and the
    PDM-vs-power-law divergence ratio interval at 10 years.
-5. Discriminability threshold: the earliest exposure time at which the
-   mechanistic and power-law predictions separate by more than twice the
-   expected scan-level measurement scatter (the criterion the Predictions
-   section states in prose).
+5. Discriminability thresholds: the earliest exposure time at which the
+   mechanistic and power-law predictions separate by more than two and three
+   times the expected measurement uncertainty, for both power-law variants and
+   for both the scatter-only and full error budgets -- the eight numbers the
+   Predictions section quotes.  Where the power law's own fit uncertainty is
+   carried, the separation in sigma is not monotone in t, so each threshold is
+   reported with whether it still holds at the end of the scanned window.
 
-Run:  python scripts/make_paper_stats.py  
+Run:  python scripts/make_paper_stats.py
 Outputs: outputs/paper/referee_stats.json, outputs/ensemble_members_1000.csv,
          outputs/paper/fig6_band.npz (percentile band for fig 6)
 """
@@ -25,12 +28,10 @@ Outputs: outputs/paper/referee_stats.json, outputs/ensemble_members_1000.csv,
 from __future__ import annotations
 
 import json
-import sys
-from pathlib import Path
 
 import numpy as np
 from scipy import stats
-from scipy.optimize import curve_fit, least_squares
+from scipy.optimize import curve_fit
 
 from htw_pdm.baseline_fit import (  # noqa: E402
     FitData,
@@ -40,8 +41,8 @@ from htw_pdm.baseline_fit import (  # noqa: E402
     load_data,
 )
 from htw_pdm.baseline_ode import L_bl_closed  # noqa: E402
-
 from htw_pdm.paths import OUTPUTS as OUT  # noqa: E402
+
 PAPER = OUT / "paper"
 PAPER.mkdir(parents=True, exist_ok=True)
 
@@ -91,6 +92,47 @@ def bootstrap_1000(d: FitData, sol4_x, n_members=1000, seed=0):
         except Exception:
             n_fail += 1
     return np.array(members), n_fail
+
+
+def powerlaw_bootstrap(d: FitData, n_members=1000, seed=1):
+    """Power-law counterpart of the PDM parametric bootstrap.
+
+    Resamples the same six weighted layer means under the same noise model and
+    refits k, n per layer, so the two fit uncertainties entering the
+    discriminability budget are computed the same way.
+    """
+    rng = np.random.default_rng(seed)
+    members = []
+    n_fail = 0
+    for _ in range(n_members):
+        L = d.L_cr + rng.normal(0.0, d.sig_cr)
+        try:
+            (k, n), _ = curve_fit(
+                lambda t, k, n: k * t**n, d.t, L, p0=(10.0, 0.4), sigma=d.sig_cr,
+                absolute_sigma=True, maxfev=20000,
+            )
+            members.append((float(k), float(n)))
+        except Exception:
+            n_fail += 1
+    return np.array(members), n_fail
+
+
+def first_crossing(t_scan, sep, level):
+    """Earliest t at which the separation first exceeds `level` sigma.
+
+    Also reports whether the criterion, once met, still holds at the end of the
+    scanned window.  It need not: when the power law's own fit uncertainty is
+    carried, its extrapolation variance grows with its prediction, so the
+    separation measured in sigma can peak and then fall back.  Where that
+    happens, "first crossing" names the start of a window rather than a
+    threshold beyond which discrimination is assured, and the two must not be
+    reported as the same thing.
+    """
+    above = sep > level
+    if not above.any():
+        return None, False
+    idx = int(np.argmax(above))
+    return float(t_scan[idx]), bool(above[idx:].all())
 
 
 def main():
@@ -183,8 +225,11 @@ def main():
     print(f"   divergence ratio (PL/PDM) at 10 y: median = {rmed:.2f}, "
           f"[16,84]% = [{rlo:.2f}, {rhi:.2f}]")
 
-    # --- 5) discriminability threshold -------------------------------------------
-    print("\n5) Discriminability threshold (mechanistic vs power law)")
+    # --- 5) discriminability thresholds ------------------------------------------
+    # Eight numbers: {published coefficients, weighted refit} x {scatter only,
+    # full error budget} x {2 sigma, 3 sigma}.  The paper quotes all eight, so
+    # all eight are computed here rather than only the refit/scatter pair.
+    print("\n5) Discriminability thresholds (mechanistic vs power law)")
     # Expected scatter model for a future campaign: the worst observed Cr
     # scan-level relative population SD (22% at 168 h), n = 3 scans ->
     # sigma of the mean = 0.22/sqrt(3) = 12.7% of the measured thickness.
@@ -193,18 +238,65 @@ def main():
     rel_sig_mean = rel_sd_scans / np.sqrt(n_scans_assumed)
     t_scan = np.logspace(np.log10(480.0), np.log10(50000.0), 4000)
     L_m4_t = L_bl_closed(p4, t_scan)
-    L_pl_t = pl_w["Cr"]["k"] * t_scan ** pl_w["Cr"]["n"]
-    sep_sigma = np.abs(L_pl_t - L_m4_t) / (rel_sig_mean * L_m4_t)
-    idx2 = np.argmax(sep_sigma > 2.0)
-    idx3 = np.argmax(sep_sigma > 3.0)
-    t_2sig = float(t_scan[idx2]) if sep_sigma[idx2] > 2.0 else None
-    t_3sig = float(t_scan[idx3]) if sep_sigma[idx3] > 3.0 else None
+
+    # Mechanistic parametric uncertainty at each t, from the 1000-member bootstrap.
+    boot_curves = np.empty((len(members), len(t_scan)))
+    for i_m, row in enumerate(members):
+        x = np.array([np.log(row[0]), np.log(-row[1]), np.log(row[2]),
+                      np.log(row[3]), np.log(row[4])])
+        boot_curves[i_m] = L_bl_closed(unpack(x, 4), t_scan)
+    var_pdm = boot_curves.std(axis=0) ** 2
+
+    # Power-law fit uncertainty, by the same resampling model.  Available only
+    # for the weighted refit: the published coefficients were determined
+    # elsewhere, on individual scans in unweighted linear space, and no
+    # covariance for them is published.  The published-coefficient budget
+    # therefore carries the scatter and mechanistic terms only, which makes it
+    # the more conservative (later-crossing) of the two by construction.
+    pl_members, pl_fail = powerlaw_bootstrap(d)
+    pl_boot = np.array([k * t_scan ** n for k, n in pl_members])
+    var_pl_refit = pl_boot.std(axis=0) ** 2
+    print(f"   power-law bootstrap: {len(pl_members)} members ({pl_fail} failures)")
     print(f"   scatter model: worst observed Cr scan-level rel. SD = {rel_sd_scans:.1%}, "
           f"n = {n_scans_assumed} scans -> sigma_mean = {rel_sig_mean:.1%} of L")
-    print(f"   2-sigma separation first exceeded at t = {t_2sig:.0f} h" if t_2sig
-          else "   no 2-sigma separation below 50000 h")
-    print(f"   3-sigma separation first exceeded at t = {t_3sig:.0f} h" if t_3sig
-          else "   no 3-sigma separation below 50000 h")
+
+    variants = {
+        "published_coeffs": (pl_scan["Cr"][0] * t_scan ** pl_scan["Cr"][1], None),
+        "weighted_refit": (pl_w["Cr"]["k"] * t_scan ** pl_w["Cr"]["n"], var_pl_refit),
+    }
+    thresholds = {}
+    for name, (L_pl_t, var_pl) in variants.items():
+        sep_var = (rel_sig_mean * L_m4_t) ** 2
+        full_var = sep_var + var_pdm + (0.0 if var_pl is None else var_pl)
+        for budget, var in (("scatter_only", sep_var), ("full_budget", full_var)):
+            sep = np.abs(L_pl_t - L_m4_t) / np.sqrt(var)
+            entry = {}
+            for level in (2.0, 3.0):
+                t_x, sustained = first_crossing(t_scan, sep, level)
+                entry[f"t_{int(level)}sigma_h"] = t_x
+                entry[f"sustained_to_window_end_{int(level)}sigma"] = sustained
+            # Where the criterion is not sustained, the exposure window over
+            # which it does hold is the reportable quantity, not the crossing.
+            for level in (2.0, 3.0):
+                above = sep > level
+                end = None
+                if above.any() and not above[int(np.argmax(above)):].all():
+                    i0 = int(np.argmax(above))
+                    end = float(t_scan[i0 + int(np.argmin(above[i0:])) - 1])
+                entry[f"t_{int(level)}sigma_window_end_h"] = end
+            entry["separation_max_sigma"] = float(sep.max())
+            entry["t_at_separation_max_h"] = float(t_scan[int(np.argmax(sep))])
+            entry["separation_at_window_end_sigma"] = float(sep[-1])
+            entry["powerlaw_fit_uncertainty_included"] = (
+                var_pl is not None and budget == "full_budget")
+            thresholds[f"{name}__{budget}"] = entry
+            t2, t3 = entry["t_2sigma_h"], entry["t_3sigma_h"]
+            note = "" if entry["sustained_to_window_end_3sigma"] else (
+                f"  [3 sigma peaks at {entry['separation_max_sigma']:.2f} near "
+                f"{entry['t_at_separation_max_h']:.0f} h, then falls back to "
+                f"{entry['separation_at_window_end_sigma']:.2f} by 50000 h]")
+            print(f"   {name:18s} {budget:13s}: "
+                  f"2 sigma at {t2:8.0f} h, 3 sigma at {t3:8.0f} h{note}")
 
     # --- save everything ---------------------------------------------------------
     results = {
@@ -225,10 +317,16 @@ def main():
                                            "scan_level": float(L10_pl_scan)},
                       "ratio_PL_over_PDM_10y": {"median": float(rmed),
                                                 "p16": float(rlo), "p84": float(rhi)}},
-        "discriminability": {"rel_sd_scans": float(rel_sd_scans),
-                             "n_scans_assumed": n_scans_assumed,
-                             "rel_sigma_mean": float(rel_sig_mean),
-                             "t_2sigma_h": t_2sig, "t_3sigma_h": t_3sig},
+        "discriminability": {
+            "rel_sd_scans": float(rel_sd_scans),
+            "n_scans_assumed": n_scans_assumed,
+            "rel_sigma_mean": float(rel_sig_mean),
+            # kept for backward compatibility: the weighted-refit, scatter-only pair
+            "t_2sigma_h": thresholds["weighted_refit__scatter_only"]["t_2sigma_h"],
+            "t_3sigma_h": thresholds["weighted_refit__scatter_only"]["t_3sigma_h"],
+            "n_powerlaw_bootstrap": int(len(pl_members)),
+            "thresholds": thresholds,
+        },
     }
     with open(PAPER / "referee_stats.json", "w") as f:
         json.dump(results, f, indent=2)

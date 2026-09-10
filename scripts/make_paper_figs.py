@@ -17,6 +17,9 @@ plot_sensitivity_maps.png); this script covers only the two missing ones.
 Run:  python scripts/make_paper_figs.py
 """
 
+
+import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -25,7 +28,6 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.patches import Ellipse, FancyArrowPatch, Rectangle
 
 from htw_pdm.baseline_ode import (  # noqa: E402
     LI_TABLE5,
@@ -35,8 +37,9 @@ from htw_pdm.baseline_ode import (  # noqa: E402
     params_from_li_cgs,
     solve_forward,
 )
+from htw_pdm.paths import OUTPUTS  # noqa: E402
+from htw_pdm.paths import PAPER_OUT as OUT
 
-from htw_pdm.paths import OUTPUTS, PAPER_OUT as OUT  # noqa: E402
 OUT.mkdir(parents=True, exist_ok=True)
 
 plt.rcParams.update({
@@ -46,91 +49,33 @@ plt.rcParams.update({
     "legend.fontsize": 8,
 })
 
-# ── Fig 1 — model schematic ───────────────────────────────────────────────────
-fig1, (ax, axp) = plt.subplots(
-    2, 1, figsize=(9, 7), height_ratios=[2.2, 1.0], sharex=True
-)
+# ── Fig 1 — model schematic ─────────────────────────────────────────────
+# Drawn in TikZ, not matplotlib: paper/figures/fig1_model_schematic.tex is the
+# master source. Compile it and rasterize a copy so the figure lands in
+# outputs/paper/ alongside every other generated display item.
+FIGDIR = Path(__file__).resolve().parents[1] / "paper" / "figures"
 
-# Layer geometry (schematic x units).
-x_metal, x_ni, x_bl, x_olroot = 0.0, 2.6, 3.0, 6.0
-x_right = 9.6
-zones = [
-    (x_metal, x_ni, "#b0b7c0", "X6CrNiNb18-10 matrix\n17.6 Cr / 10.6 Ni /\n0.62 Nb / bal. Fe"),
-    (x_ni, x_bl, "#7fbf7f", "Ni\nzone"),
-    (x_bl, x_olroot, "#5a8f5a", "barrier layer (bl)\nCr-rich nanocrystalline spinel\n$FeCr_2O_4$ / $NiCr_2O_4$, $\\chi = 8/3$"),
-    (x_olroot, x_right, "#cfe3f5", "HTW: 240 °C, 7 MPa\n[O$_2$] = 0.4 ppm, 0.055 µS/cm"),
-]
-for x0, x1, c, label in zones:
-    ax.add_patch(Rectangle((x0, 0), x1 - x0, 3.0, facecolor=c, edgecolor="k", lw=0.8))
-    ax.text((x0 + x1) / 2, 2.55, label, ha="center", va="top", fontsize=9)
 
-# Outer-layer discrete crystals (Fe-rich) sitting on the bl surface, kept clear
-# of the arrow/label band (y in [0.4, 2.1] near the bl/ol interface).
-rng = np.random.default_rng(3)
-for cx, cy, s in [(8.5, 0.45, 0.85), (9.25, 1.15, 0.65), (8.95, 1.72, 0.5)]:
-    ax.add_patch(Ellipse((cx, cy), 0.85 * s, 0.65 * s, angle=float(rng.uniform(0, 60)),
-                         facecolor="#d98c5f", edgecolor="k", lw=0.8, zorder=4))
-ax.text(7.0, 3.08, "outer layer (ol): discrete Fe-rich crystals ($Fe_3O_4 \\to Fe_2O_3$), $\\delta = 8/3$",
-        ha="center", fontsize=9)
+def build_tikz(stem: str, dpi: int = 600) -> None:
+    src = FIGDIR / f"{stem}.tex"
+    if not src.exists():
+        raise SystemExit(f"missing TikZ source: {src}")
+    for cmd in (
+        ["pdflatex", "-interaction=nonstopmode", "-halt-on-error", src.name],
+        ["pdftoppm", "-r", str(dpi), "-png", "-singlefile", f"{stem}.pdf", stem],
+    ):
+        proc = subprocess.run(cmd, cwd=FIGDIR, capture_output=True, text=True)
+        if proc.returncode != 0:
+            sys.stderr.write(proc.stdout[-4000:] + proc.stderr[-2000:])
+            raise SystemExit(f"{cmd[0]} failed with exit code {proc.returncode}")
+    for junk in (".aux", ".log"):
+        (FIGDIR / f"{stem}{junk}").unlink(missing_ok=True)
 
-# Interfaces.
-for x, lbl in ((x_bl, "m/bl interface\n(recedes into metal)"),
-               (x_olroot, "bl/ol interface")):
-    ax.plot([x, x], [0, 3.0], "k-", lw=2)
-    ax.annotate(lbl, (x, -0.06), ha="center", va="top", fontsize=9)
 
-# Reactions (arrows + labels).
-arrows = [
-    # (x0, y0, x1, y1, label_x, label_y, label)
-    (x_bl - 0.45, 1.75, x_bl + 0.45, 1.75, x_bl + 0.55, 1.86,
-     "R3: m → M$_M$ + (χ/2)V$_O^{••}$ + χe′  (bl growth)"),
-    (x_bl + 0.6, 1.15, x_olroot - 0.6, 1.15, (x_bl + x_olroot) / 2, 1.27,
-     "V$_O^{••}$ migration →"),
-    (x_olroot - 0.45, 0.55, x_olroot + 0.45, 0.55, x_olroot - 2.35, 0.20,
-     "R10′: proton-assisted bl dissolution ($C_{bl}\\!\\approx\\!0$ in ultrapure HTW)"),
-    (x_olroot + 0.4, 1.9, x_right - 1.9, 1.9, x_olroot + 0.4, 2.02,
-     "R4/5: cation ejection → ol deposition (PBR)"),
-]
-for x0, y0, x1, y1, lx, ly, lbl in arrows:
-    ax.add_patch(FancyArrowPatch((x0, y0), (x1, y1), arrowstyle="-|>",
-                                 mutation_scale=13, color="k", lw=1.1, zorder=5))
-    ax.text(lx, ly, lbl, fontsize=8.5, ha="left", zorder=6)
-ax.text(1.3, 0.55, "Ni: slow-oxidizing, accumulates\nby exclusion at m/bl\n($dL_{Ni}/dt \\approx 0$)",
-        ha="center", fontsize=8.5, style="italic")
-ax.set_xlim(0, x_right)
-ax.set_ylim(-0.7, 3.35)
-ax.axis("off")
-ax.text(0.02, 0.98, "(a)", transform=ax.transAxes, fontweight="bold",
-        va="top", fontsize=12)
-
-# Potential distribution panel.
-xs = np.linspace(0, x_right, 400)
-phi = np.piecewise(
-    xs,
-    [xs < x_bl, (xs >= x_bl) & (xs < x_olroot), xs >= x_olroot],
-    [1.0, lambda x: 1.0 - 0.75 * (x - x_bl) / (x_olroot - x_bl), 0.25],
-)
-axp.plot(xs, phi, "b-", lw=2)
-axp.axvline(x_bl, color="k", lw=1, ls=":")
-axp.axvline(x_olroot, color="k", lw=1, ls=":")
-axp.annotate("$\\varphi_{m/bl} = (1-\\alpha)V - \\hat{\\varepsilon}L_{bl} - \\beta\\,pH - \\varphi^0$",
-             (x_bl - 0.1, 1.07), ha="right", fontsize=9)
-axp.annotate("constant field $\\hat{\\varepsilon}$\n($\\varepsilon_f \\approx 1.7\\times10^4$ V/cm)",
-             ((x_bl + x_olroot) / 2, 0.72), ha="center", fontsize=9)
-axp.annotate("$\\varphi_{bl/e} = \\alpha V + \\beta\\,pH + \\varphi^0$\n(porous ol: no potential drop)",
-             (x_olroot + 0.15, 0.34), fontsize=9)
-axp.set_ylim(0.1, 1.35)  # headroom so the panel letter clears the curve
-axp.set_ylabel("$\\varphi(x)$ (schematic)")
-axp.set_yticks([])
-axp.set_xticks([])
-axp.set_xlabel("depth →")
-axp.text(0.02, 0.98, "(b)", transform=axp.transAxes, fontweight="bold",
-         va="top", fontsize=12)
-
-plt.tight_layout()
-out1 = OUT / "fig1_model_schematic.png"
-plt.savefig(out1, dpi=300)
-print(f"Saved: {out1}")
+build_tikz("fig1_model_schematic")
+for name in ("fig1_model_schematic.pdf", "fig1_model_schematic.png"):
+    shutil.copy(FIGDIR / name, OUT / name)
+print(f"Saved: {OUT / 'fig1_model_schematic.png'}")
 
 # ── Fig 2 — baseline verification ─────────────────────────────────────────────
 fig2, (a, b) = plt.subplots(1, 2, figsize=(11, 4.2))
@@ -171,14 +116,16 @@ print(f"Saved: {out2}")
 print(f"  demo parity max: bl {err_bl.max():.2e} nm, ol {err_ol.max():.2e} nm")
 
 # ── Figs 3-7 — copy the existing result figures into the paper archive ────────
-import shutil  # noqa: E402
 
 COPIES = {
     "fig3_fits_vs_data.png": "plot_fits_vs_data.png",
     "fig4_profile_likelihood.png": "plot_profile_likelihood.png",
     # fig5 is generated directly by make_paper_fig5.py (1000-member bootstrap)
     "fig6_long_time.png": "plot_long_time.png",
-    "fig7_sensitivity_maps.png": "plot_sensitivity_maps.png",
+    # The line panels are the main-text envelope figure; the contour maps they
+    # replaced are kept for the SI, where there is room to render them legibly.
+    "fig7_envelope_lines.png": "plot_envelope_lines.png",
+    "figS3_sensitivity_maps.png": "plot_sensitivity_maps.png",
 }
 # These sources are resolved against OUTPUTS, not against this file's directory.
 # The previous form, Path(__file__).parent / "outputs/...", pointed at

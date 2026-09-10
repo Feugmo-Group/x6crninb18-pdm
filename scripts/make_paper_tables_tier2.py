@@ -23,10 +23,10 @@ Run:  python scripts/make_paper_tables_tier2.py   (AFTER
 
 import csv
 import json
-from pathlib import Path
 
-from htw_pdm.paths import ROOT  # noqa: E402
 from htw_pdm.paths import PAPER_OUT as OUT  # noqa: E402
+from htw_pdm.paths import ROOT  # noqa: E402
+
 OUT.mkdir(parents=True, exist_ok=True)
 
 

@@ -7,7 +7,6 @@ Run:  python scripts/make_paper_fig5.py    (after scripts/make_paper_stats.py)
 """
 
 import csv
-from pathlib import Path
 
 import matplotlib
 
@@ -15,8 +14,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
-from htw_pdm.paths import ROOT  # noqa: E402
 from htw_pdm.paths import OUTPUTS as OUT  # noqa: E402
+
 PAPER = OUT / "paper"
 
 # Placed at width=\textwidth (= 372 pt = 5.15 in) in the manuscript, so a
@@ -58,15 +57,41 @@ for k, (ax, name) in enumerate(zip(axes, names)):
             label="bootstrap (n=1000)" if k == 0 else None)
     lo_p = float(t1[name]["profile_1sig_lo"])
     hi_p = float(t1[name]["profile_1sig_hi"])
-    ax.axvspan(lo_p, hi_p, color="red", alpha=0.15, label="profile 1$\\sigma$")
-    ax.axvline(float(t1[name]["m4_fit"]), color="k", ls="--", lw=1, label="M4 fit")
+    ax.axvspan(lo_p, hi_p, color="red", alpha=0.15,
+               label="profile 1$\\sigma$" if k == 0 else None)
+    ax.axvline(float(t1[name]["m4_fit"]), color="k", ls="--", lw=1,
+               label="M4 fit" if k == 0 else None)
     ax.set_xlabel(pretty[name])
-    if k == 0:
-        ax.set_ylabel("probability density")
-        ax.legend(fontsize=6.5 * PT)
+    ax.set_ylabel("probability density")
     ax.text(0.04, 0.96, f"({'abcde'[k]})", transform=ax.transAxes,
             fontweight="bold", va="top", fontsize=9 * PT)
-plt.tight_layout()
+    # Two features of this figure are results rather than plotting artefacts,
+    # and both were previously left for the reader to work out.
+    # Guarded on sign: b_3 is negative throughout, so a bare "within 1% of the
+    # maximum" test marks every one of its members as sitting on a bound.
+    at_bound = (arr.min() >= 0.0) and (arr.min() < 1e-6 * arr.max())
+    frac0 = float((arr < 0.01 * arr.max()).mean()) if at_bound else 0.0
+    if frac0 > 0.05:
+        # Members driven to the lower bound: the data do not exclude a
+        # vanishing value, which is what "weakly identifiable" means here.
+        ax.text(0.5, 0.55, f"{100 * frac0:.0f}% of members\nat the lower bound",
+                transform=ax.transAxes, ha="center", va="top", fontsize=5.8 * PT,
+                bbox=dict(boxstyle="round,pad=0.25", fc="w", ec="0.7", lw=0.6))
+    if name == "L0":
+        # The one place bootstrap and profile disagree, and the disagreement is
+        # the finding: perturbing the data cannot explore a direction the data
+        # do not constrain, so the narrow histogram is not a tight constraint.
+        ax.text(0.5, 0.55,
+                "prior-set, not data-set:\nbootstrap $\\ll$ profile band",
+                transform=ax.transAxes, ha="center", va="top", fontsize=5.8 * PT,
+                bbox=dict(boxstyle="round,pad=0.25", fc="#fdeaea", ec="0.7", lw=0.6))
+
+# One figure-level legend: inside panel (a) the box covered both the panel
+# letter and the top of the histogram.
+_h, _l = axes[0].get_legend_handles_labels()
+fig.legend(_h, _l, fontsize=6.5 * PT, loc="upper center", ncol=3,
+           frameon=False, bbox_to_anchor=(0.5, 1.0))
+plt.tight_layout(rect=(0, 0, 1, 0.965))
 out = PAPER / "fig5_uncertainty_ensemble.png"
 plt.savefig(out, dpi=300)
 print(f"Saved: {out}")

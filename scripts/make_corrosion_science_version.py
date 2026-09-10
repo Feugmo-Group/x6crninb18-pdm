@@ -1,8 +1,8 @@
 """Generate the Corrosion Science version from the npj manuscript.
 
-The two submissions carry identical science; they differ in section order
-(Elsevier puts Methods second, Nature Portfolio puts it at the back), in
-document class (cas-sc vs sn-jnl), and in the venue front matter.  Rather
+The two submissions carry identical science and, since the npj version also
+runs Methods before Results, identical section order; they differ in document
+class (cas-sc vs sn-jnl), citation style, and the venue front matter.  Rather
 than maintain two copies of 1600 lines, this script derives one from the
 other, so a correction to the science can only be made in one place.
 
@@ -15,46 +15,50 @@ must agree exactly.
 """
 
 import re
-from pathlib import Path
 
-from htw_pdm.paths import PAPER as P, ROOT
-src = (P / "main-snjnl.tex").read_text().split("\n")
-# Blocks are taken by line range and each is asserted to begin with its own
-# \\section below; if main-snjnl.tex is restructured these numbers must move,
-# and the assertions will say so rather than silently mis-slicing.
-L = lambda a, b: "\n".join(src[a-1:b])   # 1-indexed inclusive
+from htw_pdm.paths import PAPER as P
+from htw_pdm.paths import ROOT
 
-intro       = L(44, 162)
-results     = L(163, 1042)
-discussion  = L(1043, 1359)
-conclusions = L(1360, 1435)
-methods     = L(1436, 1579)
-backmatter  = L(1580, 1608)
+SRC = (P / "main-snjnl.tex").read_text()
 
-# sanity: each block must start with its own \section
-for name, blk in [("intro", intro), ("results", results), ("disc", discussion),
-                  ("conc", conclusions), ("meth", methods)]:
-    assert blk.lstrip().startswith("\\section{"), (name, blk[:60])
-assert backmatter.lstrip().startswith("\\backmatter"), backmatter[:60]
+# Blocks are located by their own \\section marker rather than by line number.
+# An earlier version sliced by hardcoded line ranges, which silently went stale
+# the first time a subsection was added; boundaries are now derived, so editing
+# the manuscript cannot desynchronise this generator.
+def block(start, end):
+    """Text from the start marker up to (not including) the end marker."""
+    i = SRC.index(start)
+    j = len(SRC) if end is None else SRC.index(end, i)
+    return SRC[i:j].rstrip() + "\n"
 
-# --- Introduction: the roadmap sentence describes the npj section order ----
-# ("results first ... a discussion and a methods section follow"), which is
-# false once Methods moves to section 2.  Rewrite it for the Elsevier order.
-NPJ_ROADMAP = """The remainder of the paper presents results first: the reduced model and
-its differentiable identification, the identifiability and uncertainty
-analysis, the physics-informed inversion failure mode and its remedy, the
-spatial extension and zero-parameter composition predictions, the nickel
-enrichment zone, and the long-time predictions and operating-envelope
-sensitivity. A discussion and a methods section follow."""
-CAS_ROADMAP = """The remainder of the paper sets out the model and the inversion
-methodology, and then the results: the reduced model and its
-differentiable identification, the identifiability and uncertainty
-analysis, the physics-informed inversion failure mode and its remedy, the
-spatial extension and zero-parameter composition predictions, the nickel
-enrichment zone, and the long-time predictions and operating-envelope
-sensitivity. A discussion and conclusions follow."""
-assert NPJ_ROADMAP in intro, "roadmap sentence moved; update this replacement"
-intro = intro.replace(NPJ_ROADMAP, CAS_ROADMAP, 1)
+intro       = block("\\section{Introduction}",  "\\section{Methods}")
+methods     = block("\\section{Methods}",       "\\section{Results}")
+results     = block("\\section{Results}",       "\\section{Discussion}")
+discussion  = block("\\section{Discussion}",    "\\backmatter")
+backmatter  = block("\\backmatter", None)
+
+# npj Articles permit no conclusions section, so the npj Discussion closes with
+# the synthesis as running prose, marked by a CLOSING-BLOCK comment.  Corrosion
+# Science expects a numbered Conclusions, so the same text is promoted here.
+# Identical text, different heading: the numeric-token parity check still holds.
+_MARK = "%% CLOSING-BLOCK"
+assert _MARK in discussion, "CLOSING-BLOCK marker missing from the Discussion"
+_head, _tail = discussion.split(_MARK, 1)
+discussion  = _head.rstrip() + "\n"
+conclusions = ("\\section{Conclusions}\\label{sec:conclusions}\n\n"
+               + re.sub(r"\A(?:%%.*\n)+", "", _tail.split("\n", 1)[1]).lstrip())
+
+# The abstract is read from the npj source too, so the two versions cannot
+# drift on the one paragraph an editor is guaranteed to read.
+_abs = re.search(r"\\abstract\{(.*?)\}\s*\n\s*\n\\keywords", SRC, re.S)
+assert _abs, "could not locate \\abstract{...} in main-snjnl.tex"
+ABSTRACT = _abs.group(1).strip()
+
+# --- Introduction: no roadmap rewrite is needed --------------------------
+# Both versions now run Methods before Results, so the npj roadmap paragraph
+# describes the Elsevier order correctly as written.  An earlier revision
+# rewrote it here; the assertion that guarded that rewrite is kept in spirit
+# by the numeric-token diff, which would catch any divergence.
 
 # --- author-year citations -------------------------------------------------
 # The npj version cites numerically, where "Li et al.~[18]" reads correctly.
@@ -68,8 +72,8 @@ def narrative_citations(t):
     # "et al." is broken across lines in several places, so normalise the
     # newline first rather than listing every wrapped variant.
     for name in ("Li", "Veile"):
-        t = t.replace(f"{name} et\nal.~\\citep{{", f"\\citet{{")
-        t = t.replace(f"{name} et al.~\\citep{{", f"\\citet{{")
+        t = t.replace(f"{name} et\nal.~\\citep{{", "\\citet{")
+        t = t.replace(f"{name} et al.~\\citep{{", "\\citet{")
     return t
 
 intro       = narrative_citations(intro)
@@ -78,7 +82,7 @@ discussion  = narrative_citations(discussion)
 conclusions = narrative_citations(conclusions)
 methods     = narrative_citations(methods)
 
-# --- Methods: retitle for its new position as section 2 -------------------
+# --- Methods: Elsevier convention prefers a combined "Model and methods" ---
 methods = methods.replace(
     "\\section{Methods}\\label{sec:methods}",
     "\\section{Model and methods}\\label{sec:methods}", 1)
@@ -86,10 +90,15 @@ methods = methods.replace(
 # --- backmatter: sn-jnl \bmhead -> Elsevier starred sections --------------
 back = (backmatter
         .replace("\\backmatter\n", "")
-        .replace("\\bmhead{Data and code availability}",
+        .replace("\\bmhead{Data availability}",
                  "\\section*{Data availability}")
+        .replace("\\bmhead{Code availability}",
+                 "\\section*{Code availability}")
         .replace("\\bmhead{Author contributions}",
                  "\\section*{CRediT authorship contribution statement}")
+        # npj uses the US spelling in its own headings; Elsevier the British one
+        .replace("\\bmhead{Acknowledgments}",
+                 "\\section*{Acknowledgements}")
         .replace("\\bmhead{Competing interests}",
                  "\\section*{Declaration of competing interest}")
         .replace("\\bibliography{references}", "")
@@ -105,8 +114,8 @@ back = back.replace(
 PREAMBLE = r"""%% Corrosion Science (Elsevier) -- CAS single-column template (cas-sc)
 %% Companion version of the npj Materials Degradation submission
 %% (paper/main-snjnl.tex).  Same science, same numbers; restructured to the
-%% Elsevier order (Methods as section 2 rather than at the back) and
-%% reformatted from sn-jnl to cas-sc.
+%% Elsevier front matter and reformatted from sn-jnl to cas-sc; the section
+%% order is the same in both.
 %%
 %% cas-sc is the single-column member of Elsevier's CAS bundle.  Being one
 %% column, the figures keep the \textwidth sizing they have in the npj version
@@ -141,7 +150,7 @@ PREAMBLE = r"""%% Corrosion Science (Elsevier) -- CAS single-column template (ca
 
 \author[1]{Conrard Giresse Tetsassi Feugmo}[orcid=0000-0002-8992-4335]
 \cormark[1]
-\ead{giresse.feugmo@gmail.com}
+\ead{cgtetsas@uwaterloo.ca}
 
 \address[1]{Department of Chemistry and Department of Physics \& Astronomy,
             University of Waterloo, 200 University Avenue West,
@@ -150,27 +159,7 @@ PREAMBLE = r"""%% Corrosion Science (Elsevier) -- CAS single-column template (ca
 \cortext[1]{Corresponding author.}
 
 \begin{abstract}
-Mechanistic corrosion models are routinely fitted with four to six
-parameters to a handful of measurements and then extrapolated across
-service lifetimes, yet whether the data determine those parameters is
-almost never tested. We identify a reduced point defect model for the
-duplex oxide grown on Nb-stabilized AISI~347 (X6CrNiNb18-10) in
-simulated boiling-water-reactor hydrothermal water
-(240~$^\circ$C, 7~MPa, 0.4~ppm dissolved O$_2$) from published
-depth-profile data at three exposure times, by differentiable
-physics-informed inversion validated against an exact closed-form
-reference. Profile likelihood, cross-checked against a 1000-member
-bootstrap and a prior-relaxation test, leaves one of the five fitted
-parameters undetermined and a second only weakly determined, while a
-residual decomposition puts 95\% of the fit statistic on three chromium
-points and 80\% on one. The kinetics fit the calibration data as well as
-an empirical power law but extrapolate very differently: at ten years
-the power law predicts a 3.5 to 6.3 times thicker barrier layer than the
-mechanistic 535~nm (bootstrap 95\% interval 447--704~nm), a prediction
-varying 1.19 to 1.56-fold across the scanned operating envelope. A
-designed exposure beyond roughly 3000~hours would discriminate the two.
-We further document and remedy a failure mode specific to sparse-data
-inversion.
+%%ABSTRACT%%
 \end{abstract}
 
 %% Corrosion Science classifies keywords: A. materials, B. techniques
@@ -185,6 +174,8 @@ C. High temperature corrosion
 
 \maketitle
 """
+
+PREAMBLE = PREAMBLE.replace("%%ABSTRACT%%", ABSTRACT)
 
 TAIL = r"""
 \bibliographystyle{cas-model2-names}
@@ -209,7 +200,12 @@ def size_tables(t):
             buf.append(line)
             if re.match(r"\s*\\end\{table\}", line):
                 blk="\n".join(buf)
-                blk=blk.replace("\\begin{tabular}", "\\small\n\\begin{tabular}", 1)
+                # A table that already declares its own size was sized by hand
+                # in main-snjnl.tex because it needed more than one step down.
+                # Inserting \small after that declaration would step it back
+                # *up*, so leave those alone.
+                if not re.search(r"\\(?:footnotesize|scriptsize|tiny|small)\b", blk):
+                    blk=blk.replace("\\begin{tabular}", "\\small\n\\begin{tabular}", 1)
                 out.append(blk); buf=None
             continue
         out.append(line)
@@ -222,7 +218,7 @@ methods = size_tables(methods)
 doc = "\n".join([
     PREAMBLE,
     intro, "",
-    methods, "",          # Elsevier order: Methods second, not at the back
+    methods, "",          # Methods second, as in the npj version
     results, "",
     discussion, "",
     conclusions, "",
@@ -238,11 +234,12 @@ DEST = ROOT / "paper-corrosion-science"
 # paper/ stays the single place the science is edited and the copies cannot
 # drift the way a hand-maintained second manuscript would.
 import shutil
+
 shutil.copy(P / "references.bib", DEST / "references.bib")
 shutil.copy(P / "supplementary-body.tex", DEST / "supplementary-body.tex")
 (DEST / "figures").mkdir(exist_ok=True)
 n_fig = 0
-for fig in sorted((P / "figures").glob("*.png")):
+for fig in sorted(list((P / "figures").glob("*.png")) + list((P / "figures").glob("*.pdf"))):
     shutil.copy(fig, DEST / "figures" / fig.name)
     n_fig += 1
 print(f"refreshed: references.bib, supplementary-body.tex, {n_fig} figures")

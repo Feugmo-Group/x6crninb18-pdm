@@ -22,8 +22,6 @@ Run:  python scripts/make_paper_figs_tier2.py   (AFTER
 """
 
 import shutil
-import sys
-from pathlib import Path
 
 import matplotlib
 
@@ -32,12 +30,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import htw_pdm.tier2_physics as tier2_physics  # noqa: E402
+from htw_pdm.paths import ROOT  # noqa: E402
 from htw_pdm.physics import Parameters  # noqa: E402
 from htw_pdm.tier2_physics import analytic_steady, species_groups  # noqa: E402
 
-from htw_pdm.paths import ROOT  # noqa: E402
 T2_DIR = ROOT / "outputs" / "tier2"
 from htw_pdm.paths import PAPER_OUT as OUT  # noqa: E402
+
 OUT.mkdir(parents=True, exist_ok=True)
 
 plt.rcParams.update({
