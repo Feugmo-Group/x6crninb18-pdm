@@ -5,10 +5,10 @@ the zero-dimensional fit/the spatial model forward chain — NO fitting to the l
 
   geometry     L_bl(t) from the the zero-dimensional fit closed form (M4 kinetics)
   bl chemistry f_Cr_bl from spinel stoichiometry: FeCr2O4 -> Cr = 2*52.0/222.7
-               = 46.7 wt% of the (metals+O) EDX total (Veile normalize ignoring
+               = 46.5 wt% of the (metals+O) EDX total (Veile normalize ignoring
                light elements; O is measured) — a zero-parameter forward value
-  Ni zone      exclusion closure with nominal (pre-the spatial inverse) parameters r_Ni, D_Ni_eff:
-               w_Ni(t) = D_Ni_eff / v_m(t), v_m = (dL_bl/dt)/PBR (recession speed),
+  Ni zone      exclusion closure with nominal (pre-spatial-inverse) parameters r_Ni, D_Ni_eff:
+               w_Ni(t) = D_Ni_eff / v_m(t), v_m = (dL_bl/dt)/0.609 (recession speed, Cr balance),
                excess(t) = Ni_matrix*(1-r_Ni)*d_consumed(t), A_Ni = Ni_m + excess/w
                Pass --fitted after running spatial_inverse.py to use the the spatial inverse values.
   gradient     g_bl predicted from the steady spatial solve cation-vacancy profile: site-fraction
@@ -37,15 +37,17 @@ import numpy as np
 from htw_pdm.baseline_fit import load_data  # noqa: E402
 from htw_pdm.baseline_ode import HTWPDMParams, L_bl_closed  # noqa: E402
 from htw_pdm.paths import OUTPUTS as OUT  # noqa: E402
+from htw_pdm.mass_balance import BARRIER_CANDIDATES, metal_recession_ratio  # noqa: E402
 from htw_pdm.physics import Parameters  # noqa: E402
 from htw_pdm.spatial_identifiability import NI_M, profiles  # noqa: E402
 from htw_pdm.spatial_physics import analytic_steady, species_groups  # noqa: E402
 
 OUT.mkdir(exist_ok=True)
 
-PBR_BL = 2.05  # FeCr2O4 (Li Table 3) — metal depth consumed = L_bl / PBR
+PBR_BL = 2.05  # FeCr2O4 classical PBR (Li Table 3); not the recession ratio
+L_BL_PER_METAL = metal_recession_ratio(BARRIER_CANDIDATES[0])  # 0.609, Cr balance
 N_CATION_SPINEL = 4.05e22  # cm^-3 (magnetite-structure cation sites)
-F_CR_BL_STOICH = 100.0 * 2 * 52.00 / (2 * 52.00 + 55.85 + 4 * 16.00)  # 46.7 wt%
+F_CR_BL_STOICH = 100.0 * 2 * 52.00 / (2 * 52.00 + 55.85 + 4 * 16.00)  # 46.5 wt%
 
 # Nominal (pre-the spatial inverse) Ni-exclusion parameters; overwritten by --fitted.
 NI_NOMINAL = {"r_Ni": 0.0, "D_Ni_eff_nm2_h": 2.3, "phi_ol_supply": 0.0}
@@ -71,7 +73,7 @@ def ni_zone(p1: Parameters, t_h: float, ni: dict, fitted: bool = False):
     if fitted:
         from htw_pdm.spatial_inverse import wagner_solve
 
-        theta = np.array([ni["D_Ni_eff_nm2_h"], ni["r_Ni"], ni["phi_ol_supply"]])
+        theta = np.array([ni["D_Ni_eff_nm2_h"], ni["r_Ni"], ni.get("phi_ol_supply", 0.0)])
         c, xi = wagner_solve(theta, p1, t_eval=np.array([t_h]))
         excess = c[0] - NI_M
         A = NI_M + float(excess[0])
@@ -80,9 +82,9 @@ def ni_zone(p1: Parameters, t_h: float, ni: dict, fitted: bool = False):
         w = float(xi[below[0]]) if len(below) else float(xi[-1])
         return w, A
     L, dLdt = zero_d_geometry(p1, t_h)
-    v_m = dLdt / PBR_BL  # recession speed into the metal, nm/h
+    v_m = dLdt / L_BL_PER_METAL  # recession speed into the metal, nm/h
     w = min(ni["D_Ni_eff_nm2_h"] / v_m, np.sqrt(2.0 * ni["D_Ni_eff_nm2_h"] * t_h))
-    d_consumed = (L - p1.L0) / PBR_BL + ni["phi_ol_supply"] * t_h  # nm of metal
+    d_consumed = (L - p1.L0) / L_BL_PER_METAL + ni.get("phi_ol_supply", 0.0) * t_h  # nm of metal
     excess = NI_M * (1.0 - ni["r_Ni"]) * d_consumed / 100.0  # nm of pure-Ni equiv
     A = NI_M + 100.0 * excess / w
     return w, A

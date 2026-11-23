@@ -65,8 +65,7 @@ from htw_pdm.nickel_wagner import (  # noqa: E402
     A72_SIG,
     N_XI,
     NI_M,
-    PBR_BL,
-    PBR_OL,
+    L_BL_PER_METAL,
     RISE,
     T_OBS,
     T_REF,
@@ -96,7 +95,7 @@ def _tgrid(n_steps: int = N_STEPS) -> torch.Tensor:
 def v_of_t(t_h, p1: Parameters, phi: float) -> float:
     """Interface recession speed, nm/h (the nickel-zone closure definition, unchanged)."""
     dbl = dL_bl_dt(float(t_h), p1)
-    return dbl / PBR_BL + phi * (p1.PBR_eff * dbl + p1.C_x) / PBR_OL
+    return dbl / L_BL_PER_METAL  # phi unused: outer-layer Fe comes from the same metal
 
 
 def wagner_torch(D_of_t, r: torch.Tensor, phi: float, p1: Parameters,

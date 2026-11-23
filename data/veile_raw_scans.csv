@@ -1,0 +1,40 @@
+# Layer widths from raw EDX line scans (Veile et al., supplied by the authors);
+# criterion: cation fraction X/(Cr+Fe+Ni) above its metal value by 1.5 (Cr) / 1.0 (Ni) points;
+# Fe = oxide length outside the Cr layer
+t_h,element,L_nm,source
+2496.0,Cr,132.0,AISI347_100Tage_Hoferautoklav_data1#0
+2496.0,Fe,255.0,AISI347_100Tage_Hoferautoklav_data1#0
+2496.0,Ni,68.0,AISI347_100Tage_Hoferautoklav_data1#0
+2496.0,Cr,62.0,AISI347_100Tage_Hoferautoklav_data2#0
+2496.0,Fe,117.0,AISI347_100Tage_Hoferautoklav_data2#0
+2496.0,Ni,158.0,AISI347_100Tage_Hoferautoklav_data2#0
+480.0,Cr,133.0,AISI347_20Tage_A110723Lines1#0
+480.0,Fe,463.0,AISI347_20Tage_A110723Lines1#0
+480.0,Ni,46.0,AISI347_20Tage_A110723Lines1#0
+480.0,Cr,133.0,AISI347_20Tage_A110723Lines2#0
+480.0,Fe,169.0,AISI347_20Tage_A110723Lines2#0
+480.0,Ni,29.0,AISI347_20Tage_A110723Lines2#0
+480.0,Cr,136.0,AISI347_20Tage_A110723Linesc#0
+480.0,Fe,119.0,AISI347_20Tage_A110723Linesc#0
+480.0,Ni,13.0,AISI347_20Tage_A110723Linesc#0
+72.0,Cr,30.0,AISI347_3Tage_D6Area1MthinW#0
+72.0,Fe,0.0,AISI347_3Tage_D6Area1MthinW#0
+72.0,Ni,46.0,AISI347_3Tage_D6Area1MthinW#0
+72.0,Cr,48.0,AISI347_3Tage_D6Area2MthinW#0
+72.0,Fe,154.0,AISI347_3Tage_D6Area2MthinW#0
+72.0,Ni,30.0,AISI347_3Tage_D6Area2MthinW#0
+72.0,Cr,31.0,AISI347_3Tage_D6Area3MthinW#0
+72.0,Fe,247.0,AISI347_3Tage_D6Area3MthinW#0
+72.0,Ni,32.0,AISI347_3Tage_D6Area3MthinW#0
+168.0,Cr,131.0,AISI347_7Tage_D8Area1MthinW#0
+168.0,Fe,331.0,AISI347_7Tage_D8Area1MthinW#0
+168.0,Ni,54.0,AISI347_7Tage_D8Area1MthinW#0
+168.0,Cr,98.0,AISI347_7Tage_D8Area2MthinW#0
+168.0,Fe,139.0,AISI347_7Tage_D8Area2MthinW#0
+168.0,Ni,61.0,AISI347_7Tage_D8Area2MthinW#0
+168.0,Cr,97.0,AISI347_7Tage_D8Area3MthinW#0
+168.0,Fe,0.0,AISI347_7Tage_D8Area3MthinW#0
+168.0,Ni,32.0,AISI347_7Tage_D8Area3MthinW#0
+168.0,Cr,81.0,AISI347_7Tage_D8Area4MthinW#0
+168.0,Fe,289.0,AISI347_7Tage_D8Area4MthinW#0
+168.0,Ni,32.0,AISI347_7Tage_D8Area4MthinW#0

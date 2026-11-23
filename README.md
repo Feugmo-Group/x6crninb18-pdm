@@ -1,8 +1,10 @@
 # Point Defect Model identification for X6CrNiNb18-10 in BWR hydrothermal water
 
-Mechanistic identification of passive-film growth kinetics on Nb-stabilized AISI 347
-(X6CrNiNb18-10) in boiling-water-reactor hydrothermal water — 240 °C, 7 MPa, 0.4 ppm O₂ —
-fitted to published oxide depth profiles at 72, 168 and 480 h.
+Code and data for the paper *Sparse data limit: what a mechanistic corrosion model can
+predict* (C. G. Tetsassi Feugmo and G. Veile, submitted to *npj Materials Degradation*).
+The paper asks what three exposure times can determine for a reduced point defect model
+of the duplex oxide on Nb-stabilized AISI 347 (X6CrNiNb18-10) in simulated
+boiling-water-reactor water (240 °C, 7 MPa, 0.4 ppm O₂).
 
 A reduced Point Defect Model,
 
@@ -11,19 +13,26 @@ dL_bl/dt = A_bl·exp(b₃·L_bl) − C_bl          barrier (Cr-rich inner spinel
 dL_ol/dt = PBR_eff·dL_bl/dt + C_x            outer (Fe-rich crystals)
 ```
 
-is fitted two ways that must agree: a classical Levenberg–Marquardt solve, and a
-differentiable neural-spectral (NSEM) inversion that integrates the kinetics with an
-exact RK4 so the physics cannot be violated. They agree to within 0.55% on every
-parameter at identical χ² = 5.79.
+is fitted in five variants (M1 to M5), which differ in whether barrier dissolution
+`C_bl`, outer-layer loss `C_x` and an initial outer layer `L_ol0` are free.
 
-**Headline results.** The identified kinetics predict 535 nm of barrier layer after ten
-years, against 1853 nm from the empirical power law the source data were originally fitted
-with. Three exposure times leave one of the five parameters undetermined and a second only
-weakly determined — quantified by profile likelihood, a 1000-member parametric bootstrap
-and a prior-relaxation test, rather than asserted. A physics-informed inverse failure mode
-(F-1) is documented: soft joint field-and-parameter inversion satisfies the data loss while
-leaving the governing equation unsatisfied, and is caught by re-solving the recovered
-parameters through an exact forward solve.
+**Revised analysis (current).** Layer thicknesses are computed from the raw EDX line
+scans of Veile et al. after 72, 168 and 480 h (`data/veile_raw_scans.csv`,
+`data/veile_raw_means.csv`). The growth prefactor and the field exponent are well
+determined; the initial film is set by its prior; the outer-layer parameters have only
+upper bounds. The reference variant M4 gives χ² = 7.16 on one degree of freedom (1.9
+with the full scan SD) and a ten-year barrier thickness of 497 nm. Barrier dissolution
+cannot be resolved: refitting M5 at fixed dissolution rates from 0 to 30 nm/h moves the
+ten-year forecast from 497 to 150 nm for a change of only 1.9 in χ². A 104-day specimen
+exposed in nearly stagnant water has a barrier of 55 to 64 nm, which the fitted model
+reaches in 4 to 5 days, so the fitted kinetics hold only for the flow of the calibration.
+All results use the closed-form solution of the model; the neural solvers are kept as a
+numerical cross-check. The commands are under *Reproducing the revised manuscript* below.
+
+**First submission.** The original analysis used values digitized from Fig. 9 of Veile
+et al. (`data/veile2024_fig9_*.csv`). That dataset is still the default, so the test
+suite and the command ladder further down reproduce the first-submission numbers
+(χ² = 5.79, 535 nm at ten years).
 
 The manuscript exists in two venue versions, same science and same numbers:
 `paper/` targets *npj Materials Degradation* (Springer Nature `sn-jnl`) and
@@ -80,6 +89,26 @@ Paths are resolved once by `htw_pdm.paths`, which locates the project root by wa
 `pyproject.toml`. Set `HTW_PDM_ROOT` to override. Nothing depends on the working directory.
 
 ---
+
+## Reproducing the revised manuscript
+
+Prefix each with `uv run`. These need only the classical install.
+
+```bash
+python scripts/make_revision_analyses.py --dataset veile_raw
+        # dissolution scan, wide profiles with and without the prior, three error
+        # models, scan bootstrap, leave-one-out influence, exposure design
+        # -> outputs/revision/veile_raw.json
+python scripts/make_revision_figs.py --dataset veile_raw
+        # profile-likelihood and dissolution figures -> outputs/revision/
+HTW_PDM_DATASET=veile_raw HTW_PDM_TMAX=480 python scripts/plot_results.py
+        # fits against the layer means (the fits figure of the paper)
+```
+
+`scripts/extract_layer_thickness.py` computes the per-scan widths in
+`data/veile_raw_scans.csv` from the raw line scans. The raw scans are not in this
+repository (see *Data provenance*), so that script documents the width rule but cannot be
+run from a clone; every analysis above starts from the committed per-scan widths.
 
 ## Reproducing the manuscript
 
@@ -211,7 +240,8 @@ src/htw_pdm/      the model, fits and inversions (importable package)
   spatial_*.py, nickel_*.py, field_closure_*.py   spatial extension and closure gates
 scripts/          figure and table generators for the manuscript
 conf/             Hydra configs for the five neural entry points
-data/             digitized layer thicknesses (means, per-scan)
+data/             layer thicknesses: digitized from Fig. 9 (veile2024_fig9_*) and
+                  computed from the raw line scans (veile_raw_*), means and per-scan
 tests/            68 tests, including test_paper_numbers.py -- see below
 paper/            npj Materials Degradation version: manuscript, SI, cover letter,
                   shared figures/ and references.bib, built PDFs in pdf/
@@ -226,6 +256,12 @@ outputs/          committed results behind every number in the paper;
 ```
 
 ## Data provenance
+
+The layer thicknesses of the revised analysis (`data/veile_raw_scans.csv`,
+`data/veile_raw_means.csv`) were computed by `scripts/extract_layer_thickness.py` from
+raw EDX line scans measured by G. Veile at the Materials Testing Institute (MPA),
+University of Stuttgart. The raw line scans are not included in this repository; they
+are available from the authors on reasonable request.
 
 The layer-thickness data are digitized from the open-access source paper (DOI
 [10.3390/ma17184500](https://doi.org/10.3390/ma17184500), CC-BY). The model formulation is

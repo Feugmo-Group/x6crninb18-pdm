@@ -57,11 +57,9 @@ I_PBR = 2  # index of ln(PBR_eff) in the parameter vector
 # Values singled out in the manuscript, profiled explicitly so the numbers in
 # The text come from this file rather than from a reader's interpolation.
 CALLOUTS = {
-    1.096: "fitted value imposed, C_x free",
     2.053: "FeCr2O4 mass balance, iron-only",
-    2.156: "FeCr2O4 mass balance, the spatial model Ni routing",
-    2.433: "M1/M2 optimum (no initial precipitate)",
-}
+    2.156: "FeCr2O4 mass balance, spatial-model Ni routing",
+}  # plus the M4 and M1 optima of the current dataset, added in main()
 
 
 def fit_at_fixed_pbr(d, pbr: float):
@@ -91,6 +89,8 @@ def main():
 
     _, p4, chi2_m4, _, _ = fit_pdm(d, 4)
     _, p6, chi2_m6, _, _ = fit_pdm(d, M6)
+    CALLOUTS[round(p4.PBR_eff, 3)] = "fitted value imposed, C_x free"
+    CALLOUTS[round(fit_pdm(d, 1)[1].PBR_eff, 3)] = "M1/M2 optimum (no initial precipitate)"
     print(f"M4 (C_x = 0):   PBR_eff = {p4.PBR_eff:.4f}  chi2 = {chi2_m4:.4f}")
     print(f"M6 (C_x free):  PBR_eff = {p6.PBR_eff:.4f}  chi2 = {chi2_m6:.4f}  "
           f"C_x = {p6.C_x:.4f} nm/h  L_ol0 = {p6.L_ol0:.2f} nm")

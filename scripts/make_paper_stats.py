@@ -296,7 +296,7 @@ def main():
                 f"{entry['t_at_separation_max_h']:.0f} h, then falls back to "
                 f"{entry['separation_at_window_end_sigma']:.2f} by 50000 h]")
             print(f"   {name:18s} {budget:13s}: "
-                  f"2 sigma at {t2:8.0f} h, 3 sigma at {t3:8.0f} h{note}")
+                  f"2 sigma at {t2 or float('nan'):8.0f} h, 3 sigma at {t3 or float('nan'):8.0f} h{note}")
 
     # --- save everything ---------------------------------------------------------
     results = {

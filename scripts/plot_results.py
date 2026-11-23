@@ -122,7 +122,7 @@ for (el, title, model_fn), (ax_lin, ax_log) in zip(layer_data, axes):
 
     for ax, t_grid, xscale in ((ax_lin, t_fine, "linear"), (ax_log, t_fine_log, "log")):
         ax.errorbar(
-            t_data, L_data, yerr=sd_data, fmt="ko", ms=6, capsize=3, label="Veile 2024 data"
+            t_data, L_data, yerr=sd_data, fmt="ko", ms=6, capsize=3, label="layer means (Veile et al. scans)"
         )
         ax.plot(t_grid, model_fn(p4, t_grid), "b-", lw=2, label="point defect model (M4)")
         ax.plot(t_grid, k_pl * t_grid**n_pl, "r--", lw=1.5,
@@ -136,7 +136,7 @@ for (el, title, model_fn), (ax_lin, ax_log) in zip(layer_data, axes):
             ax.set_yscale("log")
         ax.set_xlabel("t (h)")
         ax.set_ylabel("L (nm)")
-        ax.set_title(f"{el} — {title}", fontsize=8 * PT)
+        ax.set_title(f"{el}: {title}", fontsize=8 * PT)
         panel_letter(ax, next(letters))
 # Single shared legend for the four repeated-entry panels. It used to sit
 # inside panel (c), which looked empty in the source PNG but is not: the Fe
@@ -181,7 +181,7 @@ for xi, ri in zip(x_pos, res_r):
 ax_res.set_xticks(x_pos)
 ax_res.set_xticklabels(res_labels, fontsize=7 * PT)
 ax_res.set_ylabel("weighted residual ($\\sigma$)")
-ax_res.set_ylim(-3.1, 2.5)
+ax_res.set_ylim(-3.1, 3.3)  # headroom so the (e) label clears the bar values
 ax_res.set_title("M4 weighted residuals", fontsize=8 * PT)
 ax_res.legend(fontsize=6.5 * PT, loc="lower right")
 panel_letter(ax_res, "e")
@@ -196,7 +196,7 @@ ax_lev.set_xticklabels(res_labels, fontsize=7 * PT)
 ax_lev.set_ylabel("share of total $\\chi^2$ (%)")
 ax_lev.set_ylim(0, 100)
 cr_share = 100 * sum(res_chi2[:3]) / chi2_tot
-ax_lev.set_title(f"$\\chi^2$ leverage (Cr: {cr_share:.0f}% of "
+ax_lev.set_title(f"share of $\\chi^2$ (Cr: {cr_share:.0f}% of "
                  f"{chi2_tot:.2f})", fontsize=8 * PT)
 panel_letter(ax_lev, "f")
 
@@ -211,7 +211,7 @@ t_ni = np.array([r[0] for r in rows_ni])
 L_ni = np.array([r[1] for r in rows_ni])
 sd_ni = np.array([r[2] for r in rows_ni])
 ax_ni.errorbar(t_ni, L_ni, yerr=sd_ni, fmt="ks", ms=6, capsize=3, zorder=3,
-               label="Veile 2024 data (population SD)")
+               label="Ni zone width, mean $\\pm$ SD")
 ax_ni.axhline(L_ni.mean(), color="grey", ls=":", lw=1.5,
               label=f"measured mean = {L_ni.mean():.1f} nm")
 # The constant-mobility transport closure of Section 2.6, fitted to these same
@@ -223,12 +223,12 @@ if _ni_curve.exists():
     _nc = np.load(_ni_curve)
     ax_ni.plot(_nc["t_h"], _nc["W_nm"], "b-", lw=2, zorder=2,
                label=("constant-mobility closure, best fit "
-                      f"($\\chi^2 = {float(_nc['chi2']):.1f}$ on 1 dof)"))
+                      f"($\\chi^2 = {float(_nc["chi2"]):.1f}$ on {int(_nc["dof"]) if "dof" in _nc else 1} dof)"))
     ax_ni.set_ylim(0, max(float(_nc["W_nm"].max()), float((L_ni + sd_ni).max())) * 1.55)
 ax_ni.set_xlim(0, 500)
 ax_ni.set_xlabel("t (h)")
 ax_ni.set_ylabel("Ni zone width (nm)")
-ax_ni.set_title("Ni — enrichment zone: measured widths are flat, "
+ax_ni.set_title("Ni enrichment zone: measured widths are flat, "
                 "a constant mobility can only rise", fontsize=8 * PT)
 # Upper right, with headroom added above: the panel letter holds the top left,
 # and both the data and the rising curve stay in the lower two thirds.
@@ -278,7 +278,7 @@ ax2.axvspan(72 / 8766.0, 480 / 8766.0, color="grey", alpha=0.2, label="data rang
 _rows_cr = sorted(means["Cr"])
 _t_cr_y = np.array([r[0] for r in _rows_cr]) / 8766.0
 ax2.errorbar(_t_cr_y, [r[1] for r in _rows_cr], yerr=[r[2] for r in _rows_cr],
-             fmt="ko", ms=4, capsize=2, lw=1, zorder=5, label="Veile 2024 Cr data")
+             fmt="ko", ms=4, capsize=2, lw=1, zorder=5, label="Cr layer means")
 # Headline-prediction marker: 10-year horizon.
 ax2.axvline(10.0, color="k", ls="-.", lw=0.8)
 ax2.text(10.0 * 1.15, 0.03, "t = 10 y", rotation=90, fontsize=6.5 * PT, va="bottom",

@@ -33,6 +33,7 @@ Run:  python -m htw_pdm.baseline_fit
 from __future__ import annotations
 
 import csv
+import os
 from dataclasses import dataclass
 
 import numpy as np
@@ -51,18 +52,32 @@ CHI = 8.0 / 3.0  # spinel-averaged cation valence in the barrier layer
 ALPHA3_PRIOR = 0.12  # Li 2020 Table 4 (HCM12A), used only to convert b3 -> field strength
 
 
-def load_data():
+# Dataset prefix: "veile2024_fig9" is the digitized Fig. 9 data of the first
+# submission; "veile_raw" is computed from the raw EDX line scans supplied by
+# Veile et al. (scripts/extract_layer_thickness.py).  HTW_PDM_DATASET switches
+# every caller at once, so the published numbers stay reproducible.
+DEFAULT_DATASET = "veile2024_fig9"
+
+
+def load_data(dataset: str | None = None, t_max: float | None = None):
+    """Layer means and individual scans.  `t_max` drops later exposures (blind test)."""
+    dataset = dataset or os.environ.get("HTW_PDM_DATASET", DEFAULT_DATASET)
+    if t_max is None and os.environ.get("HTW_PDM_TMAX"):
+        t_max = float(os.environ["HTW_PDM_TMAX"])
+    keep = (lambda t: True) if t_max is None else (lambda t: t <= t_max)
     means, scans = {}, {}
-    with open(DATA / "veile2024_fig9_means.csv") as f:
+    with open(DATA / f"{dataset}_means.csv") as f:
         rows = [r for r in csv.DictReader(row for row in f if not row.startswith("#"))]
     for r in rows:
-        means.setdefault(r["element"], []).append(
-            (float(r["t_h"]), float(r["mean_nm"]), float(r["sd_nm"]), int(r["n_scans"]))
-        )
-    with open(DATA / "veile2024_fig9_scans.csv") as f:
+        if keep(float(r["t_h"])):
+            means.setdefault(r["element"], []).append(
+                (float(r["t_h"]), float(r["mean_nm"]), float(r["sd_nm"]), int(r["n_scans"]))
+            )
+    with open(DATA / f"{dataset}_scans.csv") as f:
         rows = [r for r in csv.DictReader(row for row in f if not row.startswith("#"))]
     for r in rows:
-        scans.setdefault(r["element"], []).append((float(r["t_h"]), float(r["L_nm"])))
+        if keep(float(r["t_h"])):
+            scans.setdefault(r["element"], []).append((float(r["t_h"]), float(r["L_nm"])))
     return means, scans
 
 

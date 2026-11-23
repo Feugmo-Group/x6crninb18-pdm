@@ -51,7 +51,7 @@ _FIT_JSON = OUT / "spatial_inverse_fit.json"
 if not _FIT_JSON.exists():
     raise SystemExit(f"missing {_FIT_JSON}; run src/spatial_inverse.py first")
 _fit = json.loads(_FIT_JSON.read_text())
-BASE = np.array([_fit["D_Ni_eff_nm2_h"], _fit["r_Ni"], _fit["phi_ol_supply"]])
+BASE = np.array([_fit["D_Ni_eff_nm2_h"], _fit["r_Ni"], _fit.get("phi_ol_supply", 0.0)])
 
 # Physically plausible n_flux range: the the nickel-closure gate gate found the flattest
 # trajectory (closest to the data's flat/non-monotonic shape) near n_flux ~

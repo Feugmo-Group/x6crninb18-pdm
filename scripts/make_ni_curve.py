@@ -39,10 +39,8 @@ from htw_pdm.spatial_inverse import (
 OUT = OUTPUTS / "paper"
 OUT.mkdir(parents=True, exist_ok=True)
 
-theta = np.array([
-    json.loads((OUT.parent / "spatial_inverse_fit.json").read_text())[k]
-    for k in ("D_Ni_eff_nm2_h", "r_Ni", "phi_ol_supply")
-])
+_fit = json.loads((OUT.parent / "spatial_inverse_fit.json").read_text())
+theta = np.array([_fit[k] for k in ("D_Ni_eff_nm2_h", "r_Ni")])
 p1 = Parameters()
 
 # Dense grid from just after the solver's start time out to the last exposure.
@@ -70,17 +68,17 @@ def _width(row):
 
 W = np.array([_width(row) for row in c])
 
-means, _ = load_data()
+means, _ = load_data(t_max=float(T_OBS[-1]))
 ni = {r[0]: (r[1], r[2], r[3]) for r in means["Ni"]}
 W_obs = np.array([ni[t][0] for t in T_OBS])
-W_sig = np.array([ni[t][1] for t in T_OBS])  # population SD, as in the the spatial inverse fit
+W_sig = np.array([ni[t][1] for t in T_OBS])  # scan SD, as in the spatial inverse fit
 chi2 = float(np.sum(residuals(theta, p1, W_obs, W_sig) ** 2))
 
 np.savez(OUT / "ni_zone_curve.npz", t_h=t_dense, W_nm=W,
-         t_obs=T_OBS, W_obs=W_obs, W_sig=W_sig, chi2=chi2,
+         t_obs=T_OBS, W_obs=W_obs, W_sig=W_sig, chi2=chi2, dof=_fit.get("dof", 1),
          a72_mean=A72_MEAN, a72_sig=A72_SIG)
 print(f"Saved: {OUT / 'ni_zone_curve.npz'}")
 print(f"  predicted W: {W[0]:.1f} nm at {t_dense[0]:.0f} h "
       f"-> {W[-1]:.1f} nm at {t_dense[-1]:.0f} h (monotonic rise)")
 print(f"  measured  W: {np.round(W_obs, 1)} +- {np.round(W_sig, 1)} nm "
-      f"(flat), chi2 = {chi2:.2f} on 1 dof")
+      f"(flat), chi2 = {chi2:.2f} on {_fit.get('dof', 1)} dof")

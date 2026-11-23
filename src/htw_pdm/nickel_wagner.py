@@ -41,10 +41,17 @@ import numpy as np
 from scipy.integrate import solve_ivp
 
 from htw_pdm.baseline_ode import HTWPDMParams, L_bl_closed  # noqa: E402
+from htw_pdm.mass_balance import BARRIER_CANDIDATES, metal_recession_ratio  # noqa: E402
 from htw_pdm.physics import Parameters  # noqa: E402
 
 NI_M = 10.0  # wt% matrix baseline (the spatial identifiability gate/the composition map/the spatial inverse convention)
 PBR_BL, PBR_OL = 2.05, 2.10  # FeCr2O4 / Fe3O4 (Li Table 3)
+# Barrier grown per unit depth of alloy dissolved, from the chromium balance
+# (all Cr of the dissolved alloy reports to an FeCr2O4 barrier): 0.609.  This,
+# not the classical PBR, sets how fast the metal interface recedes; the same
+# value is used by the thickness interpretation, the Ni model and the
+# composition map (revision, reviewer 2 point 3).
+L_BL_PER_METAL = metal_recession_ratio(BARRIER_CANDIDATES[0])
 RISE = 2.0  # wt% rise-off-baseline threshold (Veile width convention)
 T_OBS = np.array([72.0, 168.0, 480.0])
 T_REF = 72.0  # reference exposure for the flux-coupling closure
@@ -103,13 +110,11 @@ def dL_bl_dt(t_h: float, p1: Parameters) -> float:
 
 
 def v_m_of_t(theta: np.ndarray, p1: Parameters):
-    """Interface recession speed into the metal, nm/h (the zero-dimensional fit kinetics + ol supply)."""
-    phi = theta[2]
+    """Interface recession speed into the metal, nm/h (chromium balance; theta[2] unused)."""
 
     def v(t_h):
         dbl = dL_bl_dt(t_h, p1)
-        dL_ol = p1.PBR_eff * dbl + p1.C_x
-        return dbl / PBR_BL + phi * dL_ol / PBR_OL
+        return dbl / L_BL_PER_METAL  # phi unused: outer-layer Fe comes from the same metal
 
     return v
 
