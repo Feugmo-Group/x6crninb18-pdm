@@ -105,10 +105,10 @@ HTW_PDM_DATASET=veile_raw HTW_PDM_TMAX=480 python scripts/plot_results.py
         # fits against the layer means (the fits figure of the paper)
 ```
 
-`scripts/extract_layer_thickness.py` computes the per-scan widths in
-`data/veile_raw_scans.csv` from the raw line scans. The raw scans are not in this
-repository (see *Data provenance*), so that script documents the width rule but cannot be
-run from a clone; every analysis above starts from the committed per-scan widths.
+`scripts/extract_layer_thickness.py` recomputes the per-scan widths in
+`data/veile_raw_scans.csv` and `data/veile_raw_means.csv` from the raw line scans in
+`data/raw/veile_linescans/` (one CSV per scan). Every analysis above starts from those
+per-scan widths.
 
 ## Reproducing the manuscript
 
@@ -260,8 +260,10 @@ outputs/          committed results behind every number in the paper;
 The layer thicknesses of the revised analysis (`data/veile_raw_scans.csv`,
 `data/veile_raw_means.csv`) were computed by `scripts/extract_layer_thickness.py` from
 raw EDX line scans measured by G. Veile at the Materials Testing Institute (MPA),
-University of Stuttgart. The raw line scans are not included in this repository; they
-are available from the authors on reasonable request.
+University of Stuttgart. The raw line scans, exported from the instrument's Origin
+project, are in `data/raw/veile_linescans/`: twelve scans (three at 72 h, four at
+168 h, three at 480 h, and two of the 104-day specimen from the nearly stagnant
+autoclave), each giving O, Cr, Fe, Ni, Pt and Nb in wt% against distance.
 
 The layer-thickness data are digitized from the open-access source paper (DOI
 [10.3390/ma17184500](https://doi.org/10.3390/ma17184500), CC-BY). The model formulation is

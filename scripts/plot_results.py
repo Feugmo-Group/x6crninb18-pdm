@@ -228,8 +228,7 @@ if _ni_curve.exists():
 ax_ni.set_xlim(0, 500)
 ax_ni.set_xlabel("t (h)")
 ax_ni.set_ylabel("Ni zone width (nm)")
-ax_ni.set_title("Ni enrichment zone: measured widths are flat, "
-                "a constant mobility can only rise", fontsize=8 * PT)
+ax_ni.set_title("Ni enrichment zone", fontsize=8 * PT)
 # Upper right, with headroom added above: the panel letter holds the top left,
 # and both the data and the rising curve stay in the lower two thirds.
 ax_ni.legend(fontsize=6.0 * PT, loc="upper right", framealpha=0.9)
